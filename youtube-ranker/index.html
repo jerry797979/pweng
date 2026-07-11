@@ -57,13 +57,10 @@
   .status.error{color:var(--accent); font-weight:700;}
   .from-cache{display:inline-block; background:var(--blue-soft); color:var(--blue); font-size:11px; font-weight:800; padding:2px 8px; border-radius:10px; margin-left:6px;}
 
-  .sortbar{display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; align-items:center;}
-  .sortbar span{font-size:12px; font-weight:700; color:var(--sub); margin-right:4px;}
-  .chip{
-    background:#fff; border:1px solid var(--line); border-radius:20px; padding:6px 14px;
-    font-size:13px; font-weight:600; color:var(--sub);
-  }
-  .chip.on{background:var(--ink); color:#fff; border-color:var(--ink);}
+  thead th.sortable{cursor:pointer; user-select:none; transition:color .12s;}
+  thead th.sortable:hover{color:var(--ink); background:#F1F4F8;}
+  thead th.sortable.on{color:var(--accent);}
+  thead th.sortable.on::after{content:" ▼"; font-size:9px;}
 
   table{width:100%; border-collapse:collapse; margin-top:14px; background:var(--card);
         border:1px solid var(--line); border-radius:12px; overflow:hidden;}
@@ -232,16 +229,6 @@
 
   <div class="status" id="status"></div>
 
-  <div class="sortbar" id="sortbar" style="display:none;">
-    <span>정렬 기준</span>
-    <button class="chip on" data-sort="views">조회수</button>
-    <button class="chip" data-sort="subs">구독자 수</button>
-    <button class="chip" data-sort="date">최신순</button>
-    <button class="chip" data-sort="likes">좋아요</button>
-    <button class="chip" data-sort="engage">참여율 (좋아요/조회수)</button>
-    <button class="chip" data-sort="ratio">떡상 지수 (조회수/구독자)</button>
-  </div>
-
   <div id="results"></div>
 </div>
 
@@ -337,7 +324,6 @@
     currentHistId = h.id;
     $('keyword').value = h.keyword;
     setStatus(`"${escapeHtml(h.keyword)}" 저장된 결과 ${videos.length}개 <span class="from-cache">저장본 · API 미사용</span> — ${fmtDateTime(h.ts)} 수집`);
-    $('sortbar').style.display = 'flex';
     render();
     $('results').scrollIntoView({behavior:'smooth', block:'start'});
   });
@@ -354,15 +340,6 @@
   $('searchBtn').addEventListener('click', run);
   $('keyword').addEventListener('keydown', e => { if(e.key==='Enter') run(); });
   $('apiKey').addEventListener('keydown', e => { if(e.key==='Enter') run(); });
-
-  document.querySelectorAll('.chip').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.chip').forEach(b => b.classList.remove('on'));
-      btn.classList.add('on');
-      currentSort = btn.dataset.sort;
-      render();
-    });
-  });
 
   function setStatus(msg, isError){
     const s = $('status');
@@ -382,7 +359,6 @@
     $('searchBtn').disabled = true;
     setStatus('<span class="spinner"></span>검색 결과를 수집하는 중...');
     $('results').innerHTML = '';
-    $('sortbar').style.display = 'none';
 
     try{
       const want = +$('maxResults').value;
@@ -489,8 +465,7 @@
         videos
       });
 
-      setStatus(`"${escapeHtml(kw)}" 검색 결과 ${videos.length}개 · 기록에 자동 저장됨 · 정렬 기준을 눌러 순위를 바꿔보세요.`);
-      $('sortbar').style.display = 'flex';
+      setStatus(`"${escapeHtml(kw)}" 검색 결과 ${videos.length}개 · 기록에 자동 저장됨 · 표의 제목(조회수·구독자 등)을 클릭하면 그 기준으로 정렬됩니다.`);
       render();
     }catch(err){
       setStatus('오류: ' + escapeHtml(err.message), true);
@@ -540,15 +515,28 @@
       </tr>`;
     }).join('');
 
+    const on = k => currentSort === k ? ' on' : '';
     $('results').innerHTML = `<table>
       <thead><tr>
-        <th>순위</th><th>썸네일</th><th>영상</th><th>채널</th>
-        <th style="text-align:right">조회수</th><th style="text-align:right">구독자</th>
-        <th style="text-align:right">좋아요</th><th style="text-align:right">참여율</th>
-        <th style="text-align:right">떡상 지수</th><th>댓글</th>
+        <th>순위</th><th>썸네일</th>
+        <th class="sortable${on('date')}" data-sort="date" title="클릭하면 최신순 정렬">영상 (최신순)</th>
+        <th>채널</th>
+        <th class="sortable${on('views')}" data-sort="views" style="text-align:right">조회수</th>
+        <th class="sortable${on('subs')}" data-sort="subs" style="text-align:right">구독자</th>
+        <th class="sortable${on('likes')}" data-sort="likes" style="text-align:right">좋아요</th>
+        <th class="sortable${on('engage')}" data-sort="engage" style="text-align:right">참여율</th>
+        <th class="sortable${on('ratio')}" data-sort="ratio" style="text-align:right">떡상 지수</th>
+        <th>댓글</th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
+
+    $('results').querySelectorAll('th.sortable').forEach(th => {
+      th.addEventListener('click', () => {
+        currentSort = th.dataset.sort;
+        render();
+      });
+    });
 
     $('results').querySelectorAll('.btn-cmt').forEach(btn => {
       btn.addEventListener('click', () => openComments(btn.dataset.vid));

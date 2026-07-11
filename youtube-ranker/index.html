@@ -88,6 +88,44 @@
   .btn-cmt{background:var(--blue-soft); color:var(--blue); padding:6px 12px; font-size:12px; white-space:nowrap;}
   .btn-cmt:hover{opacity:.85;}
   .btn-cmt.cached::after{content:" ●"; font-size:9px;}
+  .btn-contact{
+    background:#fff; border:1px solid var(--line); color:var(--sub);
+    padding:4px 10px; font-size:11px; margin-top:5px; white-space:nowrap;
+  }
+  .btn-contact:hover{border-color:var(--gem); color:var(--gem);}
+
+  /* 연락처 모달 */
+  .contact-sec{margin-top:16px;}
+  .contact-sec h3{font-size:12px; font-weight:800; color:var(--sub); margin-bottom:8px;}
+  .contact-row{
+    display:flex; align-items:center; gap:10px; border:1px solid var(--line);
+    border-radius:8px; padding:8px 12px; margin-bottom:6px; background:#FBFCFD;
+  }
+  .contact-val{flex:1; font-size:13px; word-break:break-all; font-weight:600;}
+  .contact-val a{color:var(--blue); text-decoration:none;}
+  .contact-val a:hover{text-decoration:underline;}
+  .copy-btn{
+    background:var(--ink); color:#fff; padding:5px 12px; font-size:12px; white-space:nowrap; border-radius:6px;
+  }
+  .copy-btn.done{background:var(--gem);}
+  .contact-desc{
+    margin-top:8px; font-size:13px; color:var(--sub); white-space:pre-wrap; word-break:break-word;
+    background:#FAFBFC; border:1px solid var(--line); border-radius:8px; padding:12px; max-height:220px; overflow-y:auto;
+  }
+  .contact-none{font-size:13px; color:var(--sub); padding:8px 0;}
+  .btn-about{
+    display:inline-block; background:var(--accent-soft); color:var(--accent); font-weight:700;
+    font-size:12px; padding:7px 14px; border-radius:8px; text-decoration:none; margin-top:4px;
+  }
+  .btn-contact.has-memo{border-color:var(--gem); color:var(--gem); background:var(--gem-soft); font-weight:700;}
+  .memo-box textarea{
+    width:100%; border:1px solid var(--line); border-radius:8px; padding:10px 12px;
+    font-size:13px; font-family:inherit; resize:vertical; min-height:70px; background:#FBFCFD; outline:none;
+  }
+  .memo-box textarea:focus{border-color:var(--gem); background:#fff;}
+  .memo-actions{display:flex; gap:8px; margin-top:8px; align-items:center;}
+  .btn-save{background:var(--gem); color:#fff; padding:7px 16px; font-size:13px;}
+  .memo-note{font-size:12px; color:var(--sub);}
 
   /* 검색 기록 */
   .history-head{display:flex; justify-content:space-between; align-items:center;}
@@ -251,6 +289,7 @@
   const HIST_MAX = 30;
 
   let videos = [];
+  let channels = {}; // 채널 소개글·핸들 (연락처 추출용)
   let currentSort = 'views';
   let currentHistId = null; // 현재 결과가 어느 기록에 속하는지 (댓글 캐시 저장용)
 
@@ -321,6 +360,7 @@
     const h = loadHist().find(x => x.id === id);
     if(!h) return;
     videos = h.videos;
+    channels = h.channels || {};
     currentHistId = h.id;
     $('keyword').value = h.keyword;
     setStatus(`"${escapeHtml(h.keyword)}" 저장된 결과 ${videos.length}개 <span class="from-cache">저장본 · API 미사용</span> — ${fmtDateTime(h.ts)} 수집`);
@@ -406,17 +446,24 @@
         (vData.items||[]).forEach(v => vMap[v.id] = v);
       }
 
-      // 3) 채널 구독자 (50개씩 분할)
-      setStatus('<span class="spinner"></span>채널 구독자 수를 불러오는 중...');
+      // 3) 채널 구독자 + 소개글 (50개씩 분할)
+      setStatus('<span class="spinner"></span>채널 정보를 불러오는 중...');
       const cMap = {};
       for(let i=0; i<channelIds.length; i+=50){
         const cRes = await fetch('https://www.googleapis.com/youtube/v3/channels?' + new URLSearchParams({
-          part:'statistics', id:channelIds.slice(i,i+50).join(','), key
+          part:'statistics,snippet', id:channelIds.slice(i,i+50).join(','), key
         }));
         const cData = await cRes.json();
         if(cData.error) throw new Error(apiErrMsg(cData.error));
         (cData.items||[]).forEach(c => cMap[c.id] = c);
       }
+      channels = {};
+      Object.keys(cMap).forEach(id => {
+        channels[id] = {
+          desc: (cMap[id].snippet?.description || '').slice(0, 1500),
+          handle: cMap[id].snippet?.customUrl || ''
+        };
+      });
 
       // 병합
       videos = items.map(it => {
@@ -462,7 +509,7 @@
         id: currentHistId, keyword: kw, ts: Date.now(),
         orderLabel: orderLabels[order] || order,
         periodLabel: periodLabels[days] || '',
-        videos
+        videos, channels
       });
 
       setStatus(`"${escapeHtml(kw)}" 검색 결과 ${videos.length}개 · 기록에 자동 저장됨 · 표의 제목(조회수·구독자 등)을 클릭하면 그 기준으로 정렬됩니다.`);
@@ -485,6 +532,7 @@
 
   /* ---------- 결과 렌더링 ---------- */
   function render(){
+    const memos = loadMemos();
     const sorted = [...videos].sort((a,b) => {
       switch(currentSort){
         case 'subs':   return (b.subs??-1) - (a.subs??-1);
@@ -505,7 +553,10 @@
           <a class="vtitle" href="https://www.youtube.com/watch?v=${v.vid}" target="_blank" rel="noopener">${escapeHtml(v.title)}${gem?'<span class="badge-gem">숨은 보석</span>':''}</a>
           <div class="vmeta">${fmtDate(v.published)} · ${v.duration}</div>
         </td>
-        <td><a class="ch" href="https://www.youtube.com/channel/${v.channelId}" target="_blank" rel="noopener">${escapeHtml(v.channel)}</a></td>
+        <td>
+          <a class="ch" href="https://www.youtube.com/channel/${v.channelId}" target="_blank" rel="noopener">${escapeHtml(v.channel)}</a><br>
+          <button class="btn-contact${memos[v.channelId] ? ' has-memo' : ''}" data-cid="${v.channelId}">📇 연락처${memos[v.channelId] ? ' ✓' : ''}</button>
+        </td>
         <td class="num">${fmtNum(v.views)}</td>
         <td class="num">${v.subs===null ? '<span title="비공개">비공개</span>' : fmtNum(v.subs)}</td>
         <td class="num">${fmtNum(v.likes)}</td>
@@ -541,8 +592,162 @@
     $('results').querySelectorAll('.btn-cmt').forEach(btn => {
       btn.addEventListener('click', () => openComments(btn.dataset.vid));
     });
+    $('results').querySelectorAll('.btn-contact').forEach(btn => {
+      btn.addEventListener('click', () => openContacts(btn.dataset.cid));
+    });
   }
   function ratioVal(v){ return v.ratio === -1 ? Infinity : v.ratio; }
+
+  /* ---------- 채널 연락처 메모 (검색과 무관하게 채널별로 영구 저장) ---------- */
+  const LS_MEMO = 'ykr_memos';
+  function loadMemos(){
+    try{ return JSON.parse(localStorage.getItem(LS_MEMO) || '{}'); }catch(e){ return {}; }
+  }
+  function saveMemo(cid, chName, text){
+    const memos = loadMemos();
+    if(text.trim()){
+      memos[cid] = { name: chName, memo: text.trim(), ts: Date.now() };
+    }else{
+      delete memos[cid];
+    }
+    try{ localStorage.setItem(LS_MEMO, JSON.stringify(memos)); }catch(e){}
+  }
+
+  /* ---------- 연락처 모달 ---------- */
+  function extractContacts(desc){
+    const emails = [...new Set(desc.match(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g) || [])];
+    const phones = [...new Set(desc.match(/01[016789][-.\s]?\d{3,4}[-.\s]?\d{4}/g) || [])];
+    const urls = [...new Set(desc.match(/https?:\/\/[^\s"'<>),]+/g) || [])];
+    return { emails, phones, urls };
+  }
+  function urlLabel(u){
+    if(/instagram\.com/i.test(u)) return '인스타그램';
+    if(/open\.kakao\.com/i.test(u)) return '오픈카톡';
+    if(/pf\.kakao\.com/i.test(u)) return '카카오 채널';
+    if(/blog\.naver\.com/i.test(u)) return '네이버 블로그';
+    if(/cafe\.naver\.com/i.test(u)) return '네이버 카페';
+    if(/smartstore\.naver\.com/i.test(u)) return '스마트스토어';
+    if(/litt\.ly|linktr\.ee|link\.inpock/i.test(u)) return '링크 모음';
+    if(/youtube\.com|youtu\.be/i.test(u)) return '유튜브';
+    if(/twitter\.com|x\.com/i.test(u)) return 'X(트위터)';
+    if(/facebook\.com/i.test(u)) return '페이스북';
+    if(/tiktok\.com/i.test(u)) return '틱톡';
+    return '링크';
+  }
+  function contactRow(label, value, isLink){
+    const shown = isLink
+      ? `<a href="${escapeHtml(value)}" target="_blank" rel="noopener">${escapeHtml(value)}</a>`
+      : escapeHtml(value);
+    return `<div class="contact-row">
+      <span class="contact-val"><b style="color:var(--sub);font-weight:700;font-size:11px;margin-right:6px;">${label}</b>${shown}</span>
+      <button class="copy-btn" data-copy="${escapeHtml(value)}">복사</button>
+    </div>`;
+  }
+  function openContacts(cid){
+    const v = videos.find(x => x.channelId === cid);
+    const info = channels[cid];
+    const chName = v ? v.channel : '채널';
+    const aboutUrl = info && info.handle
+      ? `https://www.youtube.com/${info.handle}/about`
+      : `https://www.youtube.com/channel/${cid}/about`;
+
+    $('modalTitle').innerHTML = `📇 ${escapeHtml(chName)} 연락처
+      <div class="msub">채널 소개글에서 자동 추출한 정보입니다.</div>`;
+    overlay.classList.add('show');
+
+    if(!info){
+      const savedMemoOld = loadMemos()[cid];
+      $('modalBody').innerHTML = `
+        <div class="contact-sec memo-box"><h3>📝 내 연락처 메모</h3>
+          <textarea id="memoInput" placeholder="정보 탭에서 확인한 이메일, 인스타 DM 계정, 연락 이력 등을 자유롭게 적어두세요.">${savedMemoOld ? escapeHtml(savedMemoOld.memo) : ''}</textarea>
+          <div class="memo-actions">
+            <button class="btn-save" id="memoSaveBtn">메모 저장</button>
+            ${savedMemoOld ? `<button class="copy-btn" id="memoCopyBtn">메모 복사</button><span class="memo-note">${fmtDateTime(savedMemoOld.ts)} 저장됨</span>` : ''}
+          </div>
+        </div>
+        <p class="contact-none">이 검색 기록은 이전 버전에서 수집되어 채널 소개글 정보가 없습니다. 같은 키워드로 새로 검색하면 연락처가 자동 수집됩니다.</p>
+        <div class="contact-sec"><a class="btn-about" href="${aboutUrl}" target="_blank" rel="noopener">유튜브 채널 정보 탭에서 직접 확인 →</a></div>`;
+      bindMemo(cid, chName);
+      return;
+    }
+
+    const { emails, phones, urls } = extractContacts(info.desc);
+    let html = '';
+
+    // 내 메모 (항상 최상단)
+    const savedMemo = loadMemos()[cid];
+    html += `<div class="contact-sec memo-box"><h3>📝 내 연락처 메모</h3>
+      <textarea id="memoInput" placeholder="정보 탭에서 확인한 이메일, 인스타 DM 계정, 연락 이력 등을 자유롭게 적어두세요. 이 채널을 다시 열면 그대로 보입니다.">${savedMemo ? escapeHtml(savedMemo.memo) : ''}</textarea>
+      <div class="memo-actions">
+        <button class="btn-save" id="memoSaveBtn">메모 저장</button>
+        ${savedMemo ? `<button class="copy-btn" id="memoCopyBtn">메모 복사</button><span class="memo-note">${fmtDateTime(savedMemo.ts)} 저장됨</span>` : ''}
+      </div>
+    </div>`;
+
+    if(emails.length){
+      html += `<div class="contact-sec"><h3>✉️ 이메일</h3>${emails.map(e => contactRow('이메일', e, false)).join('')}</div>`;
+    }
+    if(phones.length){
+      html += `<div class="contact-sec"><h3>📞 전화번호</h3>${phones.map(p => contactRow('전화', p, false)).join('')}</div>`;
+    }
+    if(urls.length){
+      html += `<div class="contact-sec"><h3>🔗 링크</h3>${urls.map(u => contactRow(urlLabel(u), u, true)).join('')}</div>`;
+    }
+    if(!emails.length && !phones.length && !urls.length){
+      html += `<p class="contact-none">소개글에서 이메일·전화·링크를 찾지 못했습니다. 아래 버튼으로 채널 정보 탭에서 "이메일 보기"를 확인해 보세요 (보안문자 입력 필요).</p>`;
+    }
+
+    html += `<div class="contact-sec">
+      <a class="btn-about" href="${aboutUrl}" target="_blank" rel="noopener">유튜브 채널 정보 탭 열기 →</a>
+    </div>`;
+
+    if(info.desc.trim()){
+      html += `<div class="contact-sec"><h3>📄 채널 소개글 전문</h3><div class="contact-desc">${escapeHtml(info.desc)}</div></div>`;
+    }
+
+    $('modalBody').innerHTML = html;
+    $('modalBody').querySelectorAll('.copy-btn[data-copy]').forEach(btn => {
+      btn.addEventListener('click', () => copyText(btn.dataset.copy, btn));
+    });
+    bindMemo(cid, chName);
+  }
+
+  function bindMemo(cid, chName){
+    const saveBtn = $('memoSaveBtn');
+    if(saveBtn){
+      saveBtn.addEventListener('click', () => {
+        saveMemo(cid, chName, $('memoInput').value);
+        saveBtn.textContent = '저장됨 ✓';
+        setTimeout(() => { saveBtn.textContent = '메모 저장'; }, 1400);
+        render(); // 연락처 버튼의 메모 표시 갱신
+      });
+    }
+    const copyBtn = $('memoCopyBtn');
+    if(copyBtn){
+      copyBtn.addEventListener('click', () => copyText($('memoInput').value, copyBtn));
+    }
+  }
+
+  async function copyText(text, btn){
+    let ok = false;
+    try{
+      await navigator.clipboard.writeText(text);
+      ok = true;
+    }catch(e){
+      // http/로컬 파일 환경 대비 폴백
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try{ ok = document.execCommand('copy'); }catch(e2){}
+      ta.remove();
+    }
+    const orig = btn.textContent;
+    btn.textContent = ok ? '복사됨 ✓' : '복사 실패';
+    btn.classList.add('done');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('done'); }, 1400);
+  }
 
   /* ---------- 댓글 모달 ---------- */
   const overlay = $('overlay');

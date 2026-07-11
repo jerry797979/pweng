@@ -3,12 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>유튜브 키워드 랭커 v2 — 검색 순위 분석 도구</title>
+<meta name="robots" content="noindex">
+<title>유튜브 키워드 랭커 v3 — 검색 & 연락처 관리</title>
 <style>
   :root{
     --bg:#F4F6F8; --card:#FFFFFF; --ink:#1B2432; --sub:#5B6472;
     --line:#E3E7EC; --accent:#E5484D; --accent-soft:#FDECEC;
     --gem:#0E8A6D; --gem-soft:#E4F5F0; --blue:#2B5FD9; --blue-soft:#EBF1FE;
+    --amber:#B7791F; --amber-soft:#FBF3E4;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{
@@ -16,20 +18,30 @@
     background:var(--bg); color:var(--ink); font-size:14px; line-height:1.55;
   }
   .wrap{max-width:1220px; margin:0 auto; padding:28px 20px 80px;}
-  header{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:10px;}
   header h1{font-size:24px; font-weight:800; letter-spacing:-0.5px;}
   header h1 .dot{color:var(--accent);}
   header p{color:var(--sub); margin-top:4px; font-size:13px;}
+
+  /* 탭 */
+  .tabs{display:flex; gap:6px; margin-top:20px; border-bottom:2px solid var(--line);}
+  .tab{
+    background:none; border:none; padding:10px 18px; font-size:15px; font-weight:700; color:var(--sub);
+    cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-2px; font-family:inherit;
+  }
+  .tab.on{color:var(--accent); border-bottom-color:var(--accent);}
+  .tab:hover:not(.on){color:var(--ink);}
+  .view{display:none;}
+  .view.on{display:block;}
 
   .panel{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 20px; margin-top:18px;}
   .row{display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end;}
   .field{display:flex; flex-direction:column; gap:5px;}
   .field label{font-size:12px; font-weight:700; color:var(--sub);}
-  input[type=text], input[type=password], select{
+  input[type=text], input[type=password], select, textarea{
     border:1px solid var(--line); border-radius:8px; padding:9px 12px; font-size:14px;
-    background:#FBFCFD; outline:none; min-width:0;
+    background:#FBFCFD; outline:none; min-width:0; font-family:inherit;
   }
-  input:focus, select:focus{border-color:var(--blue); background:#fff;}
+  input:focus, select:focus, textarea:focus{border-color:var(--blue); background:#fff;}
   .grow{flex:1; min-width:220px;}
   button{
     border:none; border-radius:8px; padding:10px 20px; font-size:14px; font-weight:700;
@@ -44,12 +56,18 @@
   .hint{font-size:12px; color:var(--sub); margin-top:10px;}
   .hint a{color:var(--blue);}
 
-  /* 저장된 API 키 표시 */
   .keysaved{
     display:flex; align-items:center; gap:10px; background:var(--gem-soft);
     border:1px solid #C4E8DE; border-radius:8px; padding:9px 12px; font-size:13px; color:var(--gem); font-weight:700;
   }
   .keysaved button{padding:4px 10px; font-size:12px; background:#fff; border:1px solid #C4E8DE; color:var(--gem);}
+  #keyBtn.key-ok{border-color:#C4E8DE; color:var(--gem); background:var(--gem-soft);}
+  #keyBtn.key-need{border-color:var(--accent); color:var(--accent); background:var(--accent-soft);}
+  .btn-more{
+    width:100%; background:#fff; border:1px dashed var(--line); color:var(--sub);
+    padding:9px; font-size:13px; border-radius:10px; margin-top:8px;
+  }
+  .btn-more:hover{border-color:var(--blue); color:var(--blue);}
 
   .filters{display:flex; flex-wrap:wrap; gap:12px; margin-top:14px; padding-top:14px; border-top:1px dashed var(--line);}
 
@@ -57,17 +75,33 @@
   .status.error{color:var(--accent); font-weight:700;}
   .from-cache{display:inline-block; background:var(--blue-soft); color:var(--blue); font-size:11px; font-weight:800; padding:2px 8px; border-radius:10px; margin-left:6px;}
 
-  thead th.sortable{cursor:pointer; user-select:none; transition:color .12s;}
-  thead th.sortable:hover{color:var(--ink); background:#F1F4F8;}
-  thead th.sortable.on{color:var(--accent);}
-  thead th.sortable.on::after{content:" ▼"; font-size:9px;}
+  /* 검색 기록 */
+  .history-head{display:flex; justify-content:space-between; align-items:center;}
+  .history-head h2{font-size:15px; font-weight:800;}
+  .history-list{margin-top:12px; display:flex; flex-direction:column; gap:8px;}
+  .hitem{
+    display:flex; align-items:center; gap:12px; border:1px solid var(--line); border-radius:10px;
+    padding:10px 14px; background:#FBFCFD; cursor:pointer; transition:border-color .12s, background .12s;
+  }
+  .hitem:hover{border-color:var(--blue); background:var(--blue-soft);}
+  .hitem .kw{font-weight:800; font-size:14px;}
+  .hitem .hmeta{font-size:12px; color:var(--sub); flex:1;}
+  .hitem button{padding:6px 12px; font-size:12px;}
+  .btn-del{background:#fff; border:1px solid var(--line); color:var(--sub);}
+  .btn-del:hover{color:var(--accent); border-color:var(--accent);}
+  .history-empty{color:var(--sub); font-size:13px; margin-top:10px;}
 
+  /* 결과 테이블 */
   table{width:100%; border-collapse:collapse; margin-top:14px; background:var(--card);
         border:1px solid var(--line); border-radius:12px; overflow:hidden;}
   thead th{
     text-align:left; font-size:12px; color:var(--sub); font-weight:700;
     padding:10px 12px; border-bottom:1px solid var(--line); background:#FAFBFC; white-space:nowrap;
   }
+  thead th.sortable{cursor:pointer; user-select:none; transition:color .12s;}
+  thead th.sortable:hover{color:var(--ink); background:#F1F4F8;}
+  thead th.sortable.on{color:var(--accent);}
+  thead th.sortable.on::after{content:" ▼"; font-size:9px;}
   tbody td{padding:12px; border-bottom:1px solid var(--line); vertical-align:middle;}
   tbody tr:last-child td{border-bottom:none;}
   tbody tr:hover{background:#FAFBFD;}
@@ -93,8 +127,41 @@
     padding:4px 10px; font-size:11px; margin-top:5px; white-space:nowrap;
   }
   .btn-contact:hover{border-color:var(--gem); color:var(--gem);}
+  .btn-contact.has-rec{border-color:var(--gem); color:var(--gem); background:var(--gem-soft); font-weight:700;}
 
-  /* 연락처 모달 */
+  /* 상태 배지 */
+  .st-badge{display:inline-block; font-size:11px; font-weight:800; padding:2px 10px; border-radius:10px;}
+
+  /* 모달 공통 */
+  .overlay{
+    position:fixed; inset:0; background:rgba(20,25,35,.55); display:none;
+    align-items:center; justify-content:center; padding:20px; z-index:100;
+  }
+  .overlay.show{display:flex;}
+  .modal{
+    background:#fff; border-radius:14px; width:100%; max-width:680px; max-height:84vh;
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+  .modal-head{padding:16px 20px; border-bottom:1px solid var(--line); display:flex; gap:12px; align-items:flex-start;}
+  .modal-head .mtitle{font-weight:800; font-size:15px; line-height:1.4; flex:1;}
+  .modal-head .mtitle a{color:var(--ink); text-decoration:none;}
+  .modal-head .mtitle a:hover{color:var(--accent);}
+  .modal-head .msub{font-size:12px; color:var(--sub); margin-top:3px; font-weight:400;}
+  .modal-close{background:none; border:none; font-size:22px; color:var(--sub); padding:0 4px; line-height:1;}
+  .modal-body{overflow-y:auto; padding:6px 20px 20px;}
+  .modal-loading{padding:40px; text-align:center; color:var(--sub);}
+
+  /* 댓글 */
+  .cmt{padding:14px 0; border-bottom:1px solid var(--line);}
+  .cmt:last-child{border-bottom:none;}
+  .cmt-top{display:flex; gap:8px; align-items:baseline; flex-wrap:wrap;}
+  .cmt-author{font-weight:800; font-size:13px;}
+  .cmt-date{font-size:12px; color:var(--sub);}
+  .cmt-likes{font-size:12px; color:var(--sub);}
+  .cmt-text{margin-top:5px; font-size:14px; white-space:pre-wrap; word-break:break-word;}
+  .cmt-replies{font-size:12px; color:var(--blue); margin-top:4px; font-weight:700;}
+
+  /* 연락처 모달/카드 공통 */
   .contact-sec{margin-top:16px;}
   .contact-sec h3{font-size:12px; font-weight:800; color:var(--sub); margin-bottom:8px;}
   .contact-row{
@@ -102,11 +169,10 @@
     border-radius:8px; padding:8px 12px; margin-bottom:6px; background:#FBFCFD;
   }
   .contact-val{flex:1; font-size:13px; word-break:break-all; font-weight:600;}
+  .contact-val b{color:var(--sub); font-weight:700; font-size:11px; margin-right:6px;}
   .contact-val a{color:var(--blue); text-decoration:none;}
   .contact-val a:hover{text-decoration:underline;}
-  .copy-btn{
-    background:var(--ink); color:#fff; padding:5px 12px; font-size:12px; white-space:nowrap; border-radius:6px;
-  }
+  .copy-btn{background:var(--ink); color:#fff; padding:5px 12px; font-size:12px; white-space:nowrap; border-radius:6px;}
   .copy-btn.done{background:var(--gem);}
   .contact-desc{
     margin-top:8px; font-size:13px; color:var(--sub); white-space:pre-wrap; word-break:break-word;
@@ -117,61 +183,36 @@
     display:inline-block; background:var(--accent-soft); color:var(--accent); font-weight:700;
     font-size:12px; padding:7px 14px; border-radius:8px; text-decoration:none; margin-top:4px;
   }
-  .btn-contact.has-memo{border-color:var(--gem); color:var(--gem); background:var(--gem-soft); font-weight:700;}
-  .memo-box textarea{
-    width:100%; border:1px solid var(--line); border-radius:8px; padding:10px 12px;
-    font-size:13px; font-family:inherit; resize:vertical; min-height:70px; background:#FBFCFD; outline:none;
-  }
-  .memo-box textarea:focus{border-color:var(--gem); background:#fff;}
-  .memo-actions{display:flex; gap:8px; margin-top:8px; align-items:center;}
+  .memo-box textarea{width:100%; resize:vertical; min-height:70px; font-size:13px;}
+  .memo-actions{display:flex; gap:8px; margin-top:8px; align-items:center; flex-wrap:wrap;}
   .btn-save{background:var(--gem); color:#fff; padding:7px 16px; font-size:13px;}
   .memo-note{font-size:12px; color:var(--sub);}
+  .st-select{padding:7px 10px; font-size:13px; font-weight:700;}
 
-  /* 검색 기록 */
-  .history-head{display:flex; justify-content:space-between; align-items:center;}
-  .history-head h2{font-size:15px; font-weight:800;}
-  .history-list{margin-top:12px; display:flex; flex-direction:column; gap:8px;}
-  .hitem{
-    display:flex; align-items:center; gap:12px; border:1px solid var(--line); border-radius:10px;
-    padding:10px 14px; background:#FBFCFD; cursor:pointer; transition:border-color .12s, background .12s;
+  /* 연락처 관리 탭 */
+  .crm-head{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:18px;}
+  .crm-filters{display:flex; gap:8px; flex-wrap:wrap;}
+  .fchip{
+    background:#fff; border:1px solid var(--line); border-radius:20px; padding:6px 14px;
+    font-size:13px; font-weight:700; color:var(--sub);
   }
-  .hitem:hover{border-color:var(--blue); background:var(--blue-soft);}
-  .hitem .kw{font-weight:800; font-size:14px;}
-  .hitem .hmeta{font-size:12px; color:var(--sub); flex:1;}
-  .hitem button{padding:6px 12px; font-size:12px;}
-  .btn-load{background:var(--ink); color:#fff;}
-  .btn-del{background:#fff; border:1px solid var(--line); color:var(--sub);}
-  .btn-del:hover{color:var(--accent); border-color:var(--accent);}
-  .history-empty{color:var(--sub); font-size:13px; margin-top:10px;}
-
-  /* 댓글 모달 */
-  .overlay{
-    position:fixed; inset:0; background:rgba(20,25,35,.55); display:none;
-    align-items:center; justify-content:center; padding:20px; z-index:100;
+  .fchip.on{background:var(--ink); color:#fff; border-color:var(--ink);}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:16px 18px; margin-top:14px;
   }
-  .overlay.show{display:flex;}
-  .modal{
-    background:#fff; border-radius:14px; width:100%; max-width:680px; max-height:84vh;
-    display:flex; flex-direction:column; overflow:hidden;
-  }
-  .modal-head{
-    padding:16px 20px; border-bottom:1px solid var(--line); display:flex; gap:12px; align-items:flex-start;
-  }
-  .modal-head .mtitle{font-weight:800; font-size:15px; line-height:1.4; flex:1;}
-  .modal-head .mtitle a{color:var(--ink); text-decoration:none;}
-  .modal-head .mtitle a:hover{color:var(--accent);}
-  .modal-head .msub{font-size:12px; color:var(--sub); margin-top:3px; font-weight:400;}
-  .modal-close{background:none; border:none; font-size:22px; color:var(--sub); padding:0 4px; line-height:1;}
-  .modal-body{overflow-y:auto; padding:6px 20px 20px;}
-  .cmt{padding:14px 0; border-bottom:1px solid var(--line);}
-  .cmt:last-child{border-bottom:none;}
-  .cmt-top{display:flex; gap:8px; align-items:baseline; flex-wrap:wrap;}
-  .cmt-author{font-weight:800; font-size:13px;}
-  .cmt-date{font-size:12px; color:var(--sub);}
-  .cmt-likes{font-size:12px; color:var(--sub);}
-  .cmt-text{margin-top:5px; font-size:14px; white-space:pre-wrap; word-break:break-word;}
-  .cmt-replies{font-size:12px; color:var(--blue); margin-top:4px; font-weight:700;}
-  .modal-loading{padding:40px; text-align:center; color:var(--sub);}
+  .card-head{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+  .card-head .cname{font-size:16px; font-weight:800; color:var(--ink); text-decoration:none;}
+  .card-head .cname:hover{color:var(--accent);}
+  .card-head .cmeta{font-size:12px; color:var(--sub); flex:1;}
+  .card-videos{display:flex; gap:10px; margin-top:12px; overflow-x:auto; padding-bottom:4px;}
+  .cv{flex:0 0 150px; text-decoration:none; color:var(--ink);}
+  .cv img{width:150px; height:84px; object-fit:cover; border-radius:8px; background:#eee; display:block;}
+  .cv .cvt{font-size:12px; font-weight:600; line-height:1.35; margin-top:5px;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+  .cv .cvv{font-size:11px; color:var(--sub);}
+  .crm-empty{padding:50px 20px; text-align:center; color:var(--sub); background:var(--card);
+    border:1px solid var(--line); border-radius:12px; margin-top:14px;}
 
   .spinner{display:inline-block; width:16px; height:16px; border:2px solid var(--line);
     border-top-color:var(--accent); border-radius:50%; animation:spin .7s linear infinite; vertical-align:-3px; margin-right:6px;}
@@ -188,91 +229,99 @@
 <body>
 <div class="wrap">
   <header>
-    <div>
-      <h1>유튜브 키워드 랭커<span class="dot">.</span> <span style="font-size:13px;color:var(--sub);font-weight:600;">v2</span></h1>
-      <p>키워드 검색 결과를 원하는 기준으로 다시 줄 세우고, 검색 기록과 댓글까지 한 곳에서 관리합니다.</p>
-    </div>
+    <h1>유튜브 키워드 랭커<span class="dot">.</span> <span style="font-size:13px;color:var(--sub);font-weight:600;">v3</span></h1>
+    <p>키워드 검색 순위 분석부터 유튜버 아웃리치 관리까지 한 곳에서.</p>
   </header>
 
-  <div class="panel">
-    <div class="row">
-      <div class="field grow" id="keyField">
-        <label for="apiKey">YouTube Data API 키</label>
-        <input type="password" id="apiKey" placeholder="AIza로 시작하는 API 키를 붙여넣으세요">
-      </div>
-      <div class="field grow" id="keySavedField" style="display:none;">
-        <label>YouTube Data API 키</label>
-        <div class="keysaved">✓ API 키가 저장되어 있습니다 <button id="changeKeyBtn">키 변경</button></div>
-      </div>
-      <div class="field grow">
-        <label for="keyword">검색 키워드</label>
-        <input type="text" id="keyword" placeholder="예: 전화영어, 화상영어, 영어회화">
-      </div>
-      <button class="btn-main" id="searchBtn">검색</button>
-    </div>
-
-    <div class="filters">
-      <div class="field">
-        <label for="fetchOrder">수집 기준 (API 검색 순서)</label>
-        <select id="fetchOrder">
-          <option value="relevance">관련성 (기본)</option>
-          <option value="date">최신 업로드</option>
-          <option value="viewCount">조회수</option>
-          <option value="rating">평점</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="period">업로드 기간</label>
-        <select id="period">
-          <option value="">전체</option>
-          <option value="7">최근 7일</option>
-          <option value="30">최근 1개월</option>
-          <option value="90">최근 3개월</option>
-          <option value="365">최근 1년</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="maxResults">수집 개수</label>
-        <select id="maxResults">
-          <option value="25">25개</option>
-          <option value="50">50개</option>
-          <option value="100" selected>100개</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="subCap">구독자 상한 (대형 채널 제외)</label>
-        <select id="subCap">
-          <option value="">제한 없음</option>
-          <option value="1000">1천 이하</option>
-          <option value="10000">1만 이하</option>
-          <option value="100000">10만 이하</option>
-          <option value="1000000">100만 이하</option>
-        </select>
-      </div>
-    </div>
-    <p class="hint">
-      검색 결과는 자동으로 이 브라우저에 저장되어, API를 다시 호출하지 않고 아래 <b>검색 기록</b>에서 언제든 다시 볼 수 있습니다.
-      100개 수집 시 1회당 약 205 쿼터 사용 (일일 무료 한도 10,000 → 하루 약 48회 검색 가능). 댓글 조회는 1회당 1 쿼터로 매우 저렴합니다.
-    </p>
+  <div class="tabs">
+    <button class="tab on" data-view="searchView">🔍 키워드 검색</button>
+    <button class="tab" data-view="crmView">📇 연락처 관리 <span id="crmCount"></span></button>
   </div>
 
-  <div class="panel">
-    <div class="history-head">
-      <h2>📁 검색 기록 <span id="histCount" style="color:var(--sub);font-weight:600;font-size:13px;"></span></h2>
-      <button class="btn-ghost" id="clearHistBtn">전체 삭제</button>
+  <!-- ================= 검색 탭 ================= -->
+  <div class="view on" id="searchView">
+    <div class="panel">
+      <div class="row">
+        <div class="field grow">
+          <label for="keyword">검색 키워드</label>
+          <input type="text" id="keyword" placeholder="예: 전화영어, 화상영어, 영어회화">
+        </div>
+        <button class="btn-main" id="searchBtn">검색</button>
+        <button class="btn-ghost" id="keyBtn" title="API 키 설정">⚙️ API 키</button>
+      </div>
+
+      <div class="filters">
+        <div class="field">
+          <label for="fetchOrder">수집 기준 (API 검색 순서)</label>
+          <select id="fetchOrder">
+            <option value="relevance">관련성 (기본)</option>
+            <option value="date">최신 업로드</option>
+            <option value="viewCount">조회수</option>
+            <option value="rating">평점</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="period">업로드 기간</label>
+          <select id="period">
+            <option value="">전체</option>
+            <option value="7">최근 7일</option>
+            <option value="30">최근 1개월</option>
+            <option value="90">최근 3개월</option>
+            <option value="365">최근 1년</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="maxResults">수집 개수</label>
+          <select id="maxResults">
+            <option value="25">25개</option>
+            <option value="50">50개</option>
+            <option value="100" selected>100개</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="subCap">구독자 상한 (대형 채널 제외)</label>
+          <select id="subCap">
+            <option value="">제한 없음</option>
+            <option value="1000">1천 이하</option>
+            <option value="10000">1만 이하</option>
+            <option value="100000">10만 이하</option>
+            <option value="1000000">100만 이하</option>
+          </select>
+        </div>
+      </div>
+      <p class="hint">
+        검색 결과는 자동으로 이 브라우저에 저장되어, API를 다시 호출하지 않고 아래 <b>검색 기록</b>에서 언제든 다시 볼 수 있습니다.
+        100개 수집 시 1회당 약 205 쿼터 사용 (일일 무료 한도 10,000 → 하루 약 48회 검색 가능). 댓글 조회는 1회당 1 쿼터입니다.
+        표의 제목(조회수·구독자 등)을 클릭하면 그 기준으로 정렬됩니다.
+      </p>
     </div>
-    <div class="history-list" id="historyList"></div>
-    <p class="history-empty" id="historyEmpty">아직 저장된 검색 기록이 없습니다. 검색하면 자동으로 저장됩니다.</p>
+
+    <div class="panel">
+      <div class="history-head">
+        <h2>📁 검색 기록 <span id="histCount" style="color:var(--sub);font-weight:600;font-size:13px;"></span></h2>
+        <button class="btn-ghost" id="clearHistBtn">전체 삭제</button>
+      </div>
+      <div class="history-list" id="historyList"></div>
+      <p class="history-empty" id="historyEmpty">아직 저장된 검색 기록이 없습니다. 검색하면 자동으로 저장됩니다.</p>
+    </div>
+
+    <div class="status" id="status"></div>
+    <div id="results"></div>
   </div>
 
-  <div class="status" id="status"></div>
-
-  <div id="results"></div>
+  <!-- ================= 연락처 관리 탭 ================= -->
+  <div class="view" id="crmView">
+    <div class="crm-head">
+      <div class="crm-filters" id="crmFilters"></div>
+      <button class="btn-ghost" id="csvBtn">📥 엑셀(CSV) 내보내기</button>
+    </div>
+    <div id="crmList"></div>
+  </div>
 </div>
 
-<!-- 댓글 모달 -->
+<!-- 모달 -->
 <div class="overlay" id="overlay">
-  <div class="modal" role="dialog" aria-modal="true" aria-label="댓글 보기">
+  <div class="modal" role="dialog" aria-modal="true">
     <div class="modal-head">
       <div class="mtitle" id="modalTitle"></div>
       <button class="modal-close" id="modalClose" aria-label="닫기">×</button>
@@ -286,39 +335,176 @@
   const $ = id => document.getElementById(id);
   const LS_KEY = 'ykr_api_key';
   const LS_HIST = 'ykr_history';
+  const LS_CONTACTS = 'ykr_contacts';
+  const LS_MEMO_OLD = 'ykr_memos'; // v2 마이그레이션용
   const HIST_MAX = 30;
 
-  let videos = [];
-  let channels = {}; // 채널 소개글·핸들 (연락처 추출용)
-  let currentSort = 'views';
-  let currentHistId = null; // 현재 결과가 어느 기록에 속하는지 (댓글 캐시 저장용)
+  const STATUSES = [
+    { k:'미연락',   bg:'#EEF1F5', fg:'#5B6472' },
+    { k:'제안발송', bg:'#EBF1FE', fg:'#2B5FD9' },
+    { k:'회신옴',   bg:'#FBF3E4', fg:'#B7791F' },
+    { k:'협업진행', bg:'#E4F5F0', fg:'#0E8A6D' },
+    { k:'보류',     bg:'#F3F0FA', fg:'#7C5CBF' }
+  ];
+  function stInfo(k){ return STATUSES.find(s => s.k === k) || STATUSES[0]; }
+  function stBadge(k){
+    const s = stInfo(k);
+    return `<span class="st-badge" style="background:${s.bg};color:${s.fg};">${s.k}</span>`;
+  }
+  function stSelect(cid, cur){
+    return `<select class="st-select" data-cid="${cid}">` +
+      STATUSES.map(s => `<option value="${s.k}"${s.k===cur?' selected':''}>${s.k}</option>`).join('') +
+      `</select>`;
+  }
 
-  /* ---------- API 키 저장 ---------- */
+  let videos = [];
+  let channels = {};
+  let currentSort = 'views';
+  let currentHistId = null;
+  let crmFilter = '전체';
+
+  /* ---------- 탭 ---------- */
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
+      document.querySelectorAll('.view').forEach(x => x.classList.remove('on'));
+      t.classList.add('on');
+      $(t.dataset.view).classList.add('on');
+      if(t.dataset.view === 'crmView') renderCrm();
+    });
+  });
+
+  /* ---------- API 키 ---------- */
   function getKey(){ try{ return localStorage.getItem(LS_KEY) || ''; }catch(e){ return ''; } }
   function saveKey(k){ try{ localStorage.setItem(LS_KEY, k); }catch(e){} }
   function refreshKeyUI(){
     const has = !!getKey();
-    $('keyField').style.display = has ? 'none' : 'flex';
-    $('keySavedField').style.display = has ? 'flex' : 'none';
+    const b = $('keyBtn');
+    b.className = 'btn-ghost ' + (has ? 'key-ok' : 'key-need');
+    b.textContent = has ? '⚙️ API 키 ✓' : '⚙️ API 키 입력 필요';
   }
-  $('changeKeyBtn').addEventListener('click', () => {
-    try{ localStorage.removeItem(LS_KEY); }catch(e){}
-    $('apiKey').value = '';
-    refreshKeyUI();
-    $('apiKey').focus();
-  });
+  $('keyBtn').addEventListener('click', openKeyModal);
+  function openKeyModal(){
+    const has = !!getKey();
+    $('modalTitle').innerHTML = `⚙️ YouTube Data API 키 설정
+      <div class="msub">한 번만 저장하면 이 브라우저에서 계속 사용됩니다.</div>`;
+    $('modalBody').innerHTML = `
+      <div class="contact-sec">
+        ${has ? '<div class="keysaved" style="margin-bottom:12px;">✓ 현재 API 키가 저장되어 있습니다. 새 키를 입력하면 교체됩니다.</div>' : ''}
+        <input type="password" id="keyInput" style="width:100%;" placeholder="AIza로 시작하는 API 키를 붙여넣으세요">
+        <div class="memo-actions">
+          <button class="btn-save" id="keySaveBtn">저장</button>
+          ${has ? '<button class="btn-del" id="keyDelBtn">키 삭제</button>' : ''}
+        </div>
+        <p class="hint" style="margin-top:14px;">
+          API 키는 <a href="https://console.cloud.google.com/apis/library/youtube.googleapis.com" target="_blank" rel="noopener">Google Cloud Console</a>에서 무료 발급
+          (YouTube Data API v3 사용 설정 → 사용자 인증 정보 → API 키 만들기).<br>
+          키는 서버로 전송되지 않고 이 브라우저에만 저장되어 구글로 직접 요청합니다.
+        </p>
+      </div>`;
+    overlay.classList.add('show');
+    $('keyInput').focus();
+    $('keyInput').addEventListener('keydown', e => { if(e.key==='Enter') $('keySaveBtn').click(); });
+    $('keySaveBtn').addEventListener('click', () => {
+      const k = $('keyInput').value.trim();
+      if(!k){ alert('API 키를 입력하세요.'); return; }
+      saveKey(k);
+      refreshKeyUI();
+      closeModal();
+    });
+    const delBtn = $('keyDelBtn');
+    if(delBtn) delBtn.addEventListener('click', () => {
+      if(confirm('저장된 API 키를 삭제할까요?')){
+        try{ localStorage.removeItem(LS_KEY); }catch(e){}
+        refreshKeyUI();
+        closeModal();
+      }
+    });
+  }
+
+  /* ---------- 연락처(CRM) 저장소 ---------- */
+  function loadContacts(){
+    try{ return JSON.parse(localStorage.getItem(LS_CONTACTS) || '{}'); }catch(e){ return {}; }
+  }
+  function saveContacts(obj){
+    try{ localStorage.setItem(LS_CONTACTS, JSON.stringify(obj)); }catch(e){
+      alert('저장 공간이 부족합니다. 검색 기록 일부를 삭제해 주세요.');
+    }
+  }
+  function migrateOldMemos(){
+    try{
+      const old = localStorage.getItem(LS_MEMO_OLD);
+      if(!old) return;
+      const oldMemos = JSON.parse(old);
+      const contacts = loadContacts();
+      Object.keys(oldMemos).forEach(cid => {
+        if(!contacts[cid]){
+          contacts[cid] = {
+            name: oldMemos[cid].name || '채널',
+            memo: oldMemos[cid].memo || '',
+            status: '미연락',
+            ts: oldMemos[cid].ts || Date.now(),
+            added: oldMemos[cid].ts || Date.now(),
+            subs: null, handle: '', emails: [], phones: [], urls: [], videos: []
+          };
+        }
+      });
+      saveContacts(contacts);
+      localStorage.removeItem(LS_MEMO_OLD);
+    }catch(e){}
+  }
+  // 현재 검색 결과에서 채널 정보 스냅샷
+  function snapshotChannel(cid){
+    const v = videos.find(x => x.channelId === cid);
+    const info = channels[cid] || {};
+    const ext = extractContacts(info.desc || '');
+    const chVideos = videos.filter(x => x.channelId === cid)
+      .sort((a,b) => b.views - a.views).slice(0,4)
+      .map(x => ({ vid:x.vid, title:x.title, thumb:x.thumb, views:x.views }));
+    return {
+      name: v ? v.channel : '채널',
+      subs: v ? v.subs : null,
+      handle: info.handle || '',
+      emails: ext.emails, phones: ext.phones, urls: ext.urls,
+      videos: chVideos
+    };
+  }
+  function upsertContact(cid, patch, withSnapshot){
+    const contacts = loadContacts();
+    const prev = contacts[cid] || {};
+    const snap = withSnapshot ? snapshotChannel(cid) : {};
+    contacts[cid] = {
+      name:'채널', memo:'', status:'미연락', subs:null, handle:'',
+      emails:[], phones:[], urls:[], videos:[],
+      added: prev.added || Date.now(),
+      ...prev, ...snap, ...patch,
+      ts: Date.now()
+    };
+    saveContacts(contacts);
+    refreshCrmCount();
+    return contacts[cid];
+  }
+  function deleteContact(cid){
+    const contacts = loadContacts();
+    delete contacts[cid];
+    saveContacts(contacts);
+    refreshCrmCount();
+  }
+  function refreshCrmCount(){
+    const n = Object.keys(loadContacts()).length;
+    $('crmCount').textContent = n ? `(${n})` : '';
+  }
 
   /* ---------- 검색 기록 ---------- */
   function loadHist(){
     try{ return JSON.parse(localStorage.getItem(LS_HIST) || '[]'); }catch(e){ return []; }
   }
   function saveHist(list){
-    // 용량 초과 시 오래된 것부터 제거하며 재시도
     while(true){
       try{ localStorage.setItem(LS_HIST, JSON.stringify(list)); return true; }
       catch(e){
         if(list.length <= 1) return false;
-        list.pop(); // 가장 오래된 항목 제거
+        list.pop();
       }
     }
   }
@@ -334,17 +520,34 @@
     const item = list.find(h => h.id === id);
     if(item){ fn(item); saveHist(list); }
   }
+  let histExpanded = false;
+  const HIST_SHOW = 5;
   function renderHist(){
     const list = loadHist();
     $('histCount').textContent = list.length ? `(${list.length}/${HIST_MAX})` : '';
     $('historyEmpty').style.display = list.length ? 'none' : 'block';
-    $('historyList').innerHTML = list.map(h => `
+    const shown = histExpanded ? list : list.slice(0, HIST_SHOW);
+    let html = shown.map(h => `
       <div class="hitem" data-id="${h.id}">
         <span class="kw">${escapeHtml(h.keyword)}</span>
         <span class="hmeta">${fmtDateTime(h.ts)} · ${h.videos.length}개 · ${h.orderLabel}${h.periodLabel ? ' · ' + h.periodLabel : ''}</span>
         <button class="btn-del" data-act="del">삭제</button>
       </div>
     `).join('');
+    if(list.length > HIST_SHOW){
+      html += histExpanded
+        ? `<button class="btn-more" id="histMoreBtn">▲ 접기 (최근 ${HIST_SHOW}개만 보기)</button>`
+        : `<button class="btn-more" id="histMoreBtn">▼ 더보기 (${list.length - HIST_SHOW}개 더 있음)</button>`;
+    }
+    $('historyList').innerHTML = html;
+    const moreBtn = $('histMoreBtn');
+    if(moreBtn){
+      moreBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        histExpanded = !histExpanded;
+        renderHist();
+      });
+    }
   }
   $('historyList').addEventListener('click', e => {
     const item = e.target.closest('.hitem'); if(!item) return;
@@ -356,7 +559,6 @@
       renderHist();
       return;
     }
-    // 항목 아무 곳이나 클릭하면 바로 불러오기
     const h = loadHist().find(x => x.id === id);
     if(!h) return;
     videos = h.videos;
@@ -369,7 +571,7 @@
   });
   $('clearHistBtn').addEventListener('click', () => {
     if(!loadHist().length) return;
-    if(confirm('저장된 검색 기록을 모두 삭제할까요?')){
+    if(confirm('저장된 검색 기록을 모두 삭제할까요? (연락처 관리 데이터는 유지됩니다)')){
       try{ localStorage.removeItem(LS_HIST); }catch(e){}
       currentHistId = null;
       renderHist();
@@ -379,7 +581,6 @@
   /* ---------- 검색 ---------- */
   $('searchBtn').addEventListener('click', run);
   $('keyword').addEventListener('keydown', e => { if(e.key==='Enter') run(); });
-  $('apiKey').addEventListener('keydown', e => { if(e.key==='Enter') run(); });
 
   function setStatus(msg, isError){
     const s = $('status');
@@ -388,10 +589,11 @@
   }
 
   async function run(){
-    let key = getKey();
+    const key = getKey();
     if(!key){
-      key = $('apiKey').value.trim();
-      if(!key){ setStatus('API 키를 입력하세요.', true); return; }
+      setStatus('먼저 API 키를 설정해 주세요. 한 번만 저장하면 계속 사용됩니다.', true);
+      openKeyModal();
+      return;
     }
     const kw = $('keyword').value.trim();
     if(!kw){ setStatus('검색 키워드를 입력하세요.', true); return; }
@@ -407,7 +609,6 @@
       let publishedAfter = '';
       if(days) publishedAfter = new Date(Date.now() - days*86400000).toISOString();
 
-      // 1) 검색 (100개 요청 시 50개씩 2페이지)
       let items = [];
       let pageToken = '';
       while(items.length < want){
@@ -425,7 +626,6 @@
         pageToken = sData.nextPageToken || '';
         if(!pageToken) break;
       }
-      // 중복 제거
       const seen = new Set();
       items = items.filter(it => { const v=it.id.videoId; if(seen.has(v)) return false; seen.add(v); return true; });
 
@@ -434,7 +634,6 @@
       const videoIds = items.map(it => it.id.videoId);
       const channelIds = [...new Set(items.map(it => it.snippet.channelId))];
 
-      // 2) 영상 통계 (50개씩 분할)
       setStatus('<span class="spinner"></span>영상 통계를 불러오는 중...');
       const vMap = {};
       for(let i=0; i<videoIds.length; i+=50){
@@ -446,7 +645,6 @@
         (vData.items||[]).forEach(v => vMap[v.id] = v);
       }
 
-      // 3) 채널 구독자 + 소개글 (50개씩 분할)
       setStatus('<span class="spinner"></span>채널 정보를 불러오는 중...');
       const cMap = {};
       for(let i=0; i<channelIds.length; i+=50){
@@ -465,7 +663,6 @@
         };
       });
 
-      // 병합
       videos = items.map(it => {
         const vid = it.id.videoId;
         const v = vMap[vid] || {};
@@ -485,7 +682,7 @@
           views, likes, subs, cmtCount,
           engage: views > 0 ? likes/views : 0,
           ratio: (subs && subs > 0) ? views/subs : (views > 0 ? -1 : 0),
-          comments: null // 댓글 캐시
+          comments: null
         };
       });
 
@@ -497,10 +694,6 @@
         setStatus('조건에 맞는 영상이 없습니다. 구독자 상한을 높여보세요.', true);
         $('searchBtn').disabled = false; return;
       }
-
-      // 검색 성공 → 키 저장 + 기록 저장
-      saveKey(key);
-      refreshKeyUI();
 
       const orderLabels = {relevance:'관련성', date:'최신 업로드', viewCount:'조회수', rating:'평점'};
       const periodLabels = {'7':'최근 7일','30':'최근 1개월','90':'최근 3개월','365':'최근 1년'};
@@ -532,7 +725,8 @@
 
   /* ---------- 결과 렌더링 ---------- */
   function render(){
-    const memos = loadMemos();
+    if(!videos.length) return;
+    const contacts = loadContacts();
     const sorted = [...videos].sort((a,b) => {
       switch(currentSort){
         case 'subs':   return (b.subs??-1) - (a.subs??-1);
@@ -546,6 +740,7 @@
 
     const rows = sorted.map((v, i) => {
       const gem = v.subs !== null && v.subs > 0 && v.ratio >= 3;
+      const rec = contacts[v.channelId];
       return `<tr>
         <td class="rank${i<3?' top':''}">${i+1}</td>
         <td><a href="https://www.youtube.com/watch?v=${v.vid}" target="_blank" rel="noopener"><img class="thumb" src="${v.thumb}" alt="" loading="lazy"></a></td>
@@ -555,7 +750,7 @@
         </td>
         <td>
           <a class="ch" href="https://www.youtube.com/channel/${v.channelId}" target="_blank" rel="noopener">${escapeHtml(v.channel)}</a><br>
-          <button class="btn-contact${memos[v.channelId] ? ' has-memo' : ''}" data-cid="${v.channelId}">📇 연락처${memos[v.channelId] ? ' ✓' : ''}</button>
+          <button class="btn-contact${rec ? ' has-rec' : ''}" data-cid="${v.channelId}">📇 ${rec ? rec.status : '연락처'}</button>
         </td>
         <td class="num">${fmtNum(v.views)}</td>
         <td class="num">${v.subs===null ? '<span title="비공개">비공개</span>' : fmtNum(v.subs)}</td>
@@ -583,12 +778,8 @@
     </table>`;
 
     $('results').querySelectorAll('th.sortable').forEach(th => {
-      th.addEventListener('click', () => {
-        currentSort = th.dataset.sort;
-        render();
-      });
+      th.addEventListener('click', () => { currentSort = th.dataset.sort; render(); });
     });
-
     $('results').querySelectorAll('.btn-cmt').forEach(btn => {
       btn.addEventListener('click', () => openComments(btn.dataset.vid));
     });
@@ -598,22 +789,7 @@
   }
   function ratioVal(v){ return v.ratio === -1 ? Infinity : v.ratio; }
 
-  /* ---------- 채널 연락처 메모 (검색과 무관하게 채널별로 영구 저장) ---------- */
-  const LS_MEMO = 'ykr_memos';
-  function loadMemos(){
-    try{ return JSON.parse(localStorage.getItem(LS_MEMO) || '{}'); }catch(e){ return {}; }
-  }
-  function saveMemo(cid, chName, text){
-    const memos = loadMemos();
-    if(text.trim()){
-      memos[cid] = { name: chName, memo: text.trim(), ts: Date.now() };
-    }else{
-      delete memos[cid];
-    }
-    try{ localStorage.setItem(LS_MEMO, JSON.stringify(memos)); }catch(e){}
-  }
-
-  /* ---------- 연락처 모달 ---------- */
+  /* ---------- 연락처 추출 ---------- */
   function extractContacts(desc){
     const emails = [...new Set(desc.match(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g) || [])];
     const phones = [...new Set(desc.match(/01[016789][-.\s]?\d{3,4}[-.\s]?\d{4}/g) || [])];
@@ -639,69 +815,65 @@
       ? `<a href="${escapeHtml(value)}" target="_blank" rel="noopener">${escapeHtml(value)}</a>`
       : escapeHtml(value);
     return `<div class="contact-row">
-      <span class="contact-val"><b style="color:var(--sub);font-weight:700;font-size:11px;margin-right:6px;">${label}</b>${shown}</span>
+      <span class="contact-val"><b>${label}</b>${shown}</span>
       <button class="copy-btn" data-copy="${escapeHtml(value)}">복사</button>
     </div>`;
   }
+  function contactRowsHtml(rec){
+    let html = '';
+    if(rec.emails && rec.emails.length){
+      html += `<div class="contact-sec"><h3>✉️ 이메일</h3>${rec.emails.map(e => contactRow('이메일', e, false)).join('')}</div>`;
+    }
+    if(rec.phones && rec.phones.length){
+      html += `<div class="contact-sec"><h3>📞 전화번호</h3>${rec.phones.map(p => contactRow('전화', p, false)).join('')}</div>`;
+    }
+    if(rec.urls && rec.urls.length){
+      html += `<div class="contact-sec"><h3>🔗 링크</h3>${rec.urls.map(u => contactRow(urlLabel(u), u, true)).join('')}</div>`;
+    }
+    return html;
+  }
+
+  /* ---------- 연락처 모달 (검색 탭에서) ---------- */
   function openContacts(cid){
     const v = videos.find(x => x.channelId === cid);
     const info = channels[cid];
     const chName = v ? v.channel : '채널';
-    const aboutUrl = info && info.handle
-      ? `https://www.youtube.com/${info.handle}/about`
+    const rec = loadContacts()[cid];
+    const handle = (info && info.handle) || (rec && rec.handle) || '';
+    const aboutUrl = handle
+      ? `https://www.youtube.com/${handle}/about`
       : `https://www.youtube.com/channel/${cid}/about`;
 
-    $('modalTitle').innerHTML = `📇 ${escapeHtml(chName)} 연락처
-      <div class="msub">채널 소개글에서 자동 추출한 정보입니다.</div>`;
+    $('modalTitle').innerHTML = `📇 ${escapeHtml(chName)}
+      <div class="msub">상태와 메모를 저장하면 "연락처 관리" 탭에 자동 등록됩니다.</div>`;
     overlay.classList.add('show');
 
-    if(!info){
-      const savedMemoOld = loadMemos()[cid];
-      $('modalBody').innerHTML = `
-        <div class="contact-sec memo-box"><h3>📝 내 연락처 메모</h3>
-          <textarea id="memoInput" placeholder="정보 탭에서 확인한 이메일, 인스타 DM 계정, 연락 이력 등을 자유롭게 적어두세요.">${savedMemoOld ? escapeHtml(savedMemoOld.memo) : ''}</textarea>
-          <div class="memo-actions">
-            <button class="btn-save" id="memoSaveBtn">메모 저장</button>
-            ${savedMemoOld ? `<button class="copy-btn" id="memoCopyBtn">메모 복사</button><span class="memo-note">${fmtDateTime(savedMemoOld.ts)} 저장됨</span>` : ''}
-          </div>
-        </div>
-        <p class="contact-none">이 검색 기록은 이전 버전에서 수집되어 채널 소개글 정보가 없습니다. 같은 키워드로 새로 검색하면 연락처가 자동 수집됩니다.</p>
-        <div class="contact-sec"><a class="btn-about" href="${aboutUrl}" target="_blank" rel="noopener">유튜브 채널 정보 탭에서 직접 확인 →</a></div>`;
-      bindMemo(cid, chName);
-      return;
-    }
-
-    const { emails, phones, urls } = extractContacts(info.desc);
+    const ext = info ? extractContacts(info.desc) : { emails: rec?.emails||[], phones: rec?.phones||[], urls: rec?.urls||[] };
     let html = '';
 
-    // 내 메모 (항상 최상단)
-    const savedMemo = loadMemos()[cid];
-    html += `<div class="contact-sec memo-box"><h3>📝 내 연락처 메모</h3>
-      <textarea id="memoInput" placeholder="정보 탭에서 확인한 이메일, 인스타 DM 계정, 연락 이력 등을 자유롭게 적어두세요. 이 채널을 다시 열면 그대로 보입니다.">${savedMemo ? escapeHtml(savedMemo.memo) : ''}</textarea>
+    html += `<div class="contact-sec memo-box"><h3>📝 상태 & 메모</h3>
+      <div class="memo-actions" style="margin:0 0 8px;">
+        ${stSelect(cid, rec ? rec.status : '미연락')}
+      </div>
+      <textarea id="memoInput" placeholder="정보 탭에서 확인한 이메일, 인스타 DM 계정, 연락 이력 등을 자유롭게 적어두세요.">${rec ? escapeHtml(rec.memo) : ''}</textarea>
       <div class="memo-actions">
-        <button class="btn-save" id="memoSaveBtn">메모 저장</button>
-        ${savedMemo ? `<button class="copy-btn" id="memoCopyBtn">메모 복사</button><span class="memo-note">${fmtDateTime(savedMemo.ts)} 저장됨</span>` : ''}
+        <button class="btn-save" id="memoSaveBtn">저장</button>
+        ${rec ? `<button class="copy-btn" id="memoCopyBtn">메모 복사</button><span class="memo-note">${fmtDateTime(rec.ts)} 저장됨</span>` : '<span class="memo-note">저장하면 연락처 관리 탭에 등록됩니다.</span>'}
       </div>
     </div>`;
 
-    if(emails.length){
-      html += `<div class="contact-sec"><h3>✉️ 이메일</h3>${emails.map(e => contactRow('이메일', e, false)).join('')}</div>`;
+    html += contactRowsHtml({ emails: ext.emails, phones: ext.phones, urls: ext.urls });
+
+    if(!ext.emails.length && !ext.phones.length && !ext.urls.length){
+      html += `<p class="contact-none">소개글에서 이메일·전화·링크를 찾지 못했습니다. 아래 버튼으로 채널 정보 탭의 "이메일 주소 보기"를 확인해 보세요 (보안문자 입력 필요).</p>`;
     }
-    if(phones.length){
-      html += `<div class="contact-sec"><h3>📞 전화번호</h3>${phones.map(p => contactRow('전화', p, false)).join('')}</div>`;
-    }
-    if(urls.length){
-      html += `<div class="contact-sec"><h3>🔗 링크</h3>${urls.map(u => contactRow(urlLabel(u), u, true)).join('')}</div>`;
-    }
-    if(!emails.length && !phones.length && !urls.length){
-      html += `<p class="contact-none">소개글에서 이메일·전화·링크를 찾지 못했습니다. 아래 버튼으로 채널 정보 탭에서 "이메일 보기"를 확인해 보세요 (보안문자 입력 필요).</p>`;
+    if(!info){
+      html += `<p class="contact-none">※ 이 검색 기록은 이전 버전에서 수집되어 소개글 정보가 없습니다. 새로 검색하면 자동 수집됩니다.</p>`;
     }
 
-    html += `<div class="contact-sec">
-      <a class="btn-about" href="${aboutUrl}" target="_blank" rel="noopener">유튜브 채널 정보 탭 열기 →</a>
-    </div>`;
+    html += `<div class="contact-sec"><a class="btn-about" href="${aboutUrl}" target="_blank" rel="noopener">유튜브 채널 정보 탭 열기 →</a></div>`;
 
-    if(info.desc.trim()){
+    if(info && info.desc.trim()){
       html += `<div class="contact-sec"><h3>📄 채널 소개글 전문</h3><div class="contact-desc">${escapeHtml(info.desc)}</div></div>`;
     }
 
@@ -709,32 +881,139 @@
     $('modalBody').querySelectorAll('.copy-btn[data-copy]').forEach(btn => {
       btn.addEventListener('click', () => copyText(btn.dataset.copy, btn));
     });
-    bindMemo(cid, chName);
-  }
-
-  function bindMemo(cid, chName){
     const saveBtn = $('memoSaveBtn');
-    if(saveBtn){
-      saveBtn.addEventListener('click', () => {
-        saveMemo(cid, chName, $('memoInput').value);
-        saveBtn.textContent = '저장됨 ✓';
-        setTimeout(() => { saveBtn.textContent = '메모 저장'; }, 1400);
-        render(); // 연락처 버튼의 메모 표시 갱신
-      });
-    }
+    saveBtn.addEventListener('click', () => {
+      const st = $('modalBody').querySelector('.st-select').value;
+      upsertContact(cid, { memo: $('memoInput').value.trim(), status: st }, !!info);
+      saveBtn.textContent = '저장됨 ✓';
+      setTimeout(() => { saveBtn.textContent = '저장'; }, 1400);
+      render();
+    });
     const copyBtn = $('memoCopyBtn');
-    if(copyBtn){
-      copyBtn.addEventListener('click', () => copyText($('memoInput').value, copyBtn));
-    }
+    if(copyBtn) copyBtn.addEventListener('click', () => copyText($('memoInput').value, copyBtn));
   }
 
+  /* ---------- 연락처 관리 탭 ---------- */
+  function renderCrm(){
+    const contacts = loadContacts();
+    const list = Object.keys(contacts).map(cid => ({ cid, ...contacts[cid] }))
+      .sort((a,b) => b.ts - a.ts);
+
+    // 필터 칩
+    const counts = { '전체': list.length };
+    STATUSES.forEach(s => counts[s.k] = list.filter(c => c.status === s.k).length);
+    $('crmFilters').innerHTML = ['전체', ...STATUSES.map(s => s.k)].map(k =>
+      `<button class="fchip${crmFilter===k?' on':''}" data-f="${k}">${k} ${counts[k]||0}</button>`
+    ).join('');
+    $('crmFilters').querySelectorAll('.fchip').forEach(b => {
+      b.addEventListener('click', () => { crmFilter = b.dataset.f; renderCrm(); });
+    });
+
+    const shown = crmFilter === '전체' ? list : list.filter(c => c.status === crmFilter);
+    if(!shown.length){
+      $('crmList').innerHTML = `<div class="crm-empty">${list.length ? '이 상태의 채널이 없습니다.' :
+        '아직 등록된 연락처가 없습니다.<br>검색 탭에서 채널의 📇 버튼을 눌러 상태나 메모를 저장하면 여기에 쌓입니다.'}</div>`;
+      return;
+    }
+
+    $('crmList').innerHTML = shown.map(c => {
+      const handle = c.handle || '';
+      const chUrl = handle ? `https://www.youtube.com/${handle}` : `https://www.youtube.com/channel/${c.cid}`;
+      const aboutUrl = chUrl + '/about';
+      const vids = (c.videos||[]).map(v => `
+        <a class="cv" href="https://www.youtube.com/watch?v=${v.vid}" target="_blank" rel="noopener">
+          <img src="${v.thumb}" alt="" loading="lazy">
+          <div class="cvt">${escapeHtml(v.title)}</div>
+          <div class="cvv">조회수 ${fmtNum(v.views)}</div>
+        </a>`).join('');
+      return `<div class="card" data-cid="${c.cid}">
+        <div class="card-head">
+          ${stBadge(c.status)}
+          <a class="cname" href="${chUrl}" target="_blank" rel="noopener">${escapeHtml(c.name)}</a>
+          <span class="cmeta">${c.subs != null ? '구독자 ' + fmtNum(c.subs) + ' · ' : ''}${fmtDateTime(c.ts)} 업데이트</span>
+          ${stSelect(c.cid, c.status)}
+          <button class="btn-del" data-act="del">삭제</button>
+        </div>
+        ${contactRowsHtml(c)}
+        <div class="contact-sec memo-box"><h3>📝 메모</h3>
+          <textarea data-role="memo">${escapeHtml(c.memo||'')}</textarea>
+          <div class="memo-actions">
+            <button class="btn-save" data-act="save">메모 저장</button>
+            <button class="copy-btn" data-act="copymemo">메모 복사</button>
+            <a class="btn-about" href="${aboutUrl}" target="_blank" rel="noopener">채널 정보 탭 →</a>
+          </div>
+        </div>
+        ${vids ? `<div class="card-videos">${vids}</div>` : ''}
+      </div>`;
+    }).join('');
+
+    // 카드 이벤트
+    $('crmList').querySelectorAll('.card').forEach(card => {
+      const cid = card.dataset.cid;
+      card.querySelector('.st-select').addEventListener('change', e => {
+        upsertContact(cid, { status: e.target.value }, false);
+        renderCrm();
+        render();
+      });
+      card.querySelector('[data-act="del"]').addEventListener('click', () => {
+        if(confirm('이 채널을 연락처 관리에서 삭제할까요?')){
+          deleteContact(cid);
+          renderCrm();
+          render();
+        }
+      });
+      card.querySelector('[data-act="save"]').addEventListener('click', e => {
+        upsertContact(cid, { memo: card.querySelector('[data-role="memo"]').value.trim() }, false);
+        e.target.textContent = '저장됨 ✓';
+        setTimeout(() => { e.target.textContent = '메모 저장'; }, 1400);
+      });
+      card.querySelector('[data-act="copymemo"]').addEventListener('click', e => {
+        copyText(card.querySelector('[data-role="memo"]').value, e.target);
+      });
+      card.querySelectorAll('.copy-btn[data-copy]').forEach(btn => {
+        btn.addEventListener('click', () => copyText(btn.dataset.copy, btn));
+      });
+    });
+  }
+
+  /* ---------- CSV 내보내기 ---------- */
+  $('csvBtn').addEventListener('click', () => {
+    const contacts = loadContacts();
+    const list = Object.keys(contacts).map(cid => ({ cid, ...contacts[cid] }));
+    if(!list.length){ alert('내보낼 연락처가 없습니다.'); return; }
+    const esc = s => '"' + String(s == null ? '' : s).replace(/"/g, '""') + '"';
+    const rows = [
+      ['채널명','상태','구독자','이메일','전화','링크','메모','채널주소','마지막 업데이트'].map(esc).join(',')
+    ];
+    list.forEach(c => {
+      const chUrl = c.handle ? `https://www.youtube.com/${c.handle}` : `https://www.youtube.com/channel/${c.cid}`;
+      rows.push([
+        c.name, c.status,
+        c.subs != null ? c.subs : '',
+        (c.emails||[]).join(' / '),
+        (c.phones||[]).join(' / '),
+        (c.urls||[]).join(' / '),
+        c.memo || '',
+        chUrl,
+        new Date(c.ts).toLocaleString('ko-KR')
+      ].map(esc).join(','));
+    });
+    const blob = new Blob(['\uFEFF' + rows.join('\r\n')], { type:'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    const d = new Date();
+    a.href = URL.createObjectURL(blob);
+    a.download = `유튜버_연락처_${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  /* ---------- 복사 ---------- */
   async function copyText(text, btn){
     let ok = false;
     try{
       await navigator.clipboard.writeText(text);
       ok = true;
     }catch(e){
-      // http/로컬 파일 환경 대비 폴백
       const ta = document.createElement('textarea');
       ta.value = text;
       ta.style.position = 'fixed'; ta.style.opacity = '0';
@@ -791,7 +1070,6 @@
         };
       });
       v.comments = comments;
-      // 기록에도 댓글 캐시 저장 → 다음에 API 없이 재열람 가능
       if(currentHistId){
         updateHistEntry(currentHistId, h => {
           const hv = h.videos.find(x => x.vid === vid);
@@ -799,7 +1077,7 @@
         });
       }
       renderComments(comments, false);
-      render(); // 버튼에 캐시 표시(●) 갱신
+      render();
     }catch(err){
       $('modalBody').innerHTML = `<div class="modal-loading">오류: ${escapeHtml(err.message)}</div>`;
     }
@@ -859,8 +1137,10 @@
   }
 
   /* ---------- 초기화 ---------- */
+  migrateOldMemos();
   refreshKeyUI();
   renderHist();
+  refreshCrmCount();
 })();
 </script>
 </body>

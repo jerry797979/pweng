@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
-<title>유튜브 키워드 랭커 v5 — 아웃리치</title>
+<title>유튜브 키워드 랭커 — 검색 & 아웃리치</title>
 <style>
   :root{
     --bg:#F4F6F8; --card:#FFFFFF; --ink:#1B2432; --sub:#5B6472;
@@ -18,9 +18,16 @@
     background:var(--bg); color:var(--ink); font-size:14px; line-height:1.55;
   }
   .wrap{max-width:1220px; margin:0 auto; padding:28px 20px 80px;}
+  header{display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;}
   header h1{font-size:24px; font-weight:800; letter-spacing:-0.5px;}
   header h1 .dot{color:var(--accent);}
   header p{color:var(--sub); margin-top:4px; font-size:13px;}
+  .userbar{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .user-chip{
+    background:var(--card); border:1px solid var(--line); border-radius:20px;
+    padding:7px 14px; font-size:13px; font-weight:700;
+  }
+  .user-chip .plan{color:var(--sub); font-weight:600; margin-left:6px; font-size:12px;}
 
   .tabs{display:flex; gap:6px; margin-top:20px; border-bottom:2px solid var(--line);}
   .tab{
@@ -41,6 +48,7 @@
     background:#FBFCFD; outline:none; min-width:0; font-family:inherit;
   }
   input:focus, select:focus, textarea:focus{border-color:var(--blue); background:#fff;}
+  select:disabled{background:#EFF1F4; color:var(--sub); cursor:not-allowed;}
   .grow{flex:1; min-width:220px;}
   button{
     border:none; border-radius:8px; padding:10px 20px; font-size:14px; font-weight:700;
@@ -54,13 +62,10 @@
   .btn-ghost:hover{border-color:var(--sub);}
   .hint{font-size:12px; color:var(--sub); margin-top:10px;}
   .hint a{color:var(--blue);}
-
   .keysaved{
     display:flex; align-items:center; gap:10px; background:var(--gem-soft);
     border:1px solid #C4E8DE; border-radius:8px; padding:9px 12px; font-size:13px; color:var(--gem); font-weight:700;
   }
-  #keyBtn.key-ok{border-color:#C4E8DE; color:var(--gem); background:var(--gem-soft);}
-  #keyBtn.key-need{border-color:var(--accent); color:var(--accent); background:var(--accent-soft);}
   .btn-more{
     width:100%; background:#fff; border:1px dashed var(--line); color:var(--sub);
     padding:9px; font-size:13px; border-radius:10px; margin-top:8px;
@@ -145,6 +150,17 @@
   .modal-body{overflow-y:auto; padding:6px 20px 20px;}
   .modal-loading{padding:40px; text-align:center; color:var(--sub);}
 
+  /* 로그인 오버레이 */
+  .auth-modal{max-width:420px;}
+  .auth-tabs{display:flex; border-bottom:1px solid var(--line);}
+  .auth-tab{flex:1; background:none; border:none; padding:14px; font-size:15px; font-weight:800; color:var(--sub); border-bottom:3px solid transparent;}
+  .auth-tab.on{color:var(--accent); border-bottom-color:var(--accent);}
+  .auth-body{padding:20px;}
+  .auth-body .field{margin-bottom:12px;}
+  .auth-body input{width:100%;}
+  .auth-err{color:var(--accent); font-size:13px; font-weight:700; margin-bottom:10px; min-height:18px;}
+  .auth-note{font-size:12px; color:var(--sub); margin-top:12px; text-align:center;}
+
   .cmt{padding:14px 0; border-bottom:1px solid var(--line);}
   .cmt:last-child{border-bottom:none;}
   .cmt-top{display:flex; gap:8px; align-items:baseline; flex-wrap:wrap;}
@@ -183,7 +199,6 @@
   .btn-send-mail{background:var(--blue); color:#fff; padding:7px 16px; font-size:13px;}
   .btn-send-dm{background:#C13584; color:#fff; padding:7px 16px; font-size:13px;}
 
-  /* 연락 이력 */
   .log-list{display:flex; flex-direction:column; gap:6px;}
   .log-item{border:1px solid var(--line); border-radius:8px; background:#FBFCFD;}
   .log-item summary{
@@ -231,7 +246,6 @@
   .crm-empty{padding:50px 20px; text-align:center; color:var(--sub); background:var(--card);
     border:1px solid var(--line); border-radius:12px; margin-top:14px;}
 
-  /* 템플릿 탭 */
   .tpl-layout{display:flex; gap:16px; margin-top:18px; align-items:flex-start; flex-wrap:wrap;}
   .tpl-list{flex:0 0 300px; min-width:260px;}
   .tpl-editor{flex:1; min-width:320px;}
@@ -261,8 +275,14 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>유튜브 키워드 랭커<span class="dot">.</span> <span style="font-size:13px;color:var(--sub);font-weight:600;">v5 · 아웃리치</span></h1>
-    <p>키워드 분석 → 유튜버 발굴 → 제안 발송 → 이력 관리까지 한 곳에서.</p>
+    <div>
+      <h1>유튜브 키워드 랭커<span class="dot">.</span></h1>
+      <p>키워드 분석 → 유튜버 발굴 → 제안 발송 → 이력 관리까지 한 곳에서.</p>
+    </div>
+    <div class="userbar" id="userBar" style="display:none;">
+      <span class="user-chip"><span id="userName"></span><span class="plan" id="userPlan"></span></span>
+      <button class="btn-ghost" id="accountBtn">⚙️ 내 계정</button>
+    </div>
   </header>
 
   <div class="tabs">
@@ -280,7 +300,6 @@
           <input type="text" id="keyword" placeholder="예: 전화영어, 화상영어, 영어회화">
         </div>
         <button class="btn-main" id="searchBtn">검색</button>
-        <button class="btn-ghost" id="keyBtn" title="접속 설정">⚙️ 접속 설정</button>
       </div>
 
       <div class="filters">
@@ -308,7 +327,7 @@
           <select id="maxResults">
             <option value="25">25개</option>
             <option value="50">50개</option>
-            <option value="100" selected>100개</option>
+            <option value="100">100개</option>
           </select>
         </div>
         <div class="field">
@@ -322,10 +341,7 @@
           </select>
         </div>
       </div>
-      <p class="hint">
-        검색 결과는 서버 데이터베이스에 저장되어 <b>PC·노트북·폰 어디서든 같은 기록</b>을 볼 수 있습니다 (최근 300건 보관).
-        기록을 다시 열 때는 API를 사용하지 않습니다. 표의 제목(조회수·구독자 등)을 클릭하면 그 기준으로 정렬됩니다.
-      </p>
+      <p class="hint" id="planHint"></p>
     </div>
 
     <div class="panel">
@@ -390,7 +406,7 @@
   </div>
 </div>
 
-<!-- 모달 -->
+<!-- 공용 모달 -->
 <div class="overlay" id="overlay">
   <div class="modal" role="dialog" aria-modal="true">
     <div class="modal-head">
@@ -398,6 +414,32 @@
       <button class="modal-close" id="modalClose" aria-label="닫기">×</button>
     </div>
     <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- 로그인/회원가입 오버레이 (닫기 불가) -->
+<div class="overlay" id="authOverlay">
+  <div class="modal auth-modal" role="dialog" aria-modal="true">
+    <div class="auth-tabs">
+      <button class="auth-tab on" id="authTabLogin">로그인</button>
+      <button class="auth-tab" id="authTabJoin">회원가입</button>
+    </div>
+    <div class="auth-body">
+      <div class="auth-err" id="authErr"></div>
+      <div id="authLoginForm">
+        <div class="field"><label>이메일</label><input type="email" id="loginEmail" placeholder="you@example.com"></div>
+        <div class="field"><label>비밀번호</label><input type="password" id="loginPw" placeholder="비밀번호"></div>
+        <button class="btn-main" id="loginBtn" style="width:100%;margin-top:6px;">로그인</button>
+      </div>
+      <div id="authJoinForm" style="display:none;">
+        <div class="field"><label>이름</label><input type="text" id="joinName" placeholder="홍길동"></div>
+        <div class="field"><label>이메일</label><input type="email" id="joinEmail" placeholder="you@example.com"></div>
+        <div class="field"><label>비밀번호 (6자 이상)</label><input type="password" id="joinPw" placeholder="비밀번호"></div>
+        <button class="btn-main" id="joinBtn" style="width:100%;margin-top:6px;">가입하고 시작하기</button>
+      </div>
+      <p class="auth-note">가입 즉시 무료로 하루 5회 검색을 사용할 수 있습니다.<br>본인 유튜브 API 키를 등록하면 제한 없이 사용 가능합니다.<br>
+      가입 시 <a href="./terms.html" target="_blank" rel="noopener">이용약관 및 개인정보처리방침</a>에 동의하는 것으로 간주됩니다.</p>
+    </div>
   </div>
 </div>
 
@@ -409,7 +451,7 @@
   const API_BASE = 'https://ykr-api.marketwave99.workers.dev';
 
   const $ = id => document.getElementById(id);
-  const LS_AUTH = 'ykr_auth';
+  const LS_TOKEN = 'ykr_token';
 
   const STATUSES = [
     { k:'미연락',   bg:'#EEF1F5', fg:'#5B6472' },
@@ -429,6 +471,7 @@
       `</select>`;
   }
 
+  let me = null;
   let videos = [];
   let channels = {};
   let currentSort = 'views';
@@ -439,28 +482,182 @@
   let editingTplId = null;
 
   /* ---------- 서버 통신 ---------- */
-  function getAuth(){ try{ return localStorage.getItem(LS_AUTH) || ''; }catch(e){ return ''; } }
-  function saveAuth(t){ try{ localStorage.setItem(LS_AUTH, t); }catch(e){} }
+  function getToken(){ try{ return localStorage.getItem(LS_TOKEN) || ''; }catch(e){ return ''; } }
+  function saveToken(t){ try{ localStorage.setItem(LS_TOKEN, t); }catch(e){} }
+  function clearToken(){ try{ localStorage.removeItem(LS_TOKEN); }catch(e){} }
+
   async function api(path, opts = {}){
     let res;
     try{
       res = await fetch(API_BASE + path, {
         method: opts.method || 'GET',
-        headers: { 'Content-Type':'application/json', 'X-Auth': getAuth() },
+        headers: { 'Content-Type':'application/json', 'X-Auth': getToken() },
         body: opts.body ? JSON.stringify(opts.body) : undefined
       });
     }catch(e){
-      throw new Error('서버에 연결할 수 없습니다. 인터넷 연결과 서버 주소(API_BASE)를 확인하세요.');
+      throw new Error('서버에 연결할 수 없습니다. 인터넷 연결을 확인하세요.');
     }
     let data = null;
     try{ data = await res.json(); }catch(e){}
-    if(res.status === 401){
-      refreshKeyUI();
-      openKeyModal();
-      throw new Error((data && data.error) || '접속 비밀번호가 올바르지 않습니다.');
+    if(res.status === 401 && !opts.noAuthRedirect){
+      showAuth();
+      throw new Error((data && data.error) || '로그인이 필요합니다.');
     }
     if(!res.ok) throw new Error((data && data.error) || ('서버 오류 (' + res.status + ')'));
     return data;
+  }
+
+  /* ---------- 로그인 / 회원가입 ---------- */
+  const authOverlay = $('authOverlay');
+  function showAuth(){
+    me = null;
+    $('userBar').style.display = 'none';
+    authOverlay.classList.add('show');
+  }
+  function hideAuth(){ authOverlay.classList.remove('show'); }
+
+  $('authTabLogin').addEventListener('click', () => switchAuthTab(true));
+  $('authTabJoin').addEventListener('click', () => switchAuthTab(false));
+  function switchAuthTab(login){
+    $('authTabLogin').classList.toggle('on', login);
+    $('authTabJoin').classList.toggle('on', !login);
+    $('authLoginForm').style.display = login ? 'block' : 'none';
+    $('authJoinForm').style.display = login ? 'none' : 'block';
+    $('authErr').textContent = '';
+  }
+  function authErr(msg){ $('authErr').textContent = msg; }
+
+  $('loginPw').addEventListener('keydown', e => { if(e.key==='Enter') $('loginBtn').click(); });
+  $('joinPw').addEventListener('keydown', e => { if(e.key==='Enter') $('joinBtn').click(); });
+
+  $('loginBtn').addEventListener('click', async () => {
+    const email = $('loginEmail').value.trim();
+    const pw = $('loginPw').value;
+    if(!email || !pw){ authErr('이메일과 비밀번호를 입력하세요.'); return; }
+    $('loginBtn').disabled = true;
+    try{
+      const r = await api('/api/login', { method:'POST', body:{ email, password: pw }, noAuthRedirect:true });
+      saveToken(r.token);
+      me = r.user;
+      hideAuth();
+      afterLogin();
+    }catch(e){
+      authErr(e.message);
+    }finally{
+      $('loginBtn').disabled = false;
+    }
+  });
+
+  $('joinBtn').addEventListener('click', async () => {
+    const name = $('joinName').value.trim();
+    const email = $('joinEmail').value.trim();
+    const pw = $('joinPw').value;
+    if(!name || !email || !pw){ authErr('이름, 이메일, 비밀번호를 모두 입력하세요.'); return; }
+    $('joinBtn').disabled = true;
+    try{
+      const r = await api('/api/register', { method:'POST', body:{ name, email, password: pw }, noAuthRedirect:true });
+      saveToken(r.token);
+      me = r.user;
+      hideAuth();
+      afterLogin();
+    }catch(e){
+      authErr(e.message);
+    }finally{
+      $('joinBtn').disabled = false;
+    }
+  });
+
+  /* ---------- 계정/플랜 UI ---------- */
+  function planLabel(){
+    if(!me) return '';
+    if(me.plan === 'admin') return '관리자 · 무제한';
+    if(me.plan === 'own') return '내 API 키 · 무제한';
+    return `무료 · 오늘 ${me.used_today}/${me.limit}회`;
+  }
+  function applyPlanUI(){
+    if(!me) return;
+    $('userBar').style.display = 'flex';
+    $('userName').textContent = me.name + '님';
+    $('userPlan').textContent = planLabel();
+    const sel = $('maxResults');
+    if(me.plan === 'free'){
+      sel.value = '25';
+      sel.disabled = true;
+      $('planHint').innerHTML =
+        `무료 이용: 하루 <b>${me.limit}회</b> 검색 (오늘 ${me.used_today}회 사용) · 1회 <b>25개</b> 수집.<br>` +
+        `⚙️ 내 계정에서 <b>본인 유튜브 API 키</b>를 등록하면 횟수 제한 없이 100개씩 수집할 수 있습니다 (무료 발급).`;
+    }else{
+      sel.disabled = false;
+      if(sel.value === '25') sel.value = '100';
+      $('planHint').innerHTML =
+        `검색 결과는 서버에 저장되어 어느 기기에서든 같은 기록을 볼 수 있습니다 (최근 300건). 기록 재열람은 API를 사용하지 않습니다.`;
+    }
+  }
+
+  $('accountBtn').addEventListener('click', openAccountModal);
+  function openAccountModal(){
+    if(!me) return;
+    $('modalTitle').innerHTML = `⚙️ 내 계정
+      <div class="msub">${escapeHtml(me.name)} · ${escapeHtml(me.email)}</div>`;
+    $('modalBody').innerHTML = `
+      <div class="contact-sec">
+        <div class="keysaved" style="background:${me.plan==='free'?'var(--amber-soft)':'var(--gem-soft)'};border-color:transparent;color:${me.plan==='free'?'var(--amber)':'var(--gem)'};">
+          현재 이용 상태: ${planLabel()}
+        </div>
+      </div>
+      <div class="contact-sec">
+        <h3>🔑 내 유튜브 API 키 ${me.has_key ? '(등록됨 ✓)' : ''}</h3>
+        <input type="password" id="myKeyInput" style="width:100%;" placeholder="${me.has_key ? '새 키를 입력하면 교체됩니다' : 'AIza로 시작하는 본인 API 키'}">
+        <div class="memo-actions">
+          <button class="btn-save" id="myKeySaveBtn">키 저장</button>
+          ${me.has_key ? '<button class="btn-del" id="myKeyDelBtn">키 삭제 (무료로 전환)</button>' : ''}
+        </div>
+        <p class="hint" style="margin-top:10px;">
+          본인 키를 등록하면 <b>횟수 제한 없이, 1회 100개</b>씩 검색할 수 있습니다.<br>
+          키는 <a href="https://console.cloud.google.com/apis/library/youtube.googleapis.com" target="_blank" rel="noopener">Google Cloud Console</a>에서 무료 발급됩니다:
+          프로젝트 생성 → "YouTube Data API v3" 사용 설정 → 사용자 인증 정보 → API 키 만들기.
+        </p>
+      </div>
+      <div class="contact-sec">
+        <button class="btn-ghost" id="logoutBtn" style="width:100%;">로그아웃</button>
+        <p class="hint" style="text-align:center;margin-top:10px;">
+          <a href="./terms.html" target="_blank" rel="noopener">이용약관 및 개인정보처리방침</a>
+        </p>
+      </div>`;
+    overlay.classList.add('show');
+
+    $('myKeySaveBtn').addEventListener('click', async () => {
+      const k = $('myKeyInput').value.trim();
+      if(!k){ alert('API 키를 입력하세요.'); return; }
+      $('myKeySaveBtn').disabled = true;
+      try{
+        const r = await api('/api/setkey', { method:'POST', body:{ yt_key: k } });
+        me = r.user;
+        applyPlanUI();
+        closeModal();
+        alert('API 키가 등록되었습니다. 이제 제한 없이 사용할 수 있습니다.');
+      }catch(e){
+        alert(e.message);
+      }finally{
+        $('myKeySaveBtn').disabled = false;
+      }
+    });
+    const delBtn = $('myKeyDelBtn');
+    if(delBtn) delBtn.addEventListener('click', async () => {
+      if(!confirm('등록된 API 키를 삭제하고 무료(하루 5회)로 전환할까요?')) return;
+      try{
+        const r = await api('/api/setkey', { method:'POST', body:{ yt_key: '' } });
+        me = r.user;
+        applyPlanUI();
+        closeModal();
+      }catch(e){ alert(e.message); }
+    });
+    $('logoutBtn').addEventListener('click', async () => {
+      try{ await api('/api/logout', { method:'POST' }); }catch(e){}
+      clearToken();
+      closeModal();
+      location.reload();
+    });
   }
 
   /* ---------- 탭 ---------- */
@@ -475,43 +672,10 @@
     });
   });
 
-  /* ---------- 접속 설정 ---------- */
-  function refreshKeyUI(){
-    const has = !!getAuth();
-    const b = $('keyBtn');
-    b.className = 'btn-ghost ' + (has ? 'key-ok' : 'key-need');
-    b.textContent = has ? '⚙️ 접속 설정 ✓' : '⚙️ 접속 비밀번호 필요';
-  }
-  $('keyBtn').addEventListener('click', openKeyModal);
-  function openKeyModal(){
-    $('modalTitle').innerHTML = `⚙️ 접속 설정
-      <div class="msub">서버에 설정한 접속 비밀번호(AUTH_TOKEN)를 입력하세요. 한 번만 저장하면 이 기기에서 계속 사용됩니다.</div>`;
-    $('modalBody').innerHTML = `
-      <div class="contact-sec">
-        <input type="password" id="authInput" style="width:100%;" placeholder="접속 비밀번호">
-        <div class="memo-actions">
-          <button class="btn-save" id="authSaveBtn">저장하고 연결</button>
-        </div>
-        <p class="hint" style="margin-top:14px;">
-          유튜브 API 키는 서버(Cloudflare Worker)에 안전하게 보관되어 있어 여기서 입력할 필요가 없습니다.
-        </p>
-      </div>`;
-    overlay.classList.add('show');
-    $('authInput').focus();
-    $('authInput').addEventListener('keydown', e => { if(e.key==='Enter') $('authSaveBtn').click(); });
-    $('authSaveBtn').addEventListener('click', () => {
-      const t = $('authInput').value.trim();
-      if(!t){ alert('접속 비밀번호를 입력하세요.'); return; }
-      saveAuth(t);
-      refreshKeyUI();
-      closeModal();
-      bootstrap();
-    });
-  }
-
   /* ---------- 초기 데이터 로딩 ---------- */
-  async function bootstrap(){
-    setStatus('<span class="spinner"></span>서버에서 데이터를 불러오는 중...');
+  async function afterLogin(){
+    applyPlanUI();
+    setStatus('<span class="spinner"></span>내 데이터를 불러오는 중...');
     try{
       const [hist, contacts, tpls] = await Promise.all([
         api('/api/history'), api('/api/contacts'), api('/api/templates')
@@ -521,99 +685,9 @@
       templatesCache = tpls || [];
       renderHist();
       refreshCrmCount();
-      setStatus(histList.length ? '서버 연결 완료. 검색 기록을 클릭하면 저장된 결과가 열립니다.' : '서버 연결 완료. 첫 검색을 시작해 보세요.');
-      if(!templatesCache.length) await seedTemplates();
-      maybeMigrateLocal();
+      setStatus(histList.length ? '연결 완료. 검색 기록을 클릭하면 저장된 결과가 열립니다.' : '연결 완료. 첫 검색을 시작해 보세요.');
     }catch(e){
-      setStatus('서버 연결 오류: ' + escapeHtml(e.message), true);
-    }
-  }
-
-  // 기본 제안 템플릿 (최초 1회 자동 등록)
-  async function seedTemplates(){
-    const emailBody =
-`안녕하세요, {채널명}님.
-저희는 15년째 필리핀 원어민 1:1 영어교육 서비스를 운영하고 있는 와이즈에듀케이션아이(파워잉글리쉬)입니다.
-채널을 잘 보고 있습니다. 영어를 진지하게 다루시는 모습이 좋아서 협업 제안을 하나 드리고 싶어 연락드립니다.
-
-■ 제안 내용
-해외에 계신 것으로 알고 있어, 화상으로 진행되는 1:1 화상영어 수업을 3개월간 전액 무료로 제공해드리고자 합니다. 고정 강사가 배정되며, 실제 수강생과 똑같은 정식 수업입니다.
-
-■ 수업 횟수는 직접 고를 수 있습니다 (25분 기준)
-· 주 5회 25분 — 3개월 376,200원 상당
-· 주 3회 25분 — 3개월 333,450원 상당
-· 주 2회 25분 — 3개월 302,100원 상당
-즉 선택하시는 과정에 따라 최대 약 38만 원 상당의 수강을 무료로 받으시는 셈입니다. 만약 25분 수업이 길게 느껴지시면 시간과 방식은 얼마든지 맞춤으로 조정 가능하니 부담 없이 말씀해 주세요.
-
-■ 대신 부탁드리는 부분
-수업 과정을 채널 영상으로 만들어 주시면 됩니다. 가이드는 이렇게 생각하고 있습니다.
-· 첫 영상: 실제 수업 진행 모습을 어느 정도 담은 소개 · 체험 영상 1개
-· 이후: 10분 내외의 짧은 영상으로 수업 후기·변화 과정 기록
-(포맷과 편집은 자유롭게 하셔도 됩니다.)
-한 가지 중요한 점은, 촬영하신 영상을 저희에게도 공유해 주셔서 저희 홍보·광고 소재로 활용할 수 있도록 해주시는 것입니다. 이 부분만 확인되면 나머지는 유연하게 진행 가능합니다.
-
-■ 저희를 먼저 확인해 보실 수 있습니다
-· 홈페이지: https://www.pweng.net/index.php
-· 수강 · 가격 안내: https://www.pweng.net/enrollment.php
-· 강사진 소개: https://www.pweng.net/teacher.php
-가격과 강사진을 직접 보시면 저희 수업이 어떤 것인지 바로 감이 오실 겁니다.
-
-관심 있으시면 회신 주세요. 수업 시작 시점이나 진행 방식은 유튜버님 상황에 맞춰 편하게 조율하겠습니다.
-감사합니다.
-와이즈에듀케이션아이 · 파워잉글리쉬 드림`;
-
-    const dmBody =
-`안녕하세요, {채널명}님! 15년째 필리핀 원어민 1:1 영어교육을 운영하는 와이즈에듀케이션아이(파워잉글리쉬)입니다. 채널 잘 보고 있어서 제안 하나 드려요 :)
-
-해외에 계신 걸로 알고 있어, 1:1 화상영어 수업을 3개월 전액 무료로 드리고 싶습니다. 고정 강사, 실제 수강생과 동일한 정식 수업이에요.
-
-수업 횟수는 직접 고르실 수 있어요 (25분 기준)
-· 주 5회 — 3개월 376,200원 상당
-· 주 3회 — 3개월 333,450원 상당
-· 주 2회 — 3개월 302,100원 상당
-최대 약 38만원 상당을 무료로 받으시는 셈이고, 25분이 길면 시간도 맞춤 조정 가능해요.
-
-대신 수업 과정을 채널 영상으로 만들어 주시면 돼요. 첫 영상은 실제 수업 모습을 담은 체험 영상 1개, 이후엔 10분 내외 짧은 후기 영상 정도로 생각하고 있어요. 한 가지만, 촬영하신 영상은 저희 홍보 소재로도 쓸 수 있게 공유만 부탁드려요.
-
-저희가 어떤 곳인지 먼저 보셔도 좋아요
-· 홈페이지 https://www.pweng.net/index.php
-· 가격 안내 https://www.pweng.net/enrollment.php
-· 강사진 https://www.pweng.net/teacher.php
-
-관심 있으시면 편하게 답장 주세요! 감사합니다 🙌`;
-
-    const defaults = [
-      { id:'t' + Date.now(), name:'협업 제안 (이메일)', kind:'email',
-        subject:'[와이즈에듀케이션아이 · 파워잉글리쉬] 화상영어 3개월 무료 수강 콜라보 제안드립니다',
-        body: emailBody },
-      { id:'t' + (Date.now()+1), name:'협업 제안 (인스타 DM)', kind:'dm', subject:'', body: dmBody }
-    ];
-    try{
-      for(const t of defaults){
-        await api('/api/templates', { method:'POST', body: t });
-      }
-      templatesCache = await api('/api/templates');
-    }catch(e){ /* 무시 - 다음 접속 때 재시도 */ }
-  }
-
-  async function maybeMigrateLocal(){
-    let old = null;
-    try{ old = JSON.parse(localStorage.getItem('ykr_contacts') || 'null'); }catch(e){}
-    if(!old || !Object.keys(old).length) return;
-    if(!confirm(`이 브라우저에 저장된 기존 연락처 ${Object.keys(old).length}건을 서버로 옮길까요?\n(한 번만 실행됩니다)`)) return;
-    try{
-      for(const cid of Object.keys(old)){
-        if(!contactsCache[cid]){
-          await api('/api/contacts', { method:'POST', body:{ cid, data: old[cid] } });
-          contactsCache[cid] = old[cid];
-        }
-      }
-      localStorage.setItem('ykr_contacts_backup', JSON.stringify(old));
-      localStorage.removeItem('ykr_contacts');
-      refreshCrmCount();
-      alert('이전 완료! 이제 어느 기기에서든 같은 연락처가 보입니다.');
-    }catch(e){
-      alert('이전 중 오류: ' + e.message);
+      setStatus('데이터 로딩 오류: ' + escapeHtml(e.message), true);
     }
   }
 
@@ -674,7 +748,7 @@
   });
   $('clearHistBtn').addEventListener('click', async () => {
     if(!histList.length) return;
-    if(!confirm('서버에 저장된 검색 기록을 모두 삭제할까요? (연락처·템플릿은 유지됩니다)')) return;
+    if(!confirm('저장된 검색 기록을 모두 삭제할까요? (연락처·템플릿은 유지됩니다)')) return;
     try{
       await api('/api/history', { method:'DELETE' });
       histList = [];
@@ -693,11 +767,7 @@
   }
 
   async function run(){
-    if(!getAuth()){
-      setStatus('먼저 접속 비밀번호를 설정해 주세요.', true);
-      openKeyModal();
-      return;
-    }
+    if(!me){ showAuth(); return; }
     const kw = $('keyword').value.trim();
     if(!kw){ setStatus('검색 키워드를 입력하세요.', true); return; }
 
@@ -720,6 +790,7 @@
       });
       videos = r.videos;
       channels = r.channels || {};
+      if(r.user){ me = r.user; applyPlanUI(); }
 
       const orderLabels = {relevance:'관련성', date:'최신 업로드', viewCount:'조회수', rating:'평점'};
       const periodLabels = {'7':'최근 7일','30':'최근 1개월','90':'최근 3개월','365':'최근 1년'};
@@ -996,7 +1067,6 @@
   }
 
   async function openSend(cid, kind){
-    // 등록 안 된 채널이면 먼저 스냅샷과 함께 등록
     if(!contactsCache[cid]){
       await upsertContact(cid, {}, true);
     }
@@ -1110,7 +1180,7 @@
       : `https://www.youtube.com/channel/${cid}/about`;
 
     $('modalTitle').innerHTML = `📇 ${escapeHtml(chName)}
-      <div class="msub">상태와 메모를 저장하면 "연락처 관리" 탭에 자동 등록됩니다 (서버 저장).</div>`;
+      <div class="msub">상태와 메모를 저장하면 "연락처 관리" 탭에 자동 등록됩니다.</div>`;
     overlay.classList.add('show');
 
     const ext = info ? extractContacts(info.desc) : { emails: rec?.emails||[], phones: rec?.phones||[], urls: rec?.urls||[] };
@@ -1420,14 +1490,17 @@
   }
 
   /* ---------- 초기화 ---------- */
-  refreshKeyUI();
   toggleSubjectField();
-  if(getAuth()){
-    bootstrap();
-  }else{
-    setStatus('처음이시군요! ⚙️ 버튼을 눌러 접속 비밀번호를 설정하세요.', false);
-    openKeyModal();
-  }
+  (async () => {
+    if(!getToken()){ showAuth(); return; }
+    try{
+      me = await api('/api/me', { noAuthRedirect:true });
+      afterLogin();
+    }catch(e){
+      clearToken();
+      showAuth();
+    }
+  })();
 })();
 </script>
 </body>

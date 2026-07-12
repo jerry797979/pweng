@@ -201,6 +201,11 @@
     padding:10px 12px; border-top:1px dashed var(--line); font-size:13px; color:var(--sub);
     white-space:pre-wrap; word-break:break-word; max-height:260px; overflow-y:auto;
   }
+  .log-del{
+    background:none; border:none; color:var(--sub); font-size:16px; font-weight:700;
+    padding:0 6px; line-height:1; border-radius:4px;
+  }
+  .log-del:hover{color:var(--accent); background:var(--accent-soft);}
 
   .crm-head{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:18px;}
   .crm-filters{display:flex; gap:8px; flex-wrap:wrap;}
@@ -1157,7 +1162,7 @@
   }
 
   /* ---------- 연락처 관리 탭 ---------- */
-  function logItemHtml(l){
+  function logItemHtml(l, idx){
     const icons = { email:'✉️ 이메일', dm:'📷 DM', note:'📝 기록' };
     const title = l.type === 'note'
       ? (l.body||'').split('\n')[0].slice(0,40)
@@ -1167,6 +1172,7 @@
         <span class="log-kind ${l.type}">${icons[l.type]||l.type}</span>
         <span class="log-title">${title}</span>
         <span class="log-when">${fmtDateTime(l.ts)}</span>
+        <button class="log-del" data-act="dellog" data-idx="${idx}" title="이 기록 삭제">×</button>
       </summary>
       <div class="log-body">${l.subject ? '제목: ' + escapeHtml(l.subject) + '\n\n' : ''}${escapeHtml(l.body||'')}</div>
     </details>`;
@@ -1225,7 +1231,7 @@
           </div>
         </div>
         <div class="contact-sec"><h3>📨 연락 이력 ${(c.log||[]).length ? '(' + c.log.length + ')' : ''}</h3>
-          <div class="log-list">${(c.log||[]).map(logItemHtml).join('') || '<p class="contact-none" style="padding:0;">아직 기록이 없습니다. 발송 버튼을 누르면 자동으로 기록됩니다.</p>'}</div>
+          <div class="log-list">${(c.log||[]).map((l,i) => logItemHtml(l,i)).join('') || '<p class="contact-none" style="padding:0;">아직 기록이 없습니다. 발송 버튼을 누르면 자동으로 기록됩니다.</p>'}</div>
           <div class="memo-actions" style="margin-top:10px;">
             <input type="text" data-role="noteInput" class="grow" placeholder="수동 기록 추가 (예: 회신 옴 — 주3회 원함)" style="flex:1;">
             <button class="btn-ghost" data-act="addnote">기록 추가</button>
@@ -1268,6 +1274,18 @@
         const rec = contactsCache[cid] || {};
         await upsertContact(cid, { log: [ { ts: Date.now(), type:'note', body: txt }, ...(rec.log||[]) ] }, false);
         renderCrm();
+      });
+      card.querySelectorAll('[data-act="dellog"]').forEach(btn => {
+        btn.addEventListener('click', async e => {
+          e.preventDefault();
+          e.stopPropagation();
+          if(!confirm('이 연락 기록 1건을 삭제할까요?')) return;
+          const idx = +btn.dataset.idx;
+          const rec = contactsCache[cid] || {};
+          const log = (rec.log||[]).filter((_, i) => i !== idx);
+          await upsertContact(cid, { log }, false);
+          renderCrm();
+        });
       });
       card.querySelectorAll('.copy-btn[data-copy]').forEach(btn => {
         btn.addEventListener('click', () => copyText(btn.dataset.copy, btn));

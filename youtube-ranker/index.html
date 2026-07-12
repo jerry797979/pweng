@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
-<title>유튜브 키워드 랭커 v4 — 서버 저장</title>
+<title>유튜브 키워드 랭커 v5 — 아웃리치</title>
 <style>
   :root{
     --bg:#F4F6F8; --card:#FFFFFF; --ink:#1B2432; --sub:#5B6472;
@@ -36,7 +36,7 @@
   .row{display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end;}
   .field{display:flex; flex-direction:column; gap:5px;}
   .field label{font-size:12px; font-weight:700; color:var(--sub);}
-  input[type=text], input[type=password], select, textarea{
+  input[type=text], input[type=password], input[type=email], select, textarea{
     border:1px solid var(--line); border-radius:8px; padding:9px 12px; font-size:14px;
     background:#FBFCFD; outline:none; min-width:0; font-family:inherit;
   }
@@ -180,6 +180,27 @@
   .btn-save{background:var(--gem); color:#fff; padding:7px 16px; font-size:13px;}
   .memo-note{font-size:12px; color:var(--sub);}
   .st-select{padding:7px 10px; font-size:13px; font-weight:700;}
+  .btn-send-mail{background:var(--blue); color:#fff; padding:7px 16px; font-size:13px;}
+  .btn-send-dm{background:#C13584; color:#fff; padding:7px 16px; font-size:13px;}
+
+  /* 연락 이력 */
+  .log-list{display:flex; flex-direction:column; gap:6px;}
+  .log-item{border:1px solid var(--line); border-radius:8px; background:#FBFCFD;}
+  .log-item summary{
+    padding:8px 12px; font-size:13px; cursor:pointer; list-style:none;
+    display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+  }
+  .log-item summary::-webkit-details-marker{display:none;}
+  .log-when{color:var(--sub); font-size:12px;}
+  .log-kind{font-weight:800; font-size:12px;}
+  .log-kind.email{color:var(--blue);}
+  .log-kind.dm{color:#C13584;}
+  .log-kind.note{color:var(--sub);}
+  .log-title{flex:1; font-weight:600;}
+  .log-body{
+    padding:10px 12px; border-top:1px dashed var(--line); font-size:13px; color:var(--sub);
+    white-space:pre-wrap; word-break:break-word; max-height:260px; overflow-y:auto;
+  }
 
   .crm-head{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-top:18px;}
   .crm-filters{display:flex; gap:8px; flex-wrap:wrap;}
@@ -205,6 +226,21 @@
   .crm-empty{padding:50px 20px; text-align:center; color:var(--sub); background:var(--card);
     border:1px solid var(--line); border-radius:12px; margin-top:14px;}
 
+  /* 템플릿 탭 */
+  .tpl-layout{display:flex; gap:16px; margin-top:18px; align-items:flex-start; flex-wrap:wrap;}
+  .tpl-list{flex:0 0 300px; min-width:260px;}
+  .tpl-editor{flex:1; min-width:320px;}
+  .tpl-item{
+    display:flex; gap:10px; align-items:center; border:1px solid var(--line); border-radius:10px;
+    background:#FBFCFD; padding:10px 14px; margin-bottom:8px; cursor:pointer;
+  }
+  .tpl-item:hover, .tpl-item.on{border-color:var(--blue); background:var(--blue-soft);}
+  .tpl-item .tname{font-weight:700; flex:1; font-size:13px;}
+  .kind-badge{font-size:11px; font-weight:800; padding:2px 8px; border-radius:10px;}
+  .kind-badge.email{background:var(--blue-soft); color:var(--blue);}
+  .kind-badge.dm{background:#FBE9F3; color:#C13584;}
+  #tplBody{min-height:300px; resize:vertical;}
+
   .spinner{display:inline-block; width:16px; height:16px; border:2px solid var(--line);
     border-top-color:var(--accent); border-radius:50%; animation:spin .7s linear infinite; vertical-align:-3px; margin-right:6px;}
   @keyframes spin{to{transform:rotate(360deg);}}
@@ -220,13 +256,14 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>유튜브 키워드 랭커<span class="dot">.</span> <span style="font-size:13px;color:var(--sub);font-weight:600;">v4 · 서버 저장</span></h1>
-    <p>검색 기록과 연락처가 서버에 저장되어 어느 기기에서든 동일하게 보입니다.</p>
+    <h1>유튜브 키워드 랭커<span class="dot">.</span> <span style="font-size:13px;color:var(--sub);font-weight:600;">v5 · 아웃리치</span></h1>
+    <p>키워드 분석 → 유튜버 발굴 → 제안 발송 → 이력 관리까지 한 곳에서.</p>
   </header>
 
   <div class="tabs">
     <button class="tab on" data-view="searchView">🔍 키워드 검색</button>
     <button class="tab" data-view="crmView">📇 연락처 관리 <span id="crmCount"></span></button>
+    <button class="tab" data-view="tplView">✉️ 템플릿</button>
   </div>
 
   <!-- ================= 검색 탭 ================= -->
@@ -307,6 +344,45 @@
     </div>
     <div id="crmList"></div>
   </div>
+
+  <!-- ================= 템플릿 탭 ================= -->
+  <div class="view" id="tplView">
+    <div class="tpl-layout">
+      <div class="tpl-list">
+        <button class="btn-ghost" id="tplNewBtn" style="width:100%;margin-bottom:10px;">＋ 새 템플릿</button>
+        <div id="tplItems"></div>
+      </div>
+      <div class="panel tpl-editor" style="margin-top:0;">
+        <div class="row">
+          <div class="field grow">
+            <label for="tplName">템플릿 이름</label>
+            <input type="text" id="tplName" placeholder="예: 협업 제안 (이메일)">
+          </div>
+          <div class="field">
+            <label for="tplKind">유형</label>
+            <select id="tplKind">
+              <option value="email">이메일</option>
+              <option value="dm">인스타 DM</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" id="tplSubjectField" style="margin-top:12px;">
+          <label for="tplSubject">제목 (이메일용)</label>
+          <input type="text" id="tplSubject" placeholder="이메일 제목">
+        </div>
+        <div class="field" style="margin-top:12px;">
+          <label for="tplBody">본문</label>
+          <textarea id="tplBody" placeholder="메시지 본문을 입력하세요"></textarea>
+        </div>
+        <p class="hint">사용 가능한 변수: <b>{채널명}</b>, <b>{구독자수}</b> — 발송 시 해당 유튜버 정보로 자동 치환됩니다.</p>
+        <div class="memo-actions" style="margin-top:12px;">
+          <button class="btn-save" id="tplSaveBtn">템플릿 저장</button>
+          <button class="btn-del" id="tplDelBtn" style="display:none;">삭제</button>
+          <span class="memo-note" id="tplNote"></span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- 모달 -->
@@ -323,9 +399,7 @@
 <script>
 (function(){
   // ============================================================
-  // ★ 서버 주소 설정 ★
-  // Cloudflare Worker 이름을 "ykr-api"로 만들었다면 그대로 두면 됩니다.
-  // 다른 이름으로 만들었다면 아래 주소의 ykr-api 부분만 바꿔주세요.
+  // ★ 서버 주소 ★ (Worker 이름이 ykr-api가 아니면 이 부분만 수정)
   // ============================================================
   const API_BASE = 'https://ykr-api.marketwave99.workers.dev';
 
@@ -355,7 +429,9 @@
   let currentSort = 'views';
   let histList = [];
   let contactsCache = {};
+  let templatesCache = [];
   let crmFilter = '전체';
+  let editingTplId = null;
 
   /* ---------- 서버 통신 ---------- */
   function getAuth(){ try{ return localStorage.getItem(LS_AUTH) || ''; }catch(e){ return ''; } }
@@ -390,6 +466,7 @@
       t.classList.add('on');
       $(t.dataset.view).classList.add('on');
       if(t.dataset.view === 'crmView') renderCrm();
+      if(t.dataset.view === 'tplView') renderTplList();
     });
   });
 
@@ -411,14 +488,13 @@
           <button class="btn-save" id="authSaveBtn">저장하고 연결</button>
         </div>
         <p class="hint" style="margin-top:14px;">
-          유튜브 API 키는 서버(Cloudflare Worker)에 안전하게 보관되어 있어 여기서 입력할 필요가 없습니다.<br>
-          비밀번호는 Worker의 Settings → Variables & Secrets → AUTH_TOKEN 값과 같아야 합니다.
+          유튜브 API 키는 서버(Cloudflare Worker)에 안전하게 보관되어 있어 여기서 입력할 필요가 없습니다.
         </p>
       </div>`;
     overlay.classList.add('show');
     $('authInput').focus();
     $('authInput').addEventListener('keydown', e => { if(e.key==='Enter') $('authSaveBtn').click(); });
-    $('authSaveBtn').addEventListener('click', async () => {
+    $('authSaveBtn').addEventListener('click', () => {
       const t = $('authInput').value.trim();
       if(!t){ alert('접속 비밀번호를 입력하세요.'); return; }
       saveAuth(t);
@@ -432,19 +508,89 @@
   async function bootstrap(){
     setStatus('<span class="spinner"></span>서버에서 데이터를 불러오는 중...');
     try{
-      const [hist, contacts] = await Promise.all([ api('/api/history'), api('/api/contacts') ]);
+      const [hist, contacts, tpls] = await Promise.all([
+        api('/api/history'), api('/api/contacts'), api('/api/templates')
+      ]);
       histList = hist || [];
       contactsCache = contacts || {};
+      templatesCache = tpls || [];
       renderHist();
       refreshCrmCount();
       setStatus(histList.length ? '서버 연결 완료. 검색 기록을 클릭하면 저장된 결과가 열립니다.' : '서버 연결 완료. 첫 검색을 시작해 보세요.');
+      if(!templatesCache.length) await seedTemplates();
       maybeMigrateLocal();
     }catch(e){
       setStatus('서버 연결 오류: ' + escapeHtml(e.message), true);
     }
   }
 
-  // v3(브라우저 저장)에서 쓰던 연락처가 있으면 서버로 1회 이전
+  // 기본 제안 템플릿 (최초 1회 자동 등록)
+  async function seedTemplates(){
+    const emailBody =
+`안녕하세요, {채널명}님.
+저희는 15년째 필리핀 원어민 1:1 영어교육 서비스를 운영하고 있는 와이즈에듀케이션아이(파워잉글리쉬)입니다.
+채널을 잘 보고 있습니다. 영어를 진지하게 다루시는 모습이 좋아서 협업 제안을 하나 드리고 싶어 연락드립니다.
+
+■ 제안 내용
+해외에 계신 것으로 알고 있어, 화상으로 진행되는 1:1 화상영어 수업을 3개월간 전액 무료로 제공해드리고자 합니다. 고정 강사가 배정되며, 실제 수강생과 똑같은 정식 수업입니다.
+
+■ 수업 횟수는 직접 고를 수 있습니다 (25분 기준)
+· 주 5회 25분 — 3개월 376,200원 상당
+· 주 3회 25분 — 3개월 333,450원 상당
+· 주 2회 25분 — 3개월 302,100원 상당
+즉 선택하시는 과정에 따라 최대 약 38만 원 상당의 수강을 무료로 받으시는 셈입니다. 만약 25분 수업이 길게 느껴지시면 시간과 방식은 얼마든지 맞춤으로 조정 가능하니 부담 없이 말씀해 주세요.
+
+■ 대신 부탁드리는 부분
+수업 과정을 채널 영상으로 만들어 주시면 됩니다. 가이드는 이렇게 생각하고 있습니다.
+· 첫 영상: 실제 수업 진행 모습을 어느 정도 담은 소개 · 체험 영상 1개
+· 이후: 10분 내외의 짧은 영상으로 수업 후기·변화 과정 기록
+(포맷과 편집은 자유롭게 하셔도 됩니다.)
+한 가지 중요한 점은, 촬영하신 영상을 저희에게도 공유해 주셔서 저희 홍보·광고 소재로 활용할 수 있도록 해주시는 것입니다. 이 부분만 확인되면 나머지는 유연하게 진행 가능합니다.
+
+■ 저희를 먼저 확인해 보실 수 있습니다
+· 홈페이지: https://www.pweng.net/index.php
+· 수강 · 가격 안내: https://www.pweng.net/enrollment.php
+· 강사진 소개: https://www.pweng.net/teacher.php
+가격과 강사진을 직접 보시면 저희 수업이 어떤 것인지 바로 감이 오실 겁니다.
+
+관심 있으시면 회신 주세요. 수업 시작 시점이나 진행 방식은 유튜버님 상황에 맞춰 편하게 조율하겠습니다.
+감사합니다.
+와이즈에듀케이션아이 · 파워잉글리쉬 드림`;
+
+    const dmBody =
+`안녕하세요, {채널명}님! 15년째 필리핀 원어민 1:1 영어교육을 운영하는 와이즈에듀케이션아이(파워잉글리쉬)입니다. 채널 잘 보고 있어서 제안 하나 드려요 :)
+
+해외에 계신 걸로 알고 있어, 1:1 화상영어 수업을 3개월 전액 무료로 드리고 싶습니다. 고정 강사, 실제 수강생과 동일한 정식 수업이에요.
+
+수업 횟수는 직접 고르실 수 있어요 (25분 기준)
+· 주 5회 — 3개월 376,200원 상당
+· 주 3회 — 3개월 333,450원 상당
+· 주 2회 — 3개월 302,100원 상당
+최대 약 38만원 상당을 무료로 받으시는 셈이고, 25분이 길면 시간도 맞춤 조정 가능해요.
+
+대신 수업 과정을 채널 영상으로 만들어 주시면 돼요. 첫 영상은 실제 수업 모습을 담은 체험 영상 1개, 이후엔 10분 내외 짧은 후기 영상 정도로 생각하고 있어요. 한 가지만, 촬영하신 영상은 저희 홍보 소재로도 쓸 수 있게 공유만 부탁드려요.
+
+저희가 어떤 곳인지 먼저 보셔도 좋아요
+· 홈페이지 https://www.pweng.net/index.php
+· 가격 안내 https://www.pweng.net/enrollment.php
+· 강사진 https://www.pweng.net/teacher.php
+
+관심 있으시면 편하게 답장 주세요! 감사합니다 🙌`;
+
+    const defaults = [
+      { id:'t' + Date.now(), name:'협업 제안 (이메일)', kind:'email',
+        subject:'[와이즈에듀케이션아이 · 파워잉글리쉬] 화상영어 3개월 무료 수강 콜라보 제안드립니다',
+        body: emailBody },
+      { id:'t' + (Date.now()+1), name:'협업 제안 (인스타 DM)', kind:'dm', subject:'', body: dmBody }
+    ];
+    try{
+      for(const t of defaults){
+        await api('/api/templates', { method:'POST', body: t });
+      }
+      templatesCache = await api('/api/templates');
+    }catch(e){ /* 무시 - 다음 접속 때 재시도 */ }
+  }
+
   async function maybeMigrateLocal(){
     let old = null;
     try{ old = JSON.parse(localStorage.getItem('ykr_contacts') || 'null'); }catch(e){}
@@ -523,7 +669,7 @@
   });
   $('clearHistBtn').addEventListener('click', async () => {
     if(!histList.length) return;
-    if(!confirm('서버에 저장된 검색 기록을 모두 삭제할까요? (연락처 관리 데이터는 유지됩니다)')) return;
+    if(!confirm('서버에 저장된 검색 기록을 모두 삭제할까요? (연락처·템플릿은 유지됩니다)')) return;
     try{
       await api('/api/history', { method:'DELETE' });
       histList = [];
@@ -697,6 +843,16 @@
     }
     return html;
   }
+  function bestEmail(rec){
+    if(rec.emails && rec.emails.length) return rec.emails[0];
+    const m = (rec.memo||'').match(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/);
+    return m ? m[0] : '';
+  }
+  function instaUser(rec){
+    const all = [ ...(rec.urls||[]), rec.memo||'' ].join(' ');
+    const m = all.match(/instagram\.com\/([A-Za-z0-9._]+)/);
+    return m ? m[1].replace(/\/+$/,'') : '';
+  }
 
   /* ---------- 연락처 저장 (서버) ---------- */
   function snapshotChannel(cid){
@@ -719,7 +875,7 @@
     const snap = withSnapshot ? snapshotChannel(cid) : {};
     const rec = {
       name:'채널', memo:'', status:'미연락', subs:null, handle:'',
-      emails:[], phones:[], urls:[], videos:[],
+      emails:[], phones:[], urls:[], videos:[], log:[],
       added: prev.added || Date.now(),
       ...prev, ...snap, ...patch,
       ts: Date.now()
@@ -747,6 +903,196 @@
     $('crmCount').textContent = n ? `(${n})` : '';
   }
 
+  /* ---------- 템플릿 관리 ---------- */
+  function renderTplList(){
+    $('tplItems').innerHTML = templatesCache.map(t => `
+      <div class="tpl-item${editingTplId===t.id?' on':''}" data-id="${t.id}">
+        <span class="kind-badge ${t.kind}">${t.kind==='email'?'이메일':'DM'}</span>
+        <span class="tname">${escapeHtml(t.name)}</span>
+      </div>
+    `).join('') || '<p class="history-empty">템플릿이 없습니다. 새 템플릿을 만들어 보세요.</p>';
+    $('tplItems').querySelectorAll('.tpl-item').forEach(el => {
+      el.addEventListener('click', () => loadTpl(el.dataset.id));
+    });
+  }
+  function loadTpl(id){
+    const t = templatesCache.find(x => x.id === id);
+    if(!t) return;
+    editingTplId = id;
+    $('tplName').value = t.name;
+    $('tplKind').value = t.kind;
+    $('tplSubject').value = t.subject || '';
+    $('tplBody').value = t.body;
+    $('tplDelBtn').style.display = 'inline-block';
+    $('tplNote').textContent = fmtDateTime(t.ts) + ' 저장됨';
+    toggleSubjectField();
+    renderTplList();
+  }
+  function clearTplForm(){
+    editingTplId = null;
+    $('tplName').value = '';
+    $('tplKind').value = 'email';
+    $('tplSubject').value = '';
+    $('tplBody').value = '';
+    $('tplDelBtn').style.display = 'none';
+    $('tplNote').textContent = '';
+    toggleSubjectField();
+    renderTplList();
+  }
+  function toggleSubjectField(){
+    $('tplSubjectField').style.display = $('tplKind').value === 'email' ? 'flex' : 'none';
+  }
+  $('tplKind').addEventListener('change', toggleSubjectField);
+  $('tplNewBtn').addEventListener('click', clearTplForm);
+  $('tplSaveBtn').addEventListener('click', async () => {
+    const name = $('tplName').value.trim();
+    const body = $('tplBody').value.trim();
+    if(!name || !body){ alert('템플릿 이름과 본문을 입력하세요.'); return; }
+    const t = {
+      id: editingTplId || ('t' + Date.now()),
+      name,
+      kind: $('tplKind').value,
+      subject: $('tplSubject').value.trim(),
+      body
+    };
+    $('tplSaveBtn').disabled = true;
+    try{
+      await api('/api/templates', { method:'POST', body: t });
+      const idx = templatesCache.findIndex(x => x.id === t.id);
+      const saved = { ...t, ts: Date.now() };
+      if(idx >= 0) templatesCache[idx] = saved; else templatesCache.unshift(saved);
+      editingTplId = t.id;
+      $('tplDelBtn').style.display = 'inline-block';
+      $('tplNote').textContent = '방금 저장됨 ✓';
+      renderTplList();
+    }catch(e){
+      alert('저장 실패: ' + e.message);
+    }finally{
+      $('tplSaveBtn').disabled = false;
+    }
+  });
+  $('tplDelBtn').addEventListener('click', async () => {
+    if(!editingTplId) return;
+    if(!confirm('이 템플릿을 삭제할까요?')) return;
+    try{
+      await api('/api/templates/' + encodeURIComponent(editingTplId), { method:'DELETE' });
+      templatesCache = templatesCache.filter(t => t.id !== editingTplId);
+      clearTplForm();
+    }catch(e){
+      alert('삭제 실패: ' + e.message);
+    }
+  });
+
+  /* ---------- 발송 (이메일 / DM) ---------- */
+  function fillVars(text, rec){
+    return String(text || '')
+      .replaceAll('{채널명}', rec.name || '')
+      .replaceAll('{구독자수}', rec.subs != null ? fmtNum(rec.subs) : '');
+  }
+
+  async function openSend(cid, kind){
+    // 등록 안 된 채널이면 먼저 스냅샷과 함께 등록
+    if(!contactsCache[cid]){
+      await upsertContact(cid, {}, true);
+    }
+    const rec = contactsCache[cid];
+    const tpls = templatesCache.filter(t => t.kind === kind);
+    const isEmail = kind === 'email';
+
+    $('modalTitle').innerHTML = `${isEmail ? '✉️ 이메일 보내기' : '📷 인스타 DM 보내기'} — ${escapeHtml(rec.name)}
+      <div class="msub">${isEmail
+        ? '보내기를 누르면 Gmail 작성 창이 열립니다. 내용 확인 후 Gmail에서 전송 버튼만 누르면 됩니다.'
+        : '보내기를 누르면 메시지가 복사되고 인스타 프로필이 열립니다. DM 창에 붙여넣기(Ctrl+V) 후 전송하세요.'}</div>`;
+    overlay.classList.add('show');
+
+    if(!tpls.length){
+      $('modalBody').innerHTML = `<p class="contact-none">${isEmail?'이메일':'DM'} 유형의 템플릿이 없습니다. "✉️ 템플릿" 탭에서 먼저 만들어 주세요.</p>`;
+      return;
+    }
+
+    const first = tpls[0];
+    $('modalBody').innerHTML = `
+      <div class="contact-sec">
+        <div class="field">
+          <label>${isEmail ? '받는 사람 (이메일)' : '인스타그램 아이디 또는 프로필 주소'}</label>
+          <input type="text" id="sendTo" placeholder="${isEmail ? 'example@gmail.com' : '예: ellakimla 또는 instagram.com/ellakimla'}"
+                 value="${escapeHtml(isEmail ? bestEmail(rec) : instaUser(rec))}">
+        </div>
+        <div class="field" style="margin-top:10px;">
+          <label>템플릿 선택</label>
+          <select id="sendTpl">
+            ${tpls.map((t,i) => `<option value="${t.id}"${i===0?' selected':''}>${escapeHtml(t.name)}</option>`).join('')}
+          </select>
+        </div>
+        ${isEmail ? `<div class="field" style="margin-top:10px;">
+          <label>제목</label>
+          <input type="text" id="sendSubject" value="${escapeHtml(fillVars(first.subject, rec))}">
+        </div>` : ''}
+        <div class="field" style="margin-top:10px;">
+          <label>본문 (수정 가능 — {채널명}, {구독자수} 자동 치환됨)</label>
+          <textarea id="sendBody" style="min-height:260px;">${escapeHtml(fillVars(first.body, rec))}</textarea>
+        </div>
+        <div class="memo-actions" style="margin-top:12px;">
+          <button class="${isEmail?'btn-send-mail':'btn-send-dm'}" id="sendGoBtn">
+            ${isEmail ? 'Gmail 열기 + 이력 저장' : '내용 복사 + 인스타 열기 + 이력 저장'}
+          </button>
+          <span class="memo-note">${isEmail ? '본문은 클립보드에도 복사됩니다 (Gmail에서 잘리면 붙여넣기)' : ''}</span>
+        </div>
+      </div>`;
+
+    $('sendTpl').addEventListener('change', () => {
+      const t = tpls.find(x => x.id === $('sendTpl').value);
+      if(!t) return;
+      if(isEmail) $('sendSubject').value = fillVars(t.subject, rec);
+      $('sendBody').value = fillVars(t.body, rec);
+    });
+
+    $('sendGoBtn').addEventListener('click', async () => {
+      const to = $('sendTo').value.trim();
+      const body = $('sendBody').value;
+      const tName = (tpls.find(x => x.id === $('sendTpl').value) || {}).name || '';
+      if(!body.trim()){ alert('본문이 비어 있습니다.'); return; }
+
+      if(isEmail){
+        if(!to){ alert('받는 사람 이메일을 입력하세요. (채널 정보 탭에서 확인 후 붙여넣기)'); return; }
+        const subject = $('sendSubject').value;
+        try{ await navigator.clipboard.writeText(body); }catch(e){}
+        window.open('https://mail.google.com/mail/?view=cm&fs=1'
+          + '&to=' + encodeURIComponent(to)
+          + '&su=' + encodeURIComponent(subject)
+          + '&body=' + encodeURIComponent(body), '_blank');
+        await logSend(cid, { type:'email', to, template:tName, subject, body });
+      }else{
+        try{ await navigator.clipboard.writeText(body); }
+        catch(e){
+          const ta = document.createElement('textarea');
+          ta.value = body; ta.style.position='fixed'; ta.style.opacity='0';
+          document.body.appendChild(ta); ta.select();
+          try{ document.execCommand('copy'); }catch(e2){}
+          ta.remove();
+        }
+        let user = to.replace(/^https?:\/\/(www\.)?instagram\.com\//,'').replace(/\/+$/,'').trim();
+        if(user){
+          window.open('https://www.instagram.com/' + encodeURIComponent(user) + '/', '_blank');
+        }else{
+          alert('메시지는 복사되었습니다. 인스타 아이디가 없어 프로필은 열지 못했으니 직접 이동해서 붙여넣으세요.');
+        }
+        await logSend(cid, { type:'dm', to:user, template:tName, subject:'', body });
+      }
+      closeModal();
+      renderCrm();
+      render();
+    });
+  }
+
+  async function logSend(cid, entry){
+    const rec = contactsCache[cid] || {};
+    const log = [ { ts: Date.now(), ...entry }, ...(rec.log || []) ];
+    const patch = { log };
+    if(!rec.status || rec.status === '미연락') patch.status = '제안발송';
+    await upsertContact(cid, patch, false);
+  }
+
   /* ---------- 연락처 모달 (검색 탭에서) ---------- */
   function openContacts(cid){
     const v = videos.find(x => x.channelId === cid);
@@ -768,6 +1114,8 @@
     html += `<div class="contact-sec memo-box"><h3>📝 상태 & 메모</h3>
       <div class="memo-actions" style="margin:0 0 8px;">
         ${stSelect(cid, rec ? rec.status : '미연락')}
+        <button class="btn-send-mail" id="modalMailBtn">✉️ 이메일 보내기</button>
+        <button class="btn-send-dm" id="modalDmBtn">📷 인스타 DM</button>
       </div>
       <textarea id="memoInput" placeholder="정보 탭에서 확인한 이메일, 인스타 DM 계정, 연락 이력 등을 자유롭게 적어두세요.">${rec ? escapeHtml(rec.memo) : ''}</textarea>
       <div class="memo-actions">
@@ -792,6 +1140,8 @@
     $('modalBody').querySelectorAll('.copy-btn[data-copy]').forEach(btn => {
       btn.addEventListener('click', () => copyText(btn.dataset.copy, btn));
     });
+    $('modalMailBtn').addEventListener('click', () => openSend(cid, 'email'));
+    $('modalDmBtn').addEventListener('click', () => openSend(cid, 'dm'));
     const saveBtn = $('memoSaveBtn');
     saveBtn.addEventListener('click', async () => {
       const st = $('modalBody').querySelector('.st-select').value;
@@ -807,6 +1157,21 @@
   }
 
   /* ---------- 연락처 관리 탭 ---------- */
+  function logItemHtml(l){
+    const icons = { email:'✉️ 이메일', dm:'📷 DM', note:'📝 기록' };
+    const title = l.type === 'note'
+      ? (l.body||'').split('\n')[0].slice(0,40)
+      : `${escapeHtml(l.template||'')}${l.to ? ' → ' + escapeHtml(l.to) : ''}`;
+    return `<details class="log-item">
+      <summary>
+        <span class="log-kind ${l.type}">${icons[l.type]||l.type}</span>
+        <span class="log-title">${title}</span>
+        <span class="log-when">${fmtDateTime(l.ts)}</span>
+      </summary>
+      <div class="log-body">${l.subject ? '제목: ' + escapeHtml(l.subject) + '\n\n' : ''}${escapeHtml(l.body||'')}</div>
+    </details>`;
+  }
+
   function renderCrm(){
     const list = Object.keys(contactsCache).map(cid => ({ cid, ...contactsCache[cid] }))
       .sort((a,b) => b.ts - a.ts);
@@ -831,6 +1196,7 @@
       const handle = c.handle || '';
       const chUrl = handle ? `https://www.youtube.com/${handle}` : `https://www.youtube.com/channel/${c.cid}`;
       const aboutUrl = chUrl + '/about';
+      const sendCount = (c.log||[]).filter(l => l.type==='email'||l.type==='dm').length;
       const vids = (c.videos||[]).map(v => `
         <a class="cv" href="https://www.youtube.com/watch?v=${v.vid}" target="_blank" rel="noopener">
           <img src="${v.thumb}" alt="" loading="lazy">
@@ -841,9 +1207,14 @@
         <div class="card-head">
           ${stBadge(c.status)}
           <a class="cname" href="${chUrl}" target="_blank" rel="noopener">${escapeHtml(c.name)}</a>
-          <span class="cmeta">${c.subs != null ? '구독자 ' + fmtNum(c.subs) + ' · ' : ''}${fmtDateTime(c.ts)} 업데이트</span>
+          <span class="cmeta">${c.subs != null ? '구독자 ' + fmtNum(c.subs) + ' · ' : ''}${sendCount ? '발송 ' + sendCount + '회 · ' : ''}${fmtDateTime(c.ts)} 업데이트</span>
           ${stSelect(c.cid, c.status)}
           <button class="btn-del" data-act="del">삭제</button>
+        </div>
+        <div class="memo-actions" style="margin-top:12px;">
+          <button class="btn-send-mail" data-act="mail">✉️ 이메일 보내기</button>
+          <button class="btn-send-dm" data-act="dm">📷 인스타 DM</button>
+          <a class="btn-about" href="${aboutUrl}" target="_blank" rel="noopener">채널 정보 탭 →</a>
         </div>
         ${contactRowsHtml(c)}
         <div class="contact-sec memo-box"><h3>📝 메모</h3>
@@ -851,7 +1222,13 @@
           <div class="memo-actions">
             <button class="btn-save" data-act="save">메모 저장</button>
             <button class="copy-btn" data-act="copymemo">메모 복사</button>
-            <a class="btn-about" href="${aboutUrl}" target="_blank" rel="noopener">채널 정보 탭 →</a>
+          </div>
+        </div>
+        <div class="contact-sec"><h3>📨 연락 이력 ${(c.log||[]).length ? '(' + c.log.length + ')' : ''}</h3>
+          <div class="log-list">${(c.log||[]).map(logItemHtml).join('') || '<p class="contact-none" style="padding:0;">아직 기록이 없습니다. 발송 버튼을 누르면 자동으로 기록됩니다.</p>'}</div>
+          <div class="memo-actions" style="margin-top:10px;">
+            <input type="text" data-role="noteInput" class="grow" placeholder="수동 기록 추가 (예: 회신 옴 — 주3회 원함)" style="flex:1;">
+            <button class="btn-ghost" data-act="addnote">기록 추가</button>
           </div>
         </div>
         ${vids ? `<div class="card-videos">${vids}</div>` : ''}
@@ -866,12 +1243,14 @@
         render();
       });
       card.querySelector('[data-act="del"]').addEventListener('click', async () => {
-        if(confirm('이 채널을 연락처 관리에서 삭제할까요?')){
+        if(confirm('이 채널을 연락처 관리에서 삭제할까요? (연락 이력도 함께 삭제됩니다)')){
           await deleteContact(cid);
           renderCrm();
           render();
         }
       });
+      card.querySelector('[data-act="mail"]').addEventListener('click', () => openSend(cid, 'email'));
+      card.querySelector('[data-act="dm"]').addEventListener('click', () => openSend(cid, 'dm'));
       card.querySelector('[data-act="save"]').addEventListener('click', async e => {
         e.target.disabled = true;
         await upsertContact(cid, { memo: card.querySelector('[data-role="memo"]').value.trim() }, false);
@@ -881,6 +1260,14 @@
       });
       card.querySelector('[data-act="copymemo"]').addEventListener('click', e => {
         copyText(card.querySelector('[data-role="memo"]').value, e.target);
+      });
+      card.querySelector('[data-act="addnote"]').addEventListener('click', async e => {
+        const input = card.querySelector('[data-role="noteInput"]');
+        const txt = input.value.trim();
+        if(!txt) return;
+        const rec = contactsCache[cid] || {};
+        await upsertContact(cid, { log: [ { ts: Date.now(), type:'note', body: txt }, ...(rec.log||[]) ] }, false);
+        renderCrm();
       });
       card.querySelectorAll('.copy-btn[data-copy]').forEach(btn => {
         btn.addEventListener('click', () => copyText(btn.dataset.copy, btn));
@@ -894,10 +1281,11 @@
     if(!list.length){ alert('내보낼 연락처가 없습니다.'); return; }
     const esc = s => '"' + String(s == null ? '' : s).replace(/"/g, '""') + '"';
     const rows = [
-      ['채널명','상태','구독자','이메일','전화','링크','메모','채널주소','마지막 업데이트'].map(esc).join(',')
+      ['채널명','상태','구독자','이메일','전화','링크','메모','발송횟수','마지막 발송','채널주소','마지막 업데이트'].map(esc).join(',')
     ];
     list.forEach(c => {
       const chUrl = c.handle ? `https://www.youtube.com/${c.handle}` : `https://www.youtube.com/channel/${c.cid}`;
+      const sends = (c.log||[]).filter(l => l.type==='email'||l.type==='dm');
       rows.push([
         c.name, c.status,
         c.subs != null ? c.subs : '',
@@ -905,6 +1293,8 @@
         (c.phones||[]).join(' / '),
         (c.urls||[]).join(' / '),
         c.memo || '',
+        sends.length,
+        sends.length ? new Date(sends[0].ts).toLocaleString('ko-KR') : '',
         chUrl,
         new Date(c.ts).toLocaleString('ko-KR')
       ].map(esc).join(','));
@@ -1013,6 +1403,7 @@
 
   /* ---------- 초기화 ---------- */
   refreshKeyUI();
+  toggleSubjectField();
   if(getAuth()){
     bootstrap();
   }else{

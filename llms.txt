@@ -69,4 +69,6 @@
 - [하루 10분 영어 학습법 — 전화영어·앱·유튜브 비교](https://pweng.marketwave99.workers.dev/10min-english/)
 - [영어회화 가격 전체 시장 지도 — 방식별 비교](https://pweng.marketwave99.workers.dev/english-conversation-price/)
 - [영어 화상 수업 왕초보 가이드 — 왕초보 전용 커리큘럼](https://pweng.marketwave99.workers.dev/beginner-video-english/)
+- [화상영어 프로그램 가이드 — 줌 vs 자체 프로그램](https://pweng.marketwave99.workers.dev/video-english-program/)
+- [화상영어 유형별 비교 — 목적별 5가지 카테고리 추천](https://pweng.marketwave99.workers.dev/category-compare/)
 - [매일영 챌린지](https://dailychallenge.co.kr/)

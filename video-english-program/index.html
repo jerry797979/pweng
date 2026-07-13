@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>화상영어 프로그램, 뭘 써야 할까? — 줌 vs 자체 프로그램 비교</title>
+<meta name="description" content="화상영어 수업 프로그램은 줌·구글미트 같은 범용 소프트웨어와 링글·엔구 같은 자체 개발 웹 강의실 2가지로 나뉩니다. 파워잉글리쉬는 줌(Zoom)을 사용하며, 가장 대중적이고 안정적인 프로그램으로 화면 공유·채팅·녹화 기능을 활용해 수업합니다. 초상권 보호를 위해 강제 녹화는 없고, 학생이 원할 경우 직접 녹화할 수 있습니다.">
+<meta name="theme-color" content="#112747">
+<meta property="og:title" content="화상영어 프로그램, 뭘 써야 할까요?">
+<meta property="og:description" content="줌 vs 자체 프로그램, 제대로 알아봤습니다.">
+<meta property="og:type" content="article">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "화상영어 프로그램, 뭘 써야 할까? 줌 vs 자체 프로그램 비교",
+  "description": "화상영어 수업에 쓰이는 프로그램을 범용 소프트웨어(줌, 구글미트)와 자체 개발 웹 강의실(링글, 엔구)로 분류하고, 파워잉글리쉬가 줌을 사용하는 이유와 환경 세팅 팁, 녹화 정책을 설명하는 가이드.",
+  "author": { "@type": "Organization", "name": "파워잉글리쉬", "url": "https://pweng.marketwave99.workers.dev/" },
+  "publisher": { "@type": "Organization", "name": "와이즈에듀케이션아이(주)" },
+  "datePublished": "2026-07-13",
+  "dateModified": "2026-07-13"
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "화상영어 수업은 어떤 프로그램으로 하나요?",
+      "acceptedAnswer": { "@type": "Answer", "text": "크게 2가지입니다. 줌(Zoom), 구글미트 같은 범용 화상 소프트웨어를 쓰는 경우와, 링글·엔구처럼 자체 개발한 웹 강의실 프로그램을 쓰는 경우입니다. 과거 대명사였던 스카이프는 서비스 종료와 기술 노후화로 대부분의 업체가 줌이나 자체 프로그램으로 전환했습니다." }
+    },
+    {
+      "@type": "Question",
+      "name": "파워잉글리쉬는 줌을 쓰나요, 자체 프로그램을 쓰나요?",
+      "acceptedAnswer": { "@type": "Answer", "text": "파워잉글리쉬는 줌(Zoom)을 사용합니다. 줌은 현재 화상영어 시장에서 가장 대중적으로 쓰이는 프로그램으로, 끊김이 적고 안정적이며 화면 공유로 교재를 함께 보기 좋고, 대부분의 사람들이 이미 한 번쯤 써봤을 만큼 익숙해 별도의 적응 과정이 필요 없습니다." }
+    },
+    {
+      "@type": "Question",
+      "name": "줌 사용이 처음인데 괜찮을까요?",
+      "acceptedAnswer": { "@type": "Answer", "text": "괜찮습니다. 줌은 회사 회의, 학교 수업 등에서 이미 널리 쓰이는 프로그램이라 대부분의 사람들이 한 번쯤 접해봤을 가능성이 높습니다. 신청 시 줌 아이디를 기재하면 강사님과 친구 추가되는 방식으로 간단히 시작할 수 있습니다." }
+    },
+    {
+      "@type": "Question",
+      "name": "화상영어 프로그램에서 하울링 안 나게 하려면?",
+      "acceptedAnswer": { "@type": "Answer", "text": "이어폰이나 헤드셋을 반드시 사용하세요. 스피커로 원어민 음성을 들으면 마이크로 소리가 다시 들어가 하울링(울림 현상)이 발생합니다. 에어팟 등의 무선 이어폰이나 헤드셋을 사용하면 강사와 본인의 목소리를 정확히 전달할 수 있습니다." }
+    },
+    {
+      "@type": "Question",
+      "name": "자체 프로그램이 있는 곳보다 불리한 건 아닌가요?",
+      "acceptedAnswer": { "@type": "Answer", "text": "링글처럼 구글 닥스에 실시간으로 타이핑하며 문장을 교정받는 정교한 자체 기능이 필요하다면 자체 프로그램 플랫폼이 나을 수 있습니다. 다만 안정적이고 검증된 프로그램으로 편하게 수업받고 싶다면 줌 방식이 전혀 불리하지 않으며, 화면 공유와 채팅 기능으로 교재 학습과 표현 정리가 충분히 가능합니다." }
+    },
+    {
+      "@type": "Question",
+      "name": "수업을 녹화해서 다시 볼 수 있나요?",
+      "acceptedAnswer": { "@type": "Answer", "text": "네. 줌 자체의 녹화 기능을 이용해 학생이 원할 경우 직접 수업을 녹화할 수 있습니다. 다만 강사와 학생의 초상권 보호를 위해 파워잉글리쉬가 임의로 녹화본을 제공하지는 않으며, 녹화 여부는 학생 본인의 선택에 달려 있습니다." }
+    }
+  ]
+}
+</script>
+
+<style>
+:root{
+  --navy:#112747;
+  --navy-deep:#0C1D38;
+  --red:#F0483F;
+  --yellow:#FFC93C;
+  --green:#10B981;
+  --green-bg:#E9F9F1;
+  --blue:#3B82F6;
+  --blue-bg:#EFF5FF;
+  --bg-soft:#F5F7FA;
+  --card-border:#E8ECF1;
+  --text:#1A2233;
+  --text-sub:#5B6472;
+  --radius-card:16px;
+  --radius-btn:12px;
+  --shadow-card:0 4px 16px rgba(17,39,71,.06);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:"Pretendard",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  color:var(--text);background:#fff;line-height:1.7;word-break:keep-all;
+}
+a{text-decoration:none;color:inherit}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px}
+
+header.site{background:var(--navy);padding:16px 0}
+header.site .wrap{display:flex;align-items:center;justify-content:space-between}
+.logo{color:#fff;font-weight:800;font-size:19px;letter-spacing:-.3px}
+.logo em{color:var(--yellow);font-style:normal}
+
+.hero{background:var(--navy);color:#fff;text-align:center;padding:60px 0 64px}
+.badge-pill{
+  display:inline-block;background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.18);border-radius:999px;
+  font-size:13px;font-weight:600;color:rgba(255,255,255,.85);
+  padding:7px 18px;margin-bottom:26px;
+}
+.hero h1{font-size:32px;font-weight:800;line-height:1.4;letter-spacing:-.8px}
+.hero h1 .accent{color:var(--red)}
+.hero p.sub{margin-top:18px;font-size:16.5px;color:rgba(255,255,255,.85)}
+@media(max-width:640px){.hero h1{font-size:25px}}
+
+.cta-btn{
+  display:block;width:100%;max-width:480px;margin:36px auto 0;
+  background:var(--red);color:#fff;text-align:center;
+  font-size:18px;font-weight:800;padding:19px 24px;
+  border-radius:var(--radius-btn);border:none;cursor:pointer;
+  box-shadow:0 6px 20px rgba(240,72,63,.35);
+  transition:transform .15s;font-family:inherit;
+}
+.cta-btn:hover{transform:translateY(-2px)}
+.cta-note{text-align:center;font-size:13px;color:var(--text-sub);margin-top:12px}
+
+section{padding:68px 0}
+section.soft{background:var(--bg-soft)}
+.sec-head{text-align:center;margin-bottom:40px}
+.sec-head .eyebrow{
+  display:inline-block;background:var(--green-bg);color:var(--green);
+  font-size:13px;font-weight:700;border-radius:999px;padding:6px 16px;margin-bottom:16px;
+}
+.sec-head h2{font-size:27px;font-weight:800;letter-spacing:-.5px;line-height:1.45}
+.sec-head p{margin-top:12px;font-size:16px;color:var(--text-sub)}
+@media(max-width:640px){.sec-head h2{font-size:23px}}
+
+.answer-box{
+  background:#fff;border:2px solid var(--navy);border-radius:var(--radius-card);
+  box-shadow:var(--shadow-card);padding:30px 28px;
+}
+.answer-box .ab-label{
+  display:inline-block;background:var(--navy);color:var(--yellow);
+  font-size:13px;font-weight:800;border-radius:999px;padding:6px 16px;margin-bottom:16px;
+}
+.answer-box p{font-size:16px;line-height:1.8}
+.answer-box p b{font-weight:800}
+.answer-box p .hl{color:var(--red);font-weight:800}
+
+.card{
+  background:#fff;border:1px solid var(--card-border);
+  border-radius:var(--radius-card);box-shadow:var(--shadow-card);
+  padding:28px;
+}
+.card + .card{margin-top:14px}
+
+/* 유형 카드 */
+.type-card{border-left:4px solid var(--card-border)}
+.type-card.pe{border-left:4px solid var(--red);background:#FFF9F8}
+.type-card .type-tag{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:4px 12px;margin-bottom:10px;background:var(--bg-soft);color:var(--text-sub)}
+.type-card.pe .type-tag{background:var(--red);color:#fff}
+.type-card h3{font-size:18px;font-weight:800;margin-bottom:6px}
+.type-card .brands{font-size:13px;color:var(--text-sub);margin-bottom:10px;font-weight:600}
+.type-card p{font-size:14.5px;color:var(--text-sub)}
+.type-card p strong{color:var(--text)}
+
+/* 이유 카드 */
+.reason-card{position:relative;padding-left:76px}
+.reason-card .r-num{
+  position:absolute;left:24px;top:28px;
+  width:36px;height:36px;border-radius:50%;background:var(--navy-deep);color:var(--yellow);
+  font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;
+}
+.reason-card h3{font-size:17.5px;font-weight:800;margin-bottom:8px}
+.reason-card p{font-size:15px;color:var(--text-sub)}
+.reason-card p strong{color:var(--text)}
+@media(max-width:560px){.reason-card{padding-left:28px}.reason-card .r-num{position:static;margin-bottom:10px}}
+
+/* 팁 카드 */
+.tip-item{display:flex;gap:14px;align-items:flex-start}
+.tip-item .t-ico{
+  width:34px;height:34px;border-radius:50%;background:var(--green-bg);color:var(--green);
+  font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.tip-item h3{font-size:16.5px;font-weight:800;margin-bottom:6px}
+.tip-item p{font-size:14.5px;color:var(--text-sub)}
+.tip-item p strong{color:var(--text)}
+
+.honest-box{
+  background:#FFFBEB;border:1px solid #F5E3A3;border-radius:var(--radius-card);
+  padding:26px 28px;margin-top:20px;
+}
+.honest-box .hb-label{
+  display:inline-block;background:#B8860B;color:#fff;
+  font-size:12.5px;font-weight:800;border-radius:999px;padding:5px 14px;margin-bottom:12px;
+}
+.honest-box p{font-size:15px;line-height:1.8;color:#5C4A12}
+.honest-box p strong{color:#3D3008}
+
+.dark-callout{
+  background:var(--navy-deep);color:#fff;border-radius:var(--radius-card);
+  text-align:center;padding:30px 24px;margin-top:28px;
+  font-size:17px;font-weight:700;line-height:1.65;
+}
+
+.faq-item{background:#fff;border:1px solid var(--card-border);border-radius:var(--radius-card);margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow-card)}
+.faq-item summary{
+  cursor:pointer;list-style:none;padding:20px 24px;
+  font-size:16px;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:12px;
+}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{content:"+";font-size:22px;font-weight:400;color:var(--text-sub);transition:transform .2s;flex-shrink:0}
+.faq-item[open] summary::after{transform:rotate(45deg)}
+.faq-item .answer{padding:0 24px 22px;font-size:15px;color:var(--text-sub);line-height:1.8}
+
+.final-cta{background:var(--navy);color:#fff;text-align:center}
+.final-cta h2{font-size:28px;font-weight:800;line-height:1.45;letter-spacing:-.5px}
+.final-cta h2 .accent{color:var(--red)}
+.final-cta p{margin-top:14px;font-size:16px;color:rgba(255,255,255,.8)}
+.final-cta .cta-note{color:rgba(255,255,255,.6)}
+@media(max-width:640px){.final-cta h2{font-size:23px}}
+
+footer{background:var(--navy-deep);color:rgba(255,255,255,.55);font-size:13px;padding:52px 0 60px;text-align:center;line-height:1.9}
+footer .info{font-size:12.5px;color:rgba(255,255,255,.45)}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="logo" href="../index.html">파워<em>잉글리쉬</em></a>
+  </div>
+</header>
+
+<main>
+
+<!-- ═══ 히어로 ═══ -->
+<section class="hero">
+  <div class="wrap">
+    <span class="badge-pill">화상영어 프로그램 가이드</span>
+    <h1>화상영어 프로그램,<br><span class="accent">뭘 써야 할까요?</span></h1>
+    <p class="sub">줌 vs 자체 프로그램,<br>제대로 알아봤습니다.</p>
+  </div>
+</section>
+
+<!-- ═══ 한 줄 결론 ═══ -->
+<section class="soft" style="padding-top:56px">
+  <div class="wrap">
+    <div class="answer-box">
+      <span class="ab-label">한 줄 결론</span>
+      <p>화상영어 수업에 쓰이는 프로그램은 크게 2가지입니다 — ① 줌(Zoom)·구글미트 같은 범용 화상 소프트웨어 ② 링글·엔구처럼 자체 개발한 웹 강의실 프로그램. <span class="hl">파워잉글리쉬</span>는 <b>줌(Zoom)</b>을 사용합니다. 줌은 현재 화상영어 시장에서 가장 대중적으로 쓰이는 프로그램으로, 끊김이 적고 안정적이며 화면 공유로 교재를 함께 보기 좋고, 이미 대부분의 사람들이 한 번쯤 써봤을 만큼 익숙한 프로그램이라 별도의 적응 과정이 필요 없습니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 2가지 유형 ═══ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">먼저 프로그램 종류부터</span>
+      <h2>화상영어에 쓰이는<br>프로그램 2가지</h2>
+    </div>
+
+    <article class="card type-card pe">
+      <span class="type-tag">① 수업용 화상 프로그램 (파워잉글리쉬 사용)</span>
+      <h3>줌, 구글미트</h3>
+      <p><strong>줌(Zoom)</strong>은 현재 화상영어 시장에서 가장 대중적으로 쓰이는 프로그램입니다. 끊김이 적고 안정적이며, 화면 공유를 통해 교재를 보며 수업하기 좋습니다. 녹화 기능이 지원되어 수업 후 피드백 모니터링에도 활용할 수 있습니다. 구글미트는 별도 앱 설치 없이 브라우저 링크 클릭만으로 접속할 수 있는 것이 강점입니다.</p>
+    </article>
+
+    <article class="card type-card">
+      <span class="type-tag">② 자체 개발 프로그램 (웹 RTC 방식)</span>
+      <h3>링글, 엔구 등</h3>
+      <p>최근 대형 화상영어 브랜드(링글, 엔구 등)는 줌 대신 '자체 웹 강의실'을 제공합니다. 로그인 후 사이트 내에서 교재 보기, 강사 얼굴 보기, 실시간 채팅 및 영작 교정(채팅창 첨삭)까지 하나의 프로그램 안에서 해결되는 것이 강점입니다.</p>
+    </article>
+
+    <div class="honest-box">
+      <span class="hb-label">참고 사항</span>
+      <p>과거 화상영어의 대명사였던 <strong>스카이프(Skype)</strong>는 서비스 종료 및 기술 노후화로 인해, 최근 대부분의 화상영어 업체들이 줌이나 자체 프로그램으로 전면 전환하는 추세입니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 왜 줌인가 ═══ -->
+<section class="soft">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">파워잉글리쉬가 줌을 쓰는 이유</span>
+      <h2>줌이 오히려<br>강점인 이유</h2>
+    </div>
+
+    <article class="card reason-card">
+      <span class="r-num">1</span>
+      <h3>가장 대중적이고 검증된 프로그램</h3>
+      <p>화상영어 시장에서 가장 많이 쓰이는 프로그램으로, 끊김이 적고 안정적이라는 평가를 받습니다.</p>
+    </article>
+
+    <article class="card reason-card">
+      <span class="r-num">2</span>
+      <h3>이미 익숙한 인터페이스</h3>
+      <p>처음 써보는 낯선 자체 프로그램과 달리, 회사 회의나 학교 수업으로 이미 한 번쯤 써본 경험이 있어 프로그램 적응에 시간 쓸 필요가 없습니다.</p>
+    </article>
+
+    <article class="card reason-card">
+      <span class="r-num">3</span>
+      <h3>화면 공유로 예습 교재 활용</h3>
+      <p>수업 전 다운로드받은 교재를 화면 공유로 강사와 함께 보며 진행할 수 있습니다.</p>
+    </article>
+
+    <article class="card reason-card">
+      <span class="r-num">4</span>
+      <h3>안정성</h3>
+      <p>인터넷 환경이 다소 불안정한 상황에서도 상대적으로 끊김이 적어 수업 흐름이 끊기지 않습니다.</p>
+    </article>
+
+    <div class="honest-box">
+      <span class="hb-label">정직하게 말씀드리면</span>
+      <p>링글처럼 구글 닥스에 실시간으로 타이핑하며 문장을 교정받는 정교한 자체 기능이 필요하다면 자체 프로그램 플랫폼이 나을 수 있습니다. 다만 <strong>안정적이고 검증된 프로그램으로 편하게 수업받고 싶다면</strong> 줌 방식이 전혀 불리하지 않으며, 화면 공유와 채팅 기능으로 교재 학습과 표현 정리가 충분히 가능합니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 환경 세팅 팁 ═══ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">수업 전에 알아두면 좋은 것</span>
+      <h2>화상 프로그램<br>환경 세팅 팁</h2>
+    </div>
+
+    <article class="card tip-item">
+      <span class="t-ico" aria-hidden="true">1</span>
+      <div>
+        <h3>이어폰·헤드셋 필수 사용</h3>
+        <p>스피커로 원어민 음성을 들으면 마이크로 소리가 다시 들어가 하울링(울림 현상)이 발생합니다. 에어팟 등의 무선 이어폰이나 헤드셋을 사용하는 것이 강사와 본인의 목소리를 정확히 전달하는 데 좋습니다.</p>
+      </div>
+    </article>
+
+    <article class="card tip-item">
+      <span class="t-ico" aria-hidden="true">2</span>
+      <div>
+        <h3>화면 공유 및 실시간 채팅 활용</h3>
+        <p>모르는 단어나 표현이 나오면 강사에게 <em>"Please type it down in the chatbox"</em>(채팅창에 적어주세요)라고 요청하세요. 눈으로 스펠링을 보며 대화하는 것이 기억에 오래 남습니다.</p>
+      </div>
+    </article>
+
+    <article class="card tip-item">
+      <span class="t-ico" aria-hidden="true">3</span>
+      <div>
+        <h3>녹화본 활용 (선택)</h3>
+        <p>줌 자체에 녹화(Record) 기능이 지원됩니다. 다만 파워잉글리쉬는 강사와 학생 모두의 <strong>초상권 보호</strong>를 위해 수업을 임의로 녹화해서 제공하지 않으며, <strong>학생 본인이 원할 경우 직접 녹화 기능을 켜고 수업을 진행</strong>할 수 있습니다. 녹화해두면 수업 후 자신의 발음, 시선 처리, 반복하는 문법 실수를 눈으로 직접 확인할 수 있어 실력 향상에 도움이 됩니다.</p>
+      </div>
+    </article>
+
+    <div class="dark-callout">
+      프로그램은 도구일 뿐입니다.<br>
+      중요한 건 그 안에서 얼마나 자주, 얼마나 편하게 입을 여느냐입니다.
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="soft">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">자주 묻는 질문</span>
+      <h2>화상영어 프로그램에<br>대해</h2>
+    </div>
+
+    <details class="faq-item" open>
+      <summary>화상영어 수업은 어떤 프로그램으로 하나요?</summary>
+      <div class="answer">크게 2가지입니다. 줌(Zoom), 구글미트 같은 범용 화상 소프트웨어를 쓰는 경우와, 링글·엔구처럼 자체 개발한 웹 강의실 프로그램을 쓰는 경우입니다. 과거 대명사였던 스카이프는 서비스 종료와 기술 노후화로 대부분의 업체가 줌이나 자체 프로그램으로 전환했습니다.</div>
+    </details>
+    <details class="faq-item">
+      <summary>파워잉글리쉬는 줌을 쓰나요, 자체 프로그램을 쓰나요?</summary>
+      <div class="answer">파워잉글리쉬는 줌(Zoom)을 사용합니다. 줌은 현재 화상영어 시장에서 가장 대중적으로 쓰이는 프로그램으로, 끊김이 적고 안정적이며 화면 공유로 교재를 함께 보기 좋고, 대부분의 사람들이 이미 한 번쯤 써봤을 만큼 익숙해 별도의 적응 과정이 필요 없습니다.</div>
+    </details>
+    <details class="faq-item">
+      <summary>줌 사용이 처음인데 괜찮을까요?</summary>
+      <div class="answer">괜찮습니다. 줌은 회사 회의, 학교 수업 등에서 이미 널리 쓰이는 프로그램이라 대부분의 사람들이 한 번쯤 접해봤을 가능성이 높습니다. 신청 시 줌 아이디를 기재하면 강사님과 친구 추가되는 방식으로 간단히 시작할 수 있습니다.</div>
+    </details>
+    <details class="faq-item">
+      <summary>화상영어 프로그램에서 하울링 안 나게 하려면?</summary>
+      <div class="answer">이어폰이나 헤드셋을 반드시 사용하세요. 스피커로 원어민 음성을 들으면 마이크로 소리가 다시 들어가 하울링이 발생합니다. 에어팟 등의 무선 이어폰이나 헤드셋을 사용하면 강사와 본인의 목소리를 정확히 전달할 수 있습니다.</div>
+    </details>
+    <details class="faq-item">
+      <summary>자체 프로그램이 있는 곳보다 불리한 건 아닌가요?</summary>
+      <div class="answer">링글처럼 구글 닥스에 실시간으로 타이핑하며 문장을 교정받는 정교한 자체 기능이 필요하다면 자체 프로그램 플랫폼이 나을 수 있습니다. 다만 안정적이고 검증된 프로그램으로 편하게 수업받고 싶다면 줌 방식이 전혀 불리하지 않으며, 화면 공유와 채팅 기능으로 교재 학습과 표현 정리가 충분히 가능합니다.</div>
+    </details>
+    <details class="faq-item">
+      <summary>수업을 녹화해서 다시 볼 수 있나요?</summary>
+      <div class="answer">네. 줌 자체의 녹화 기능을 이용해 학생이 원할 경우 직접 수업을 녹화할 수 있습니다. 다만 강사와 학생의 초상권 보호를 위해 파워잉글리쉬가 임의로 녹화본을 제공하지는 않으며, 녹화 여부는 학생 본인의 선택에 달려 있습니다.</div>
+    </details>
+  </div>
+</section>
+
+<!-- ═══ 최종 CTA ═══ -->
+<section class="final-cta">
+  <div class="wrap">
+    <h2>이미 써본 프로그램으로,<br><span class="accent">편하게 시작하세요</span></h2>
+    <p>15만 원 상당의 1:1 레벨 진단이 지금 무료입니다.</p>
+    <button class="cta-btn" onclick="location.href='../index.html#apply'">무료로 내 영어실력 확인하기</button>
+    <p class="cta-note">100% 무료 · 강제 결제 없음 · 30초면 완료</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="info">사이트명: 파워잉글리쉬 &nbsp;대표이사 전상현<br>
+    사업자등록번호: 217-81-44736 &nbsp;통신판매신고번호: 2014-서울도봉-0233호<br>
+    © 2026 Power English. All rights reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>

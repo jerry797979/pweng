@@ -1,4 +1,4 @@
-$root = "C:\Users\marke\Documents\GitHub\pweng"
+﻿$root = "C:\Users\marke\Documents\GitHub\pweng"
 Write-Output "=== [1] 금지 4개 표현 잔존 검사 (0이어야 함) ==="
 $banned = '진도 잠금','레슨 잠금','열리지 않','녹음 제출'
 $hit = 0

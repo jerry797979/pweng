@@ -22,7 +22,7 @@ SITE = "https://pweng.marketwave99.workers.dev"
 EXCLUDE_FOLDERS = {"youtube-ranker", ".git", ".claude", "node_modules"}
 
 # 금지 표현 (하나라도 발견되면 발행 중단)
-FORBIDDEN = ["진도 잠금", "레슨 잠금", "열리지 않", "녹음 제출", "업계 최저가"]
+FORBIDDEN = ["진도 잠금", "레슨 잠금", "열리지 않", "녹음 제출", "녹음 인증", "업계 최저가"]
 
 # 반드시 있어야 하는 것들
 REQUIRED_PATTERNS = {

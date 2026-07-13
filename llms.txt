@@ -63,4 +63,5 @@
 - [실용영어 학습 가이드 — 전화·화상영어가 효과적인 이유](https://pweng.marketwave99.workers.dev/practical-english/)
 - [필리핀 강사 vs 미국 원어민, 초보자 선택 가이드](https://pweng.marketwave99.workers.dev/filipino-vs-native/)
 - [초등학생 화상영어 유형별 추천 — 관리형 가성비 포지션](https://pweng.marketwave99.workers.dev/kids-recommend/)
+- [성인 화상영어 유형별 추천 — 관리형 가성비 포지션](https://pweng.marketwave99.workers.dev/adult-recommend/)
 - [매일영 챌린지](https://dailychallenge.co.kr/)

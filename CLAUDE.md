@@ -124,10 +124,30 @@ Pretendard (`https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/
 2. 참고 자료가 있으면: 경쟁사가 다루지 않는 빈 자리, 또는 파워잉글리쉬가 이미 언급된 카테고리를 찾아 포지셔닝 전략을 먼저 텍스트로 정리
 3. 위 디자인 시스템·확정 사실·금지 사항을 그대로 적용해 HTML 생성
 4. `<폴더명>/index.html` 경로로 생성 (폴더명은 영문 소문자, 하이픈 구분, 짧고 명확하게)
-5. JSON-LD 스키마 2개 모두 `python3 -c "import json; json.loads(...)"` 방식으로 유효성 검증
+5. JSON-LD 스키마 2개 모두 유효성 검증 (python이 없으면 PowerShell의 `[regex]::Matches` + `ConvertFrom-Json` 방식 사용)
 6. `llms.txt`에 새 페이지를 "주요 페이지" 목록에 한 줄 추가 (제목 + 실제 URL)
-7. git add, commit(커밋 메시지는 페이지 주제를 담아 한국어로), push까지 자동 실행
-8. 완료 후 실제 배포 주소(`https://pweng.marketwave99.workers.dev/<폴더명>/`)를 알려줌
+7. **`sitemap.xml`에 새 페이지 `<url>` 항목을 자동으로 추가.** 형식:
+   ```xml
+   <url>
+     <loc>https://pweng.marketwave99.workers.dev/<폴더명>/</loc>
+     <changefreq>monthly</changefreq>
+     <priority>0.7</priority>
+   </url>
+   ```
+   `</urlset>` 태그 바로 앞에 삽입한다. priority는 메인=1.0, 가격/비교/추천형 핵심 페이지=0.8~0.9, 일반 정보형=0.6~0.7 기준.
+8. git add, commit(커밋 메시지는 페이지 주제를 담아 한국어로), push까지 자동 실행
+9. **push 완료 직후 구글에 사이트맵 갱신을 자동으로 알린다(ping).** 다음 명령을 실행:
+   ```
+   curl "https://www.google.com/ping?sitemap=https://pweng.marketwave99.workers.dev/sitemap.xml"
+   ```
+   (curl이 없으면 PowerShell의 `Invoke-WebRequest` 사용)
+10. 완료 후 실제 배포 주소(`https://pweng.marketwave99.workers.dev/<폴더명>/`)와 "sitemap 갱신 + 구글 ping 완료" 여부를 함께 알려줌
+
+## robots.txt / sitemap.xml 관리
+
+- `robots.txt`는 최상위에 고정되어 있으며 모든 검색엔진과 AI 크롤러(GPTBot, ClaudeBot, PerplexityBot, Google-Extended 등)를 허용한다. 이 파일은 새 크롤러가 알려지지 않는 한 수정할 필요 없음.
+- `sitemap.xml`은 새 페이지가 생길 때마다 위 7번 규칙에 따라 자동 갱신되어야 한다. 사용자가 별도로 "sitemap 만들어줘"라고 요청하지 않아도 매 페이지 생성 시 자동으로 처리할 것.
+- Google Search Console에 이미 이 사이트(`https://pweng.marketwave99.workers.dev`)가 등록되어 있다고 가정하고, 8~9번 절차를 항상 수행한다.
 
 ## llms.txt 갱신 규칙
 

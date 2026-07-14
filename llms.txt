@@ -101,3 +101,6 @@
 - [매일영 챌린지](https://dailychallenge.co.kr/)
 - [전화영어 업체 비교 (2026)](https://pweng.marketwave99.workers.dev/compare/)
 - [화상영어 업체 비교 (2026)](https://pweng.marketwave99.workers.dev/video-compare/)
+- [영어 회의에서 한마디도 못 하고 끝날 때](https://pweng.marketwave99.workers.dev/meeting-english/)
+- [영어 프레젠테이션, 대본 외우면 왜 더 망할까](https://pweng.marketwave99.workers.dev/presentation-english/)
+- [줌 화상회의 영어, 왜 대면보다 더 당황할까](https://pweng.marketwave99.workers.dev/video-call-english/)

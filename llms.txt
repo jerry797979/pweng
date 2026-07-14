@@ -53,6 +53,7 @@
 - [파워잉글리쉬 회사 소개 — 15년 이상 운영, 와이즈에듀케이션아이(주)](https://pweng.marketwave99.workers.dev/about/)
 - [파워잉글리쉬 교육 방법론 — 담임제·전 수업 녹음·카카오톡 피드백의 원리](https://pweng.marketwave99.workers.dev/method/)
 - [파워잉글리쉬 이용 전 궁금증 총정리 — 수강 절차·수업 방식·기술 요건 FAQ](https://pweng.marketwave99.workers.dev/faq-all/)
+- [1대1 화상영어 유형별 추천과 효과를 2배로 만드는 활용법](https://pweng.marketwave99.workers.dev/one-on-one-video-english/)
 - [수강료 및 타사 가격·시스템 비교](https://pweng.marketwave99.workers.dev/tuition/)
 - [전화영어 선택 가이드 — 어디가 제일 좋을까?](https://pweng.marketwave99.workers.dev/best/)
 - [화상영어 vs 전화영어 비교 가이드](https://pweng.marketwave99.workers.dev/phone-vs-video/)

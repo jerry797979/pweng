@@ -104,3 +104,6 @@
 - [영어 회의에서 한마디도 못 하고 끝날 때](https://pweng.marketwave99.workers.dev/meeting-english/)
 - [영어 프레젠테이션, 대본 외우면 왜 더 망할까](https://pweng.marketwave99.workers.dev/presentation-english/)
 - [줌 화상회의 영어, 왜 대면보다 더 당황할까](https://pweng.marketwave99.workers.dev/video-call-english/)
+- [해외 고객 CS 이메일·채팅 영어, 어떻게 응대할까?](https://pweng.marketwave99.workers.dev/cs-email-english/)
+- [영어 자기소개, 상황마다 어떻게 달라야 할까?](https://pweng.marketwave99.workers.dev/self-introduction-english/)
+- [외국인 동료와 스몰토크, 뭐라고 말을 걸지?](https://pweng.marketwave99.workers.dev/smalltalk-english/)

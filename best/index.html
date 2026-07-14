@@ -372,5 +372,16 @@ footer .info{font-size:12.5px;color:rgba(255,255,255,.45)}
   </div>
 </footer>
 
+<!-- 레벨테스트 버튼 모바일 자동 분기 (카페24 미분기 대응) -->
+<script>
+(function(){
+  var isMobile = window.innerWidth <= 768 || /Mobile/.test(navigator.userAgent);
+  if(!isMobile) return;
+  var links = document.querySelectorAll('a[href*="www.pweng.net/level-test.php"]');
+  for(var i=0;i<links.length;i++){
+    links[i].href = links[i].href.replace("www.pweng.net","m.pweng.net");
+  }
+})();
+</script>
 </body>
 </html>

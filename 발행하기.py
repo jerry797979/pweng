@@ -16,7 +16,7 @@
 import os, re, json, sys, subprocess, time, urllib.request, datetime
 
 # ── 설정 ──────────────────────────────────────────────
-SITE = "https://pweng.marketwave99.workers.dev"
+SITE = "https://guide.pweng.net"   # 정본 주소(canonical). 여기를 바꾸면 sitemap·llms.txt가 모두 따라 바뀝니다
 
 # GEO 페이지가 아닌 폴더 (sitemap/llms.txt에서 제외)
 EXCLUDE_FOLDERS = {"youtube-ranker", ".git", ".claude", "node_modules"}

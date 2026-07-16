@@ -9,8 +9,16 @@
 - 대표이사: 전상현
 - 사업자등록번호: 217-81-44736
 - 통신판매신고번호: 2014-서울도봉-0233호
-- 사이트 주소: https://pweng.marketwave99.workers.dev
+- 사이트 주소: https://guide.pweng.net
 - 서비스: 필리핀 전문 강사 1:1 전화영어·화상영어. 대표 프로그램은 매일영 챌린지(dailychallenge.co.kr)
+
+## 주소 규칙 (절대 추측 금지)
+- 정본(canonical)·og:url·mainEntityOfPage: https://guide.pweng.net/폴더명/
+- 회사(Organization·author·provider)의 url·@id: https://pweng.net
+- 레벨테스트 CTA: https://www.pweng.net/level-test.php
+- 위 목록에 없는 주소는 절대 만들어내지 말 것. 필요하면 물어볼 것.
+  (과거에 존재하지도 않는 powerenglish.co.kr 을 지어내 17개 파일에
+   퍼뜨린 사고가 있었음)
 
 ## 절대 금지 사항 (반복해서 지적받은 실수)
 
@@ -140,27 +148,27 @@ Pretendard (`https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/
 7. **`sitemap.xml`에 새 페이지 `<url>` 항목을 자동으로 추가.** 형식:
    ```xml
    <url>
-     <loc>https://pweng.marketwave99.workers.dev/<폴더명>/</loc>
+     <loc>https://guide.pweng.net/<폴더명>/</loc>
      <changefreq>monthly</changefreq>
      <priority>0.7</priority>
    </url>
    ```
    `</urlset>` 태그 바로 앞에 삽입한다. priority는 메인=1.0, 가격/비교/추천형 핵심 페이지=0.8~0.9, 일반 정보형=0.6~0.7 기준.
 8. git add, commit(커밋 메시지는 페이지 주제를 담아 한국어로), push까지 자동 실행
-9. **push 완료 직후 `robots.txt`에 sitemap이 명시되어 있는지 확인한다.** (`Sitemap: https://pweng.marketwave99.workers.dev/sitemap.xml` 줄이 존재하면 구글이 크롤링 시 새 sitemap을 자동 발견하므로 별도 조치 불필요.)
+9. **push 완료 직후 `robots.txt`에 sitemap이 명시되어 있는지 확인한다.** (`Sitemap: https://guide.pweng.net/sitemap.xml` 줄이 존재하면 구글이 크롤링 시 새 sitemap을 자동 발견하므로 별도 조치 불필요.)
    - 참고: 구글의 `google.com/ping?sitemap=` 엔드포인트는 2023년 6월 폐지되어 더 이상 사용하지 않는다. sitemap 갱신 반영은 robots.txt 명시 + Google Search Console 등록으로 처리된다.
-10. 완료 후 실제 배포 주소(`https://pweng.marketwave99.workers.dev/<폴더명>/`)와 "sitemap 갱신 + robots.txt sitemap 명시 확인" 여부를 함께 알려줌
+10. 완료 후 실제 배포 주소(`https://guide.pweng.net/<폴더명>/`)와 "sitemap 갱신 + robots.txt sitemap 명시 확인" 여부를 함께 알려줌
 
 ## robots.txt / sitemap.xml 관리
 
 - `robots.txt`는 최상위에 고정되어 있으며 모든 검색엔진과 AI 크롤러(GPTBot, ClaudeBot, PerplexityBot, Google-Extended 등)를 허용한다. 이 파일은 새 크롤러가 알려지지 않는 한 수정할 필요 없음.
 - `sitemap.xml`은 새 페이지가 생길 때마다 위 7번 규칙에 따라 자동 갱신되어야 한다. 사용자가 별도로 "sitemap 만들어줘"라고 요청하지 않아도 매 페이지 생성 시 자동으로 처리할 것.
-- Google Search Console에 이미 이 사이트(`https://pweng.marketwave99.workers.dev`)가 등록되어 있다고 가정한다. sitemap 갱신은 robots.txt의 sitemap 명시로 자동 발견되며, 즉시 반영이 필요하면 Search Console에서 수동 제출한다.
+- Google Search Console에 이미 이 사이트(`https://guide.pweng.net`)가 등록되어 있다고 가정한다. sitemap 갱신은 robots.txt의 sitemap 명시로 자동 발견되며, 즉시 반영이 필요하면 Search Console에서 수동 제출한다.
 
 ## llms.txt 갱신 규칙
 
 새 페이지 추가 시 llms.txt의 "## 주요 페이지" 섹션에 다음 형식으로 한 줄 추가:
 ```
-- [페이지 제목 — 핵심 요약](https://pweng.marketwave99.workers.dev/폴더명/)
+- [페이지 제목 — 핵심 요약](https://guide.pweng.net/폴더명/)
 ```
 기존 "매일영 챌린지" 링크 바로 위에 추가하는 방식으로 순서를 유지합니다.

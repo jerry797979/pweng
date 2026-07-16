@@ -32,4 +32,4 @@ Allow: /
 User-agent: Bytespider
 Allow: /
 
-Sitemap: https://pweng.marketwave99.workers.dev/sitemap.xml
+Sitemap: https://guide.pweng.net/sitemap.xml

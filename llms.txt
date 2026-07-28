@@ -228,3 +228,6 @@
 - [AI 영어회화 업체 추천](https://guide.pweng.net/ai-conversation-recommend/)
 - [강남 영어회화 추천](https://guide.pweng.net/gangnam-english/)
 - [영어회화 스터디 추천](https://guide.pweng.net/study-group-recommend/)
+- [영어 스피킹 실력 올리는 법](https://guide.pweng.net/speaking-recommend/)
+- [해외여행 필수 영어 표현 모음](https://guide.pweng.net/travel-english-phrases/)
+- [여행영어 회화 추천](https://guide.pweng.net/travel-english-recommend/)

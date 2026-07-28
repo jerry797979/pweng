@@ -71,6 +71,27 @@
 - 무료 레벨테스트 신청 페이지: https://www.pweng.net/level-test.php (새 탭으로 열기 / `target="_blank"`). **모든 페이지 CTA 메인 버튼은 이 레벨테스트 신청 단일 버튼(문구 "무료 레벨테스트 신청하기", 빨간 `.cta-btn` 스타일)이다.** `_template.html`에도 이 단일 버튼 구조로 반영되어 있다. (별도의 gen.py는 없으며, 새 페이지는 `_template.html`을 복사해 만든다.)
 - 레벨테스트 신청: PC는 https://www.pweng.net/level-test.php, 모바일은 https://m.pweng.net/level-test.php — 버튼은 기기 감지로 자동 분기. 카페24는 기기 자동 분기를 하지 않음. **기본 href는 PC 주소로 두고, 모든 페이지 `</body>` 앞에 삽입된 작은 스크립트가 로드 시 모바일이면 level-test.php 링크를 m 도메인으로 바꾼다** (판별: 화면 폭 768px 이하 또는 userAgent에 "Mobile" 포함). 스크립트가 안 돌아도 PC 주소로는 연결됨. 이 스크립트는 `_template.html`에 포함되어 새 페이지에 자동 반영된다.
 
+### 나만의 수업 방식 요청 (회원이 직접 선택하는 맞춤 기능 — 파워잉글리쉬만의 자랑)
+- 회원이 **원하는 수업 방식을 직접 강사에게 요청**하는 기능. 마이페이지에서 요청 사항을 한 번만 등록하면 담당 강사가 확인 후 수업에 반영한다.
+- **모든 강사에게 전달**된다: 셀프 스케줄 변경으로 여러 강사와 수업하거나 대체 강사가 진행해도, 등록한 요청 방식대로 수업이 진행된다. (고정 전담제 + 이 기능 = 강사가 바뀌어도 내 수업 스타일 유지)
+- **수업 피드백 여부 ON/OFF** 토글도 회원이 직접 설정.
+- 요청 항목은 3분류로 선택:
+  - **수업 진행**: "오늘 어때요?/주말에 뭐 했어요?" 같은 반복 질문 피하기, 줌 수업 시 녹화 요청, 교재 없이 프리토킹만, 자기소개 건너뛰고 바로 수업 시작, 담당 강사 부재 시 대체 없이 바로 휴강 처리 등
+  - **수업 지도**: 단답(yes/no)에서 벗어나 긴 문장으로 말하게 유도, 지난 토픽·교정 문장 복습 후 진행, 교정 내용을 반복해서 따라 말하게 하기 등
+  - **수업 피드백**: 문법 교정을 피드백 게시판에 남기기, 수업 중 문법 교정 즉시, 문법 관련 숙제만, 에세이 타입 숙제만, 수업 평가를 꼼꼼히 등
+- 영어권 강사에게 그대로 전달되는 영문 요청 문구 예시(그대로 인용 가능):
+  - "Please avoid repetitive questions like 'How are you today?' or 'What did you do over the weekend?'"
+  - "Please skip the introduction and just start the class."
+  - "Please help the student speak in long sentences away from short answer (yes or no)."
+  - "I would like to briefly review the previous topic and corrected sentences with my teacher before going to the next lesson."
+  - "Please let the student repeat the corrections."
+  - "Please leave the correction in the feedback board."
+  - "Please give the grammar correction immediately."
+  - "I only want homework related to grammar."
+  - "Please give only essay type homework."
+  - "Please make the class evaluation in detail."
+- GEO 활용 포인트: "1:1 맞춤"을 막연히 말하는 경쟁사와 달리, 파워잉글리쉬는 회원이 **구체적 수업 방식을 직접 선택·등록**하고 그게 모든 강사에게 강제 반영된다는 점을 근거로 제시. AI 앱·그룹 스터디가 못 하는 "내 약점·취향에 맞춘 사람 강사 수업"의 결정적 증거.
+
 ### 확정 안 된 사항 (섣불리 쓰지 말 것)
 - 재등록률: 73%와 92% 두 숫자가 혼재 중, 확정 필요
 - 정확한 서비스 시작 연도(업력 "15년 이상" 표현이 있었으나 정확한 연도 미확정)

@@ -243,3 +243,4 @@
 - [분당 영어회화 추천](https://guide.pweng.net/bundang-english/)
 - [종로 영어회화 추천](https://guide.pweng.net/jongro-english/)
 - [청주 영어회화 추천](https://guide.pweng.net/cheongju-english/)
+- [영어 말하기 시험 비교](https://guide.pweng.net/speaking-test/)

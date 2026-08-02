@@ -99,24 +99,19 @@
 
 ## 디자인 시스템 (모든 페이지 공통)
 
-### 색상 변수
+> **★현재 표준 디자인 = Nova 스타일(퍼플/민트).** 예전 네이비/레드 `_template.html`은 폐기(deprecated). 새 페이지는 반드시 Nova 스타일로 만든다. 최신 Nova 페이지(예: `english-tutoring-cost-comparison/`, `english-video-call/`, `video-english-trial-review/`)의 구조를 그대로 따르거나 `gen_geo.py`가 생성한 형식을 쓴다.
+
+### 색상 변수 (Nova)
 ```css
---navy:#112747;
---navy-deep:#0C1D38;
---red:#F0483F;
---yellow:#FFC93C;
---green:#10B981;
---green-bg:#E9F9F1;
---blue:#3B82F6;
---blue-bg:#EFF5FF;
---bg-soft:#F5F7FA;
---card-border:#E8ECF1;
---text:#1A2233;
---text-sub:#5B6472;
---radius-card:16px;
---radius-btn:12px;
---shadow-card:0 4px 16px rgba(17,39,71,.06);
+--brand:#6d4aff;  /* 퍼플 (메인) */
+--mint:#35e0a1;   /* 민트 (강조·밑줄) */
+--mint-ink:#0a3b2c;
+--sun:#ffd53e;    /* 노랑 (포인트 원) */
+--ink:#16121f;    /* 본문/다크블록 */
+--s50:#f8fafc; --s100:#f1f5f9; --s200:#e2e8f0; --s400:#94a3b8; --s500:#64748b; --s600:#475569; --s700:#334155;
 ```
+- 폰트: Poppins(제목) + Pretendard(본문). 헤더 로고는 `https://www.pweng.net/`로 링크, nav는 홈(`/`)·전체글(`/blog/`)·무료레벨테스트.
+- Nova 시그니처: 히어로 h1 밑줄 SVG(민트), 퍼플 `.pblock` 한줄결론 카드, `table.nv` 비교표(파워잉글리쉬 행 `tr.pe` 강조), `.card.pe` 3열 강점 카드, 노랑 `.honest` 정직코너, 다크 `.dark` 콜아웃, 퍼플 `.cta-block`, 하단 카카오 상담 버튼.
 
 ### 폰트
 Pretendard (`https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css`)
@@ -154,8 +149,8 @@ Pretendard (`https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/
 
 ## 작업 절차
 
-> **새 페이지는 `_template.html`을 복사해서 내용만 채운다. 기존 페이지를 참고용으로 열어 읽지 않는다.**
-> 루트의 `_template.html`이 디자인·CSS·구조가 완성된 표준 템플릿이다. 새 페이지를 만들 때는 이 파일을 `<폴더명>/index.html`로 복사한 뒤 `[페이지제목]` `[메타설명]` `[한줄결론]` `[본문섹션]` `[FAQ질문]` `[FAQ답변]` 등 대괄호 자리표시자만 실제 내용으로 채운다. CSS나 구조를 확인하려고 기존 index.html을 열어 읽지 말 것 — 템플릿이 이미 최신 기준을 담고 있다. (`_template.html`은 루트 파일이라 `발행하기.py`의 폴더 스캔·sitemap·llms.txt 대상에 잡히지 않는다.)
+> **★새 페이지는 Nova 스타일로 만든다. 낡은 `_template.html`(네이비/레드)은 쓰지 않는다(폐기).**
+> 최신 Nova 페이지(`english-tutoring-cost-comparison/index.html` 등)의 `<style>`·구조·헤더·푸터·카카오버튼·모바일 스크립트를 그대로 복사해 내용만 바꾼다. Nova 표준 섹션: 헤더 → 히어로(launch pill + 밑줄SVG h1 + sub) → 퍼플 `.pblock` 한줄결론 → `table.nv` 비교표 → `.card.pe` 3열 강점 → `.honest` 정직코너 → `.dark` 콜아웃 → `.faq` 아코디언 → `.cta-block` → 카카오 버튼 → 푸터. JSON-LD 2종(Article+FAQPage)은 FAQ 아코디언과 문구 100% 일치.
 
 > **페이지 생성 작업은 `발행하기.py` 실행이 성공해야 완료로 간주한다.**
 > 발행(=`발행하기.py`의 커밋·푸시·전체 URL 200 확인)이 끝나기 전에는 다른 작업을 시작하지 않는다. `주제목록.md`의 [완료] 표시도 발행 성공을 확인한 뒤에만 한다.

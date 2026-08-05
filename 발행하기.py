@@ -116,13 +116,25 @@ def validate_pages(folders):
 def rebuild_sitemap(folders):
     log("\n[2/6] sitemap.xml 재생성")
     today = datetime.date.today().isoformat()
-    urls = [SITE + "/"] + [f"{SITE}/{f}/" for f in folders]
+
+    def page_lastmod(folder):
+        # 각 페이지의 실제 수정일(index.html mtime) → 안 바뀐 페이지는 원래 날짜 유지
+        try:
+            ts = os.path.getmtime(os.path.join(ROOT, folder, "index.html"))
+            return datetime.date.fromtimestamp(ts).isoformat()
+        except Exception:
+            return today
+
+    # (주소, lastmod) 목록 — 메인은 폴더 중 가장 최근 수정일
+    items = [(SITE + "/", max((page_lastmod(f) for f in folders), default=today))]
+    items += [(f"{SITE}/{f}/", page_lastmod(f)) for f in folders]
     lines = ['<?xml version="1.0" encoding="UTF-8"?>',
              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    for u in urls:
+    for u, lm in items:
         lines += ["  <url>", f"    <loc>{u}</loc>",
-                  f"    <lastmod>{today}</lastmod>", "  </url>"]
+                  f"    <lastmod>{lm}</lastmod>", "  </url>"]
     lines.append("</urlset>")
+    urls = [u for u, _ in items]
     write("sitemap.xml", "\n".join(lines) + "\n")
     log(f"   {len(urls)}개 주소 등록 완료")
     return urls

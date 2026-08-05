@@ -33,3 +33,4 @@ User-agent: Bytespider
 Allow: /
 
 Sitemap: https://guide.pweng.net/sitemap.xml
+Sitemap: https://guide.pweng.net/sitemap-local.xml

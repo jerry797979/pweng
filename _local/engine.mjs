@@ -62,6 +62,34 @@ export const KW_ANGLE = {
 };
 export function angleFor(slug) { return (slug && KW_ANGLE[slug]) || "매일 같은 시간, 나를 잘 아는 고정 전담 강사와 1:1로 이어가는 것이 회화 실력을 올리는 가장 확실한 방법입니다."; }
 
+// ── 키워드별 추천 과정 (커리큘럼 — 확정 사실) ──
+export const KW_COURSE = {
+  business: "비즈니스는 실제 상황 중심의 단계별 트랙이 준비돼 있습니다. 비즈니스 패턴잉글리쉬(120일 100유닛)로 핵심 표현을, 효과적인 비즈니스 이메일 작성법(50유닛)으로 문서 작성을, Elevated Business Concepts(75유닛)로 고급 개념까지 다집니다.",
+  exam: "시험은 유형과 출제 의도 파악이 점수를 좌우합니다. OPIc·IELTS·토익스피킹 시험대비 과정으로 자주 나오는 주제를 내 이야기로 자연스럽게 말하는 연습을 반복해 목표 점수를 준비합니다.",
+  kids: "아동은 연령·레벨에 맞는 6가지 커리큘럼이 있습니다. 레인보우 시리즈(3단계), 토킹타임(프리토킹), 즐거운 영문법, 주니어 토론, 영어 그림묘사, 전치사 완전정복으로 단계별로 이끌어줍니다.",
+  travel: "출국·여행을 앞두고 있다면 상황별 회화 표현을 미리 익히는 어학연수 과정과 프리토킹으로 실전 감각을 올릴 수 있습니다.",
+  general: "일반회화는 초급(Beginner)에서 시작해 본격 대화 중급(Intermediate), 유창한 고급(Advance)까지 단계별로 올라갑니다. 최신 기사로 토론하는 영자신문, 네이티브처럼 말하는 프리토킹, 논리적 사고를 키우는 토론 과정도 선택할 수 있어요.",
+};
+const KW_COURSE_MAP = { "business-english": "business", "job-english": "business", "interview-english": "business", "worker-english": "business", "exam-english": "exam", "opic": "exam", "toeic-speaking": "exam", "elementary-english": "kids", "middleschool-english": "kids", "travel-english": "travel", "beginner-english": "general", "basic-english": "general" };
+export function courseFor(slug) { return KW_COURSE[KW_COURSE_MAP[slug] || "general"] || KW_COURSE.general; }
+
+const SECTION_TRUST = `<section style="padding:26px 0"><div class="wrap"><div class="trust">
+<div class="tcard"><div class="tnum">4단계</div><div class="tlbl">강사 검증</div></div>
+<div class="tcard"><div class="tnum">9.9<span>/10</span></div><div class="tlbl">평균 평점</div></div>
+<div class="tcard"><div class="tnum">100+</div><div class="tlbl">전문 강사</div></div>
+<div class="tcard"><div class="tnum">1,200+</div><div class="tlbl">수강 후기</div></div>
+</div></div></section>`;
+
+const SECTION_PAIN = `<section class="soft"><div class="wrap"><div class="sec-head"><span class="eyebrow">Why</span><h2 class="sec-h2">이런 고민, 있으셨죠?</h2></div>
+<div class="grid"><article class="card"><h3 style="font-size:16px">“그룹수업은 말할 기회가 적어요”</h3><p>1:1이라 25분이 온전히 내 말하기 시간입니다. 오늘 배운 표현을 바로 내 상황에 맞춰 연습해요.</p></article>
+<article class="card"><h3 style="font-size:16px">“강사가 매번 바뀌어요”</h3><p>100% 고정 전담제로 내 실력·성향을 아는 강사가 계속 같은 부분을 잡아줍니다.</p></article>
+<article class="card"><h3 style="font-size:16px">“학원까지 갈 시간이 없어요”</h3><p>집·회사에서 전화·화상으로 이동 0분, 매일 같은 시간에 이어갑니다. 작심삼일은 전담 강사의 카카오톡 관리로 잡아드려요.</p></article></div></div></section>`;
+
+const SECTION_PHONE_VIDEO = `<section class="soft"><div class="wrap"><div class="sec-head"><span class="eyebrow">Phone or Video</span><h2 class="sec-h2">전화영어와 화상영어, 뭘 고를까?</h2></div>
+<div class="grid" style="grid-template-columns:1fr 1fr;max-width:820px;margin:0 auto"><article class="card"><span class="ptag">전화영어</span><h3 style="margin-top:12px">이동 중에도, 목소리 집중</h3><p>영상 없이 통화로 진행해 이동·자투리 시간에 편합니다. 10·20·30분 중 원하는 길이를 고를 수 있어요.</p></article>
+<article class="card"><span class="ptag">화상영어</span><h3 style="margin-top:12px">입 모양·교재를 함께</h3><p>강사의 표정과 입 모양을 보며 발음을 교정받고, 화면으로 교재를 함께 봅니다. 25분이 기본이에요.</p></article></div>
+<p style="text-align:center;margin-top:16px;color:var(--s600);font-size:14.5px">전화영어와 화상영어는 <b>추가 비용 없이 함께</b> 이용할 수 있습니다.</p></div></section>`;
+
 // 공통(에버그린) 섹션 — 확정 사실 기반
 const SECTION_PRICE = `<section class="soft"><div class="narrow"><div class="sec-head"><span class="eyebrow">Price</span><h2 class="sec-h2">수강료 안내</h2></div>
 <div class="tbl-wrap"><table class="nv"><thead><tr><th>수업 횟수</th><th>월 수강료</th><th>회당(25분 기준)</th></tr></thead><tbody>
@@ -164,6 +192,7 @@ export function renderCity(prov, city, keyword) {
 
   return page({ title, desc, ogTitle, ogDesc: `${city.ko} 어디서든 이동 0분으로 매일 이어가는 1:1 전화·화상영어.`, url,
     angle: angleFor(keyword && keyword.slug),
+    course: courseFor(keyword && keyword.slug),
     heroTag: `${esc(city.ko)} ${esc(kw)} 가이드`,
     h1: `${esc(city.ko)}에서 ${esc(kw)}<br><span class="u">어떻게 시작할까?${UNDERLINE}</span>`,
     sub: `${esc(city.ko)}에서 학원까지 오가는 부담 없이, 집·회사에서 매일 이어가는 1:1 전화·화상영어를 비교해 보세요.`,
@@ -198,6 +227,7 @@ export function renderDong(prov, city, dong, keyword) {
   const faq1a = `학원까지 오가는 시간이 부담이라면 지역 제약이 없는 전화·화상영어가 대안입니다. ${region} 어디서든 집·회사에서 100% 고정 전담 강사와 매일 같은 시간에 1:1 수업을 이어갈 수 있고, 주5회 기준 회당 약 6,270원으로 부담 없이 반복할 수 있습니다.`;
   return page({ title, desc, ogTitle: `${region} ${kw}, 학원 말고 방법 없을까?`, ogDesc: `${region} 어디서든 이동 0분으로 매일 이어가는 1:1 전화·화상영어.`, url,
     angle: angleFor(keyword && keyword.slug),
+    course: courseFor(keyword && keyword.slug),
     heroTag: `${esc(region)} 영어회화 가이드`,
     h1: `${esc(dong.ko)}에서 ${esc(kw)}<br><span class="u">어떻게 시작할까?${UNDERLINE}</span>`,
     sub: `${esc(region)}에서 학원까지 오가는 부담 없이, 집·회사에서 매일 이어가는 1:1 전화·화상영어를 비교해 보세요.`,
@@ -280,6 +310,7 @@ section{padding:56px 0}.soft{background:var(--s50)}
 .card h3{font-size:17px;font-weight:800}.card p{margin-top:10px;font-size:14.5px;color:var(--s600);line-height:1.7}
 .ptag{display:inline-block;background:#efe9ff;color:var(--brand);font-weight:800;font-size:12px;border-radius:999px;padding:5px 12px}
 .tbl-wrap{overflow-x:auto;border:1px solid var(--s200);border-radius:1rem;background:#fff}table.nv{width:100%;border-collapse:collapse;min-width:420px;font-size:14.5px}table.nv th,table.nv td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--s100)}table.nv thead th{background:var(--ink);color:#fff;font-weight:700;font-size:14px}table.nv td.pick b{color:var(--brand)}table.nv tbody tr:last-child td{border-bottom:none}
+.trust{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;text-align:center}.tcard{background:#fff;border:1px solid var(--s200);border-radius:1rem;padding:18px 10px}.tnum{font-family:"Poppins",sans-serif;font-size:26px;font-weight:800;color:var(--brand)}.tnum span{font-size:14px;color:var(--s400)}.tlbl{margin-top:4px;font-size:13px;color:var(--s600);font-weight:600}@media(max-width:640px){.trust{grid-template-columns:repeat(2,1fr)}}
 .nbwrap{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:920px;margin:0 auto}
 .nb{display:inline-block;background:#fff;border:1px solid var(--s200);border-radius:999px;padding:9px 16px;font-size:14px;font-weight:600;color:var(--s700)}.nb:hover{border-color:var(--brand);color:var(--brand)}
 .dark{position:relative;overflow:hidden;background:var(--ink);color:#fff;border-radius:1.5rem;text-align:center;padding:44px 24px}.dark p{font-size:19px;font-weight:800;line-height:1.6}.dark .em{color:var(--mint)}
@@ -305,15 +336,17 @@ footer{background:var(--ink);color:rgba(255,255,255,.5);font-size:13px;padding:4
 <span class="pchip">한 줄 결론</span>
 <div class="answer-card"><p>${d.oneLine}</p></div></div></div></section>
 ${d.angle ? `<section style="padding:28px 0 0"><div class="narrow"><div class="card"><span class="ptag">이런 분께</span><p style="margin-top:12px;font-size:15.5px;line-height:1.9;color:var(--s700)">${d.angle}</p></div></div></section>` : ""}
+${SECTION_TRUST}
 <section class="soft"><div class="wrap"><div class="sec-head"><span class="eyebrow">Comparison</span><h2 class="sec-h2">${d.compareH2}</h2></div>
 <div class="grid">
 <article class="card"><span class="ptag">오프라인 학원</span><h3 style="margin-top:12px">지역 학원·스터디</h3><p>대면 수업의 장점이 있지만 ${d.cityKo} 내 거점까지 오가는 이동·시간, 고정된 수업 시간표를 맞춰야 합니다.</p></article>
 <article class="card"><span class="ptag">앱·자율형</span><h3 style="margin-top:12px">AI 앱·자유 예약형</h3><p>혼자 연습하거나 원하는 시간에 예약하기 좋지만, 강사가 매번 바뀌어 내 실력·성향을 꾸준히 파악하기 어렵습니다.</p></article>
 <article class="card pe"><span class="ptag">파워잉글리쉬</span><h3 style="margin-top:12px">1:1 고정 전담 전화·화상영어</h3><p>${d.cityKo} 어디서든 집·회사에서 100% 고정 전담 강사와 매일 같은 시간에 1:1, 회당 약 6,270원.</p></article>
 </div></div></section>
+${SECTION_PAIN}
 <section><div class="wrap"><div class="sec-head"><span class="eyebrow">Power English</span><h2 class="sec-h2">${d.cityKo}에서 파워잉글리쉬가 좋은 이유</h2></div>
 <div class="grid"><article class="card pe"><span class="ptag">100% 고정제</span><h3 style="margin-top:12px">바뀌지 않는 전담 강사</h3><p>4단계 검증을 거친 전문 강사가 100% 고정되어 내 실력과 성향을 완벽하게 파악하고 지속적으로 끌어줍니다.</p></article><article class="card pe"><span class="ptag">직접 선택</span><h3 style="margin-top:12px">맞춤 수업 요청</h3><p>자기소개 생략, 즉시 문법 교정 등 원하는 수업 방식을 직접 선택하면 담당 강사에게 그대로 반영됩니다.</p></article><article class="card pe"><span class="ptag">합리적 가격</span><h3 style="margin-top:12px">회당 약 6,270원</h3><p>주5회 월 125,400원으로 전화·화상 구분 없이 1:1 맞춤 수업과 수업 후 카카오톡 피드백까지 무료 제공.</p></article></div></div></section>
-${SECTION_HOW}${SECTION_SCHEDULE}${SECTION_CUSTOM}${SECTION_PRICE}${SECTION_TUTOR}
+${d.course ? `<section><div class="narrow"><div class="sec-head"><span class="eyebrow">Course</span><h2 class="sec-h2">${d.cityKo}에서 들을 수 있는 과정</h2></div><div class="card"><p style="font-size:15.5px;line-height:1.9;color:var(--s700)">${d.course}</p></div></div></section>` : ""}${SECTION_HOW}${SECTION_SCHEDULE}${SECTION_CUSTOM}${SECTION_PHONE_VIDEO}${SECTION_PRICE}${SECTION_TUTOR}
 <section style="padding-top:0"><div class="wrap"><div class="dark grid-tex"><p>${d.cityKo} 어디서든, 이동 시간 0분.<br><span class="em">주5회 회당 약 6,270원으로 매일 이어가는 나만의 영어회화 습관!</span></p></div></div></section>
 <section class="soft"><div class="wrap"><div class="sec-head"><span class="eyebrow">${d.provKo}</span><h2 class="sec-h2">${d.nbTitle}</h2></div>
 <div class="nbwrap">${d.nb}</div></div></section>

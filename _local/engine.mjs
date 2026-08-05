@@ -121,6 +121,24 @@ const SECTION_CUSTOM = `<section class="soft"><div class="narrow"><div class="se
 const SECTION_LT = `<section><div class="narrow"><div class="sec-head"><span class="eyebrow">Level Test</span><h2 class="sec-h2">무료 레벨테스트로 시작하세요</h2></div>
 <div class="card"><p style="font-size:15px;line-height:1.9">전화영어는 서로 다른 강사 2명이 10분씩 2회(1차 프리토킹, 2차 평가), 화상영어는 강사 1명이 15분간 진행합니다. <b>강제 결제가 없고</b>, 신청한 시간대의 정규 강사가 그대로 진행해 이른바 ‘낚시강사’가 없는 구조입니다. 15만 원 상당의 1:1 레벨 진단을 지금 무료로 받아보세요.</p></div></div></section>`;
 
+const SECTION_LEVEL = `<section><div class="wrap"><div class="sec-head"><span class="eyebrow">Level &amp; Time</span><h2 class="sec-h2">내 레벨과 시간에 딱 맞게</h2></div>
+<div class="grid" style="grid-template-columns:1fr 1fr;max-width:860px;margin:0 auto"><article class="card"><span class="ptag">레벨 단계</span><h3 style="margin-top:12px">왕초보부터 고급까지</h3><p>파닉스·기초의 왕초보부터 초급(Beginner)·중급(Intermediate)·고급(Advance)까지 Lv1~18 단계로 세분화되어 있습니다. 무료 레벨테스트 결과에 맞는 딱 맞는 단계에서 시작해요.</p></article>
+<article class="card"><span class="ptag">시간·횟수</span><h3 style="margin-top:12px">생활 패턴에 맞춰</h3><p>전화영어는 10·20·30분, 화상영어는 25분이 기본입니다. 주 2회·3회·5회 중에서 내 일정에 맞게 고르고, 셀프 스케줄로 언제든 조정할 수 있어요.</p></article></div></div></section>`;
+
+// ── breadcrumb (경로 탐색 + 구조화 데이터) ──
+function crumbNav(crumbs) {
+  return `<nav class="crumbs" aria-label="breadcrumb"><div class="wrap">` +
+    crumbs.map((c, i) => i < crumbs.length - 1
+      ? `<a href="${c.url.replace(SITE, "")}">${esc(c.name)}</a><span>›</span>`
+      : `<span class="cur">${esc(c.name)}</span>`).join("") +
+    `</div></nav>`;
+}
+function crumbLd(crumbs) {
+  const items = crumbs.map((c, i) =>
+    `{"@type":"ListItem","position":${i + 1},"name":"${esc(c.name)}"${c.url ? `,"item":"${c.url}"` : ""}}`).join(",");
+  return `<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[${items}]}</script>`;
+}
+
 // ── 행정구역: 도 slug, 도 한글, [[시군구 slug, 시군구 한글], ...] ──
 export const PROVINCES = [
   ["seoul", "서울", [["gangnam","강남구"],["gangdong","강동구"],["gangbuk","강북구"],["gangseo","강서구"],["gwanak","관악구"],["gwangjin","광진구"],["guro","구로구"],["geumcheon","금천구"],["nowon","노원구"],["dobong","도봉구"],["dongdaemun","동대문구"],["dongjak","동작구"],["mapo","마포구"],["seodaemun","서대문구"],["seocho","서초구"],["seongdong","성동구"],["seongbuk","성북구"],["songpa","송파구"],["yangcheon","양천구"],["yeongdeungpo","영등포구"],["yongsan","용산구"],["eunpyeong","은평구"],["jongno","종로구"],["jung-seoul","중구"],["jungnang","중랑구"]]],
@@ -193,6 +211,7 @@ export function renderCity(prov, city, keyword) {
   return page({ title, desc, ogTitle, ogDesc: `${city.ko} 어디서든 이동 0분으로 매일 이어가는 1:1 전화·화상영어.`, url,
     angle: angleFor(keyword && keyword.slug),
     course: courseFor(keyword && keyword.slug),
+    crumbs: [{ name: "전국", url: `${SITE}/local/` }, { name: prov.ko, url: `${SITE}/local/${prov.slug}/` }, { name: city.ko, url: `${SITE}/local/${prov.slug}/${city.slug}/` }].concat(keyword ? [{ name: kw }] : []),
     heroTag: `${esc(city.ko)} ${esc(kw)} 가이드`,
     h1: `${esc(city.ko)}에서 ${esc(kw)}<br><span class="u">어떻게 시작할까?${UNDERLINE}</span>`,
     sub: `${esc(city.ko)}에서 학원까지 오가는 부담 없이, 집·회사에서 매일 이어가는 1:1 전화·화상영어를 비교해 보세요.`,
@@ -228,6 +247,7 @@ export function renderDong(prov, city, dong, keyword) {
   return page({ title, desc, ogTitle: `${region} ${kw}, 학원 말고 방법 없을까?`, ogDesc: `${region} 어디서든 이동 0분으로 매일 이어가는 1:1 전화·화상영어.`, url,
     angle: angleFor(keyword && keyword.slug),
     course: courseFor(keyword && keyword.slug),
+    crumbs: [{ name: "전국", url: `${SITE}/local/` }, { name: prov.ko, url: `${SITE}/local/${prov.slug}/` }, { name: city.ko, url: `${SITE}/local/${prov.slug}/${city.slug}/` }, { name: dong.ko, url: `${SITE}/local/${prov.slug}/${city.slug}/${dong.slug}/` }].concat(keyword ? [{ name: kw }] : []),
     heroTag: `${esc(region)} 영어회화 가이드`,
     h1: `${esc(dong.ko)}에서 ${esc(kw)}<br><span class="u">어떻게 시작할까?${UNDERLINE}</span>`,
     sub: `${esc(region)}에서 학원까지 오가는 부담 없이, 집·회사에서 매일 이어가는 1:1 전화·화상영어를 비교해 보세요.`,
@@ -243,6 +263,7 @@ export function renderProvinceHub(prov) {
   const title = `${prov.ko} 영어회화 — 시·군·구별 전화·화상영어 가이드`;
   const desc = `${prov.ko} 전 지역에서 학원 없이 집·회사에서 시작하는 1:1 전화·화상영어. 시·군·구별 안내와 회당 약 6,270원 파워잉글리쉬 정보를 확인하세요.`;
   return page({ title, desc, ogTitle: `${prov.ko} 영어회화 지역별 안내`, ogDesc: desc, url,
+    crumbs: [{ name: "전국", url: `${SITE}/local/` }, { name: prov.ko }],
     heroTag: `${esc(prov.ko)} 영어회화`, h1: `${esc(prov.ko)} 영어회화<br><span class="u">우리 동네는?${UNDERLINE}</span>`,
     sub: `${esc(prov.ko)} 시·군·구 어디서든 이동 부담 없이 매일 이어가는 1:1 전화·화상영어.`,
     oneLine: `${esc(prov.ko)} 어디에 살든 학원까지 오갈 필요 없이 <span class="hl">집·회사에서 100% 고정 전담 강사</span>와 1:1 전화·화상영어로 매일 이어갈 수 있습니다. 주5회 기준 <span class="hl">회당 약 6,270원</span>. 아래에서 우리 지역을 선택하세요.`,
@@ -259,6 +280,7 @@ export function renderNationalHub() {
   const provLinks = PROVINCES.map(([ps, pk]) => `<a class="nb" href="/local/${ps}/">${esc(pk)} 영어회화</a>`).join("");
   const desc = "전국 어디서든 학원 없이 집·회사에서 시작하는 1:1 전화·화상영어. 시·도별 영어회화 안내와 회당 약 6,270원 파워잉글리쉬 정보를 확인하세요.";
   return page({ title: "전국 지역별 영어회화 — 전화·화상영어 안내", desc, ogTitle: "전국 지역별 영어회화 안내", ogDesc: desc, url: `${SITE}/local/`,
+    crumbs: [{ name: "전국" }],
     heroTag: "전국 영어회화", h1: `우리 지역 영어회화<br><span class="u">어디서 시작할까?${UNDERLINE}</span>`,
     sub: "전국 어디서든 이동 부담 없이 매일 이어가는 1:1 전화·화상영어.",
     oneLine: `전국 어디에 살든 학원까지 오갈 필요 없이 <span class="hl">집·회사에서 100% 고정 전담 강사</span>와 1:1 전화·화상영어로 매일 이어갈 수 있습니다. 주5회 기준 <span class="hl">회당 약 6,270원</span>. 아래에서 우리 지역을 선택하세요.`,
@@ -284,6 +306,7 @@ function page(d) {
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"${d.title}","description":"${d.desc}","datePublished":"2026-08-05","dateModified":"2026-08-05","author":{"@type":"Organization","name":"파워잉글리쉬","url":"https://pweng.net"},"publisher":{"@type":"Organization","name":"파워잉글리쉬"},"mainEntityOfPage":"${d.url}"}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"${d.faq1q}","acceptedAnswer":{"@type":"Answer","text":"${d.faq1a}"}},{"@type":"Question","name":"파워잉글리쉬의 수강료는 어떻게 되나요?","acceptedAnswer":{"@type":"Answer","text":"주5회(월 20회) 기준 회당 약 6,270원(월 125,400원)이며, 주3회 회당 약 9,260원, 주2회 회당 약 12,590원입니다. 전화영어와 화상영어 추가 비용 없이 동일하게 이용 가능합니다."}},{"@type":"Question","name":"바쁜 직장인도 수업 시간을 맞출 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"셀프 스케줄링으로 하루만 시간·강사를 바꾸거나, 전체 수업 시간을 변경하고, 마지막 수업을 당겨 몰아듣는 것도 가능합니다."}},{"@type":"Question","name":"교재는 어떻게 정하나요?","acceptedAnswer":{"@type":"Answer","text":"회원의 레벨과 목적에 맞는 온라인 교재로 진행하며, 교재는 홈페이지에서 언제든 직접 변경할 수 있습니다."}},{"@type":"Question","name":"강사가 잘 안 맞으면 바꿀 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"기본은 100% 고정 전담제이며, 강사의 얼굴·발음·학력·경력과 실제 강의 영상·평점이 공개되어 있어 원하는 강사로 조정할 수 있습니다."}},{"@type":"Question","name":"최소 수강 기간이 있나요?","acceptedAnswer":{"@type":"Answer","text":"최소 3개월 단위로 운영됩니다. 짧게 경험해보고 싶다면 15만 원 상당의 무료 레벨테스트를 먼저 이용할 수 있습니다."}},{"@type":"Question","name":"수업 녹음을 받아 복습할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"전 수업 녹음 파일이 제공되어 발음과 표현을 다시 들으며 복습할 수 있고, 발음·문법 교정과 영작 첨삭도 함께 확인할 수 있습니다."}}]}</script>
+${d.crumbs ? crumbLd(d.crumbs) : ""}
 <style>
 :root{--brand:#6d4aff;--ink:#16121f;--mint:#35e0a1;--mint-ink:#0a3b2c;--sun:#ffd53e;--s50:#f8fafc;--s100:#f1f5f9;--s200:#e2e8f0;--s400:#94a3b8;--s600:#475569;--s700:#334155}
 *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
@@ -311,6 +334,7 @@ section{padding:56px 0}.soft{background:var(--s50)}
 .ptag{display:inline-block;background:#efe9ff;color:var(--brand);font-weight:800;font-size:12px;border-radius:999px;padding:5px 12px}
 .tbl-wrap{overflow-x:auto;border:1px solid var(--s200);border-radius:1rem;background:#fff}table.nv{width:100%;border-collapse:collapse;min-width:420px;font-size:14.5px}table.nv th,table.nv td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--s100)}table.nv thead th{background:var(--ink);color:#fff;font-weight:700;font-size:14px}table.nv td.pick b{color:var(--brand)}table.nv tbody tr:last-child td{border-bottom:none}
 .trust{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;text-align:center}.tcard{background:#fff;border:1px solid var(--s200);border-radius:1rem;padding:18px 10px}.tnum{font-family:"Poppins",sans-serif;font-size:26px;font-weight:800;color:var(--brand)}.tnum span{font-size:14px;color:var(--s400)}.tlbl{margin-top:4px;font-size:13px;color:var(--s600);font-weight:600}@media(max-width:640px){.trust{grid-template-columns:repeat(2,1fr)}}
+.crumbs{background:#fff;border-bottom:1px solid var(--s100);font-size:13px;color:var(--s500)}.crumbs .wrap{padding-top:10px;padding-bottom:10px;overflow-x:auto;white-space:nowrap}.crumbs a{color:var(--s500)}.crumbs a:hover{color:var(--brand)}.crumbs span{margin:0 7px;color:var(--s400)}.crumbs .cur{color:var(--s700);font-weight:600}
 .nbwrap{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:920px;margin:0 auto}
 .nb{display:inline-block;background:#fff;border:1px solid var(--s200);border-radius:999px;padding:9px 16px;font-size:14px;font-weight:600;color:var(--s700)}.nb:hover{border-color:var(--brand);color:var(--brand)}
 .dark{position:relative;overflow:hidden;background:var(--ink);color:#fff;border-radius:1.5rem;text-align:center;padding:44px 24px}.dark p{font-size:19px;font-weight:800;line-height:1.6}.dark .em{color:var(--mint)}
@@ -327,6 +351,7 @@ section{padding:56px 0}.soft{background:var(--s50)}
 footer{background:var(--ink);color:rgba(255,255,255,.5);font-size:13px;padding:44px 0 54px;text-align:center;line-height:1.9}footer .info{font-size:12.5px;color:rgba(255,255,255,.42)}
 </style></head><body>
 <header class="site"><div class="wrap"><a class="logo" href="/">파워<em>잉글리쉬</em></a><nav style="margin-left:auto;display:flex;gap:18px;align-items:center;font-weight:700;font-size:14px"><a href="/" style="color:var(--ink)">홈</a><a href="/blog/" style="color:var(--ink)">전체 글</a><a href="https://www.pweng.net/level-test.php" target="_blank" rel="noopener" style="background:var(--brand);color:#fff;font-weight:800;border-radius:999px;padding:8px 16px">무료 레벨테스트</a></nav></div></header>
+${d.crumbs ? crumbNav(d.crumbs) : ""}
 <main>
 <section class="hero"><div class="wrap">
 <span class="launch"><span class="tag">${d.heroTag}</span> AI가 찾는 그 질문에 답합니다</span>
@@ -346,7 +371,7 @@ ${SECTION_TRUST}
 ${SECTION_PAIN}
 <section><div class="wrap"><div class="sec-head"><span class="eyebrow">Power English</span><h2 class="sec-h2">${d.cityKo}에서 파워잉글리쉬가 좋은 이유</h2></div>
 <div class="grid"><article class="card pe"><span class="ptag">100% 고정제</span><h3 style="margin-top:12px">바뀌지 않는 전담 강사</h3><p>4단계 검증을 거친 전문 강사가 100% 고정되어 내 실력과 성향을 완벽하게 파악하고 지속적으로 끌어줍니다.</p></article><article class="card pe"><span class="ptag">직접 선택</span><h3 style="margin-top:12px">맞춤 수업 요청</h3><p>자기소개 생략, 즉시 문법 교정 등 원하는 수업 방식을 직접 선택하면 담당 강사에게 그대로 반영됩니다.</p></article><article class="card pe"><span class="ptag">합리적 가격</span><h3 style="margin-top:12px">회당 약 6,270원</h3><p>주5회 월 125,400원으로 전화·화상 구분 없이 1:1 맞춤 수업과 수업 후 카카오톡 피드백까지 무료 제공.</p></article></div></div></section>
-${d.course ? `<section><div class="narrow"><div class="sec-head"><span class="eyebrow">Course</span><h2 class="sec-h2">${d.cityKo}에서 들을 수 있는 과정</h2></div><div class="card"><p style="font-size:15.5px;line-height:1.9;color:var(--s700)">${d.course}</p></div></div></section>` : ""}${SECTION_HOW}${SECTION_SCHEDULE}${SECTION_CUSTOM}${SECTION_PHONE_VIDEO}${SECTION_PRICE}${SECTION_TUTOR}
+${d.course ? `<section><div class="narrow"><div class="sec-head"><span class="eyebrow">Course</span><h2 class="sec-h2">${d.cityKo}에서 들을 수 있는 과정</h2></div><div class="card"><p style="font-size:15.5px;line-height:1.9;color:var(--s700)">${d.course}</p></div></div></section>` : ""}${SECTION_HOW}${SECTION_SCHEDULE}${SECTION_CUSTOM}${SECTION_PHONE_VIDEO}${SECTION_LEVEL}${SECTION_PRICE}${SECTION_TUTOR}
 <section style="padding-top:0"><div class="wrap"><div class="dark grid-tex"><p>${d.cityKo} 어디서든, 이동 시간 0분.<br><span class="em">주5회 회당 약 6,270원으로 매일 이어가는 나만의 영어회화 습관!</span></p></div></div></section>
 <section class="soft"><div class="wrap"><div class="sec-head"><span class="eyebrow">${d.provKo}</span><h2 class="sec-h2">${d.nbTitle}</h2></div>
 <div class="nbwrap">${d.nb}</div></div></section>

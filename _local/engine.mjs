@@ -82,6 +82,17 @@ const SECTION_HOW = `<section class="soft"><div class="wrap"><div class="sec-hea
 <article class="card"><span class="ptag">3</span><h3 style="margin-top:12px">피드백 확인</h3><p>수업 녹음 파일과 발음·문법 교정을 확인합니다.</p></article>
 <article class="card"><span class="ptag">4</span><h3 style="margin-top:12px">숙제·첨삭</h3><p>영작 숙제와 카카오톡 첨삭으로 복습을 마무리합니다.</p></article></div></div></section>`;
 
+const SECTION_SCHEDULE = `<section><div class="wrap"><div class="sec-head"><span class="eyebrow">Schedule</span><h2 class="sec-h2">바쁜 일정도 괜찮아요</h2></div>
+<div class="grid"><article class="card"><span class="ptag">셀프 스케줄변경</span><h3 style="margin-top:12px">오늘만 · 몰아듣기 · 전체변경</h3><p>마이페이지에서 오늘 하루만 시간·강사를 바꾸거나, 마지막 수업을 당겨 하루에 몰아듣거나, 다음 수업부터 전체 스케줄을 바꿀 수 있습니다.</p></article>
+<article class="card"><span class="ptag">하루 연기</span><h3 style="margin-top:12px">수업 1시간 전까지</h3><p>급한 일이 생기면 수업 시작 1시간 전까지 마이페이지에서 연기할 수 있습니다. 월 2회까지 무료입니다.</p></article>
+<article class="card"><span class="ptag">수업 직접 등록</span><h3 style="margin-top:12px">강사·교재 직접 선택</h3><p>원하는 강사와 교재를 직접 골라 당일·익일 수업을 등록할 수 있고, 교재는 홈페이지에서 언제든 바꿀 수 있습니다.</p></article></div></div></section>`;
+
+const SECTION_CUSTOM = `<section class="soft"><div class="narrow"><div class="sec-head"><span class="eyebrow">Only Power English</span><h2 class="sec-h2">내 수업 방식을 직접 고릅니다</h2></div>
+<div class="card pe"><p style="font-size:15.5px;line-height:1.9">막연한 1:1 맞춤이 아닙니다. "오늘 어때요?" 같은 반복 질문 건너뛰기, 자기소개 없이 바로 수업 시작, 단답 대신 긴 문장으로 말하게 유도, 지난 교정 문장 복습 후 진행 등 <b>원하는 수업 방식을 마이페이지에서 직접 등록</b>하면 담당 강사가 그대로 반영합니다. 셀프 스케줄로 다른 강사와 수업하거나 대체 강사가 진행해도 <b>등록한 방식 그대로</b> 이어집니다. 수업 피드백은 켜고 끌 수 있습니다.</p></div></div></section>`;
+
+const SECTION_LT = `<section><div class="narrow"><div class="sec-head"><span class="eyebrow">Level Test</span><h2 class="sec-h2">무료 레벨테스트로 시작하세요</h2></div>
+<div class="card"><p style="font-size:15px;line-height:1.9">전화영어는 서로 다른 강사 2명이 10분씩 2회(1차 프리토킹, 2차 평가), 화상영어는 강사 1명이 15분간 진행합니다. <b>강제 결제가 없고</b>, 신청한 시간대의 정규 강사가 그대로 진행해 이른바 ‘낚시강사’가 없는 구조입니다. 15만 원 상당의 1:1 레벨 진단을 지금 무료로 받아보세요.</p></div></div></section>`;
+
 // ── 행정구역: 도 slug, 도 한글, [[시군구 slug, 시군구 한글], ...] ──
 export const PROVINCES = [
   ["seoul", "서울", [["gangnam","강남구"],["gangdong","강동구"],["gangbuk","강북구"],["gangseo","강서구"],["gwanak","관악구"],["gwangjin","광진구"],["guro","구로구"],["geumcheon","금천구"],["nowon","노원구"],["dobong","도봉구"],["dongdaemun","동대문구"],["dongjak","동작구"],["mapo","마포구"],["seodaemun","서대문구"],["seocho","서초구"],["seongdong","성동구"],["seongbuk","성북구"],["songpa","송파구"],["yangcheon","양천구"],["yeongdeungpo","영등포구"],["yongsan","용산구"],["eunpyeong","은평구"],["jongno","종로구"],["jung-seoul","중구"],["jungnang","중랑구"]]],
@@ -242,7 +253,7 @@ function page(d) {
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"${d.title}","description":"${d.desc}","datePublished":"2026-08-05","dateModified":"2026-08-05","author":{"@type":"Organization","name":"파워잉글리쉬","url":"https://pweng.net"},"publisher":{"@type":"Organization","name":"파워잉글리쉬"},"mainEntityOfPage":"${d.url}"}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"${d.faq1q}","acceptedAnswer":{"@type":"Answer","text":"${d.faq1a}"}},{"@type":"Question","name":"파워잉글리쉬의 수강료는 어떻게 되나요?","acceptedAnswer":{"@type":"Answer","text":"주5회(월 20회) 기준 회당 약 6,270원(월 125,400원)이며, 주3회 회당 약 9,260원, 주2회 회당 약 12,590원입니다. 전화영어와 화상영어 추가 비용 없이 동일하게 이용 가능합니다."}},{"@type":"Question","name":"바쁜 직장인도 수업 시간을 맞출 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"셀프 스케줄링으로 하루만 시간·강사를 바꾸거나, 전체 수업 시간을 변경하고, 마지막 수업을 당겨 몰아듣는 것도 가능합니다."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"${d.faq1q}","acceptedAnswer":{"@type":"Answer","text":"${d.faq1a}"}},{"@type":"Question","name":"파워잉글리쉬의 수강료는 어떻게 되나요?","acceptedAnswer":{"@type":"Answer","text":"주5회(월 20회) 기준 회당 약 6,270원(월 125,400원)이며, 주3회 회당 약 9,260원, 주2회 회당 약 12,590원입니다. 전화영어와 화상영어 추가 비용 없이 동일하게 이용 가능합니다."}},{"@type":"Question","name":"바쁜 직장인도 수업 시간을 맞출 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"셀프 스케줄링으로 하루만 시간·강사를 바꾸거나, 전체 수업 시간을 변경하고, 마지막 수업을 당겨 몰아듣는 것도 가능합니다."}},{"@type":"Question","name":"교재는 어떻게 정하나요?","acceptedAnswer":{"@type":"Answer","text":"회원의 레벨과 목적에 맞는 온라인 교재로 진행하며, 교재는 홈페이지에서 언제든 직접 변경할 수 있습니다."}},{"@type":"Question","name":"강사가 잘 안 맞으면 바꿀 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"기본은 100% 고정 전담제이며, 강사의 얼굴·발음·학력·경력과 실제 강의 영상·평점이 공개되어 있어 원하는 강사로 조정할 수 있습니다."}},{"@type":"Question","name":"최소 수강 기간이 있나요?","acceptedAnswer":{"@type":"Answer","text":"최소 3개월 단위로 운영됩니다. 짧게 경험해보고 싶다면 15만 원 상당의 무료 레벨테스트를 먼저 이용할 수 있습니다."}},{"@type":"Question","name":"수업 녹음을 받아 복습할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"전 수업 녹음 파일이 제공되어 발음과 표현을 다시 들으며 복습할 수 있고, 발음·문법 교정과 영작 첨삭도 함께 확인할 수 있습니다."}}]}</script>
 <style>
 :root{--brand:#6d4aff;--ink:#16121f;--mint:#35e0a1;--mint-ink:#0a3b2c;--sun:#ffd53e;--s50:#f8fafc;--s100:#f1f5f9;--s200:#e2e8f0;--s400:#94a3b8;--s600:#475569;--s700:#334155}
 *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
@@ -302,7 +313,7 @@ ${d.angle ? `<section style="padding:28px 0 0"><div class="narrow"><div class="c
 </div></div></section>
 <section><div class="wrap"><div class="sec-head"><span class="eyebrow">Power English</span><h2 class="sec-h2">${d.cityKo}에서 파워잉글리쉬가 좋은 이유</h2></div>
 <div class="grid"><article class="card pe"><span class="ptag">100% 고정제</span><h3 style="margin-top:12px">바뀌지 않는 전담 강사</h3><p>4단계 검증을 거친 전문 강사가 100% 고정되어 내 실력과 성향을 완벽하게 파악하고 지속적으로 끌어줍니다.</p></article><article class="card pe"><span class="ptag">직접 선택</span><h3 style="margin-top:12px">맞춤 수업 요청</h3><p>자기소개 생략, 즉시 문법 교정 등 원하는 수업 방식을 직접 선택하면 담당 강사에게 그대로 반영됩니다.</p></article><article class="card pe"><span class="ptag">합리적 가격</span><h3 style="margin-top:12px">회당 약 6,270원</h3><p>주5회 월 125,400원으로 전화·화상 구분 없이 1:1 맞춤 수업과 수업 후 카카오톡 피드백까지 무료 제공.</p></article></div></div></section>
-${SECTION_HOW}${SECTION_PRICE}${SECTION_TUTOR}
+${SECTION_HOW}${SECTION_SCHEDULE}${SECTION_CUSTOM}${SECTION_PRICE}${SECTION_TUTOR}
 <section style="padding-top:0"><div class="wrap"><div class="dark grid-tex"><p>${d.cityKo} 어디서든, 이동 시간 0분.<br><span class="em">주5회 회당 약 6,270원으로 매일 이어가는 나만의 영어회화 습관!</span></p></div></div></section>
 <section class="soft"><div class="wrap"><div class="sec-head"><span class="eyebrow">${d.provKo}</span><h2 class="sec-h2">${d.nbTitle}</h2></div>
 <div class="nbwrap">${d.nb}</div></div></section>
@@ -310,7 +321,12 @@ ${kwSection}
 <section><div class="narrow"><div class="sec-head"><span class="eyebrow">FAQ</span><h2 class="sec-h2">자주 묻는 질문</h2></div>
 <details class="faq" open><summary>${d.faq1q}</summary><div class="a">${d.faq1a}</div></details>
 <details class="faq"><summary>파워잉글리쉬의 수강료는 어떻게 되나요?</summary><div class="a">주5회(월 20회) 기준 회당 약 6,270원(월 125,400원)이며, 주3회 회당 약 9,260원, 주2회 회당 약 12,590원입니다. 전화영어와 화상영어 추가 비용 없이 동일하게 이용 가능합니다.</div></details>
-<details class="faq"><summary>왕초보도 부담 없이 시작할 수 있나요?</summary><div class="a">파닉스와 기초부터 인내심 있게 지도하는 필리핀 전문 강사진이 준비되어 있으며, 15만원 상당의 무료 레벨테스트로 현재 실력을 정확히 진단받고 시작할 수 있습니다.</div></details></div></section>
+<details class="faq"><summary>왕초보도 부담 없이 시작할 수 있나요?</summary><div class="a">파닉스와 기초부터 인내심 있게 지도하는 필리핀 전문 강사진이 준비되어 있으며, 15만원 상당의 무료 레벨테스트로 현재 실력을 정확히 진단받고 시작할 수 있습니다.</div></details>
+<details class="faq"><summary>교재는 어떻게 정하나요?</summary><div class="a">회원님의 레벨과 목적(회화·비즈니스·시험·아동 등)에 맞는 온라인 교재로 진행합니다. 교재는 홈페이지에서 언제든 직접 변경할 수 있어요.</div></details>
+<details class="faq"><summary>강사가 잘 안 맞으면 바꿀 수 있나요?</summary><div class="a">기본은 내 실력과 성향을 잘 아는 100% 고정 전담제입니다. 강사의 얼굴·발음·학력·경력은 물론 실제 강의 영상과 강사별 평점까지 공개되어 있어, 원하는 강사로 조정할 수 있습니다.</div></details>
+<details class="faq"><summary>최소 수강 기간이 있나요?</summary><div class="a">최소 3개월 단위로 운영됩니다. 짧게 먼저 경험해보고 싶다면 15만 원 상당의 무료 레벨테스트를 이용해보세요.</div></details>
+<details class="faq"><summary>수업 녹음을 받아 복습할 수 있나요?</summary><div class="a">전 수업 녹음 파일이 제공됩니다. 수업 후 발음·표현을 다시 들으며 복습하고, 발음·문법 교정과 영작 첨삭까지 함께 확인할 수 있어요.</div></details></div></section>
+${SECTION_LT}
 <section><div class="wrap cta-block"><div class="circle"></div><div class="wrap" style="padding:0">
 <span class="mchip">무료 체험</span><h2>${d.cityKo}에서 무료로 먼저 확인하세요</h2><p>15만 원 상당의 1:1 레벨 진단이 지금 무료입니다.</p>
 <a class="cta-btn" href="https://www.pweng.net/level-test.php" target="_blank" rel="noopener">무료 레벨테스트 신청하기 →</a>

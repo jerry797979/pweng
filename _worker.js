@@ -2,7 +2,7 @@
 // /local/* → 지역 페이지 동적 렌더(엔진), 없으면 404
 // /sitemap-local.xml → 지역 페이지 sitemap
 // 그 외 모든 요청 → 기존 정적 자산(env.ASSETS) 그대로 통과 (기존 페이지 무영향)
-import { renderPath, allLocalUrls } from "./_local/engine.mjs";
+import { renderPath, provinceUrls, PROVINCE_SLUGS, SITE } from "./_local/engine.mjs";
 
 const HTML_HEADERS = {
   "content-type": "text/html; charset=utf-8",
@@ -14,15 +14,25 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    // 지역 sitemap
+    // 지역 sitemap 인덱스 (도별 분할 — 전체 5만+)
     if (path === "/sitemap-local.xml") {
+      const body =
+        '<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+        PROVINCE_SLUGS.map((s) => `  <sitemap><loc>${SITE}/sitemap-local-${s}.xml</loc></sitemap>`).join("\n") +
+        "\n</sitemapindex>\n";
+      return new Response(body, {
+        headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600" },
+      });
+    }
+    // 도별 지역 sitemap
+    const sm = path.match(/^\/sitemap-local-([a-z-]+)\.xml$/);
+    if (sm) {
+      const urls = provinceUrls(sm[1]);
+      if (!urls.length) return new Response("Not Found", { status: 404 });
       const today = new Date().toISOString().slice(0, 10);
       const body =
-        '<?xml version="1.0" encoding="UTF-8"?>\n' +
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
-        allLocalUrls()
-          .map((u) => `  <url><loc>${u}</loc><lastmod>${today}</lastmod></url>`)
-          .join("\n") +
+        '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+        urls.map((u) => `  <url><loc>${u}</loc><lastmod>${today}</lastmod></url>`).join("\n") +
         "\n</urlset>\n";
       return new Response(body, {
         headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600" },

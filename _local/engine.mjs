@@ -2,6 +2,8 @@
 // _worker.js(프로덕션)와 Node 테스트가 함께 import 한다.
 // Phase 1: 도 허브 + 시군구 허브 + 시군구×키워드(24). Phase 2에서 읍면동 추가.
 
+import { DONGS } from "./dongs.mjs";
+
 export const SITE = "https://guide.pweng.net";
 
 // ── 키워드 24종 ({지역} {ko} 로 결합) ──
@@ -32,23 +34,71 @@ export const KEYWORDS = [
   { slug: "basic-english", ko: "기초영어회화" },
 ];
 
+// ── 키워드별 맞춤 문단 (페이지마다 실질 내용이 달라지도록) ──
+export const KW_ANGLE = {
+  "phone-english": "전화영어는 영상 없이 목소리에만 집중하는 방식이라, 이동 중이나 자투리 시간에도 부담 없이 말하기 연습을 이어갈 수 있습니다. 전화영어는 10분·20분·30분 중 원하는 길이를 고를 수 있어요.",
+  "video-english": "화상영어는 강사의 입 모양과 표정을 보며 발음을 교정받고, 화면으로 교재를 함께 보며 진행합니다. 화상은 25분 기본이며, 전화영어와 추가 비용 없이 함께 이용할 수 있어요.",
+  "native-english": "발음과 억양을 꾸준히 교정받고 싶다면, 매번 강사가 바뀌지 않는 100% 고정 전담제가 특히 도움이 됩니다. 내 발음 습관을 아는 강사가 같은 부분을 반복해 잡아주기 때문이에요.",
+  "one-on-one-english": "그룹 수업과 달리 1:1은 말할 기회가 온전히 내 것이라, 짧은 시간에도 실제로 입을 떼는 양이 많습니다. 오늘 배운 표현을 바로 내 상황에 맞춰 연습할 수 있어요.",
+  "online-english": "온라인 회화는 오가는 시간이 없어 매일 같은 시간에 습관을 만들기 좋습니다. 집·회사 어디서든 전화나 화상으로 바로 연결돼요.",
+  "english-academy": "학원을 알아보고 있다면, 오가는 시간과 고정된 시간표가 부담이 되지 않는지 함께 따져보세요. 같은 비용대라면 이동 없이 매일 이어갈 수 있는 1:1 전화·화상이 대안이 됩니다.",
+  "english-tutoring": "방문 과외는 일정 잡기와 비용이 부담일 수 있습니다. 전화·화상 1:1은 방문 없이도 고정 전담 강사에게 같은 밀착 지도를 받을 수 있어요.",
+  "adult-english": "성인은 각자 목적(회화·비즈니스·시험)이 뚜렷합니다. 마이페이지에서 원하는 수업 방식을 직접 등록하면 담당 강사가 그대로 반영해 줍니다.",
+  "worker-english": "바쁜 직장인·교대근무자는 셀프 스케줄로 하루만 시간·강사를 바꾸거나, 마지막 수업을 당겨 몰아듣는 것도 가능합니다. 출퇴근 시간에 전화영어로 이어가기도 좋아요.",
+  "housewife-english": "집안일 사이 자투리 시간에 25분씩, 오가는 부담 없이 이어갈 수 있습니다. 원하는 시간대에 고정 스케줄을 잡아두면 습관이 됩니다.",
+  "senior-english": "시니어 회원도 파닉스·기초부터 인내심 있게 지도하는 강사와 천천히 시작할 수 있습니다. 급하지 않게, 매일 조금씩 눈높이에 맞춰 진행해요.",
+  "beginner-english": "왕초보라도 걱정 없이 시작할 수 있습니다. 파닉스와 기초부터 차근차근, 15만원 상당 무료 레벨테스트로 지금 실력을 정확히 진단받고 딱 맞는 단계에서 출발하세요.",
+  "elementary-english": "초등 아동은 레인보우 시리즈·영문법·그림묘사 등 연령에 맞는 커리큘럼으로 진행합니다. 고정 전담 강사가 아이 성향을 파악해 꾸준히 이끌어줘요.",
+  "middleschool-english": "중학생은 학교 수업과 병행하며 말하기·자신감을 키우기 좋습니다. 고정 강사가 진도와 약점을 계속 기억하고 지도해요.",
+  "university-english": "대학생은 회화부터 취업·시험까지 목적에 맞춰 과정을 고를 수 있습니다. 방학·학기 중 일정 변화에도 셀프 스케줄로 유연하게 이어갈 수 있어요.",
+  "business-english": "비즈니스는 통화·미팅·이메일·출장·프레젠테이션 등 실제 상황 표현이 핵심입니다. 비즈니스 패턴·이메일 작성·고급 개념까지 단계별 트랙으로 준비할 수 있어요.",
+  "travel-english": "여행 영어는 공항·호텔·식당 등 상황별 표현을 미리 익혀 두는 게 효과적입니다. 출국 전 상황별 프리토킹으로 실전 감각을 올릴 수 있어요.",
+  "job-english": "취업을 준비한다면 실제 면접 질문 유형을 강사와 1:1로 교정하며 반복 연습할 수 있습니다. 원하는 만큼 집중해서 대비하세요.",
+  "interview-english": "면접 영어는 예상 질문과 답변을 강사와 실전처럼 주고받으며 다듬는 게 중요합니다. 표현·발음·자신감을 함께 잡아드려요.",
+  "exam-english": "OPIc·IELTS·토익스피킹 등 시험은 유형과 출제 의도 파악이 점수를 좌우합니다. 시험대비 과정으로 고득점 전략을 준비할 수 있어요.",
+  "opic": "OPIc은 자주 나오는 주제를 내 이야기로 자연스럽게 말하는 연습이 핵심입니다. 고정 강사와 반복 연습해 목표 등급을 준비하세요.",
+  "toeic-speaking": "토익스피킹은 문제 유형별 답변 틀을 익히고 발음·유창성을 다듬는 게 중요합니다. 1:1로 약점을 집중 교정할 수 있어요.",
+  "basic-english": "기초 회화는 완벽한 문장보다 매일 조금씩 입을 떼는 습관이 먼저입니다. 쉬운 표현부터 반복하며 자신감을 쌓아가요.",
+};
+export function angleFor(slug) { return (slug && KW_ANGLE[slug]) || "매일 같은 시간, 나를 잘 아는 고정 전담 강사와 1:1로 이어가는 것이 회화 실력을 올리는 가장 확실한 방법입니다."; }
+
+// 공통(에버그린) 섹션 — 확정 사실 기반
+const SECTION_PRICE = `<section class="soft"><div class="narrow"><div class="sec-head"><span class="eyebrow">Price</span><h2 class="sec-h2">수강료 안내</h2></div>
+<div class="tbl-wrap"><table class="nv"><thead><tr><th>수업 횟수</th><th>월 수강료</th><th>회당(25분 기준)</th></tr></thead><tbody>
+<tr><td>주 5회 (월 20회)</td><td>125,400원</td><td class="pick"><b>약 6,270원</b></td></tr>
+<tr><td>주 3회 (월 12회)</td><td>111,150원</td><td>약 9,260원</td></tr>
+<tr><td>주 2회 (월 8회)</td><td>100,700원</td><td>약 12,590원</td></tr>
+</tbody></table></div><p style="margin-top:12px;font-size:14px;color:var(--s600)">전화영어와 화상영어는 추가 비용 없이 동일하게 이용할 수 있습니다. 전화는 10·20·30분 중 선택, 화상은 25분 기본입니다.</p></div></section>`;
+
+const SECTION_TUTOR = `<section><div class="wrap"><div class="sec-head"><span class="eyebrow">Tutor</span><h2 class="sec-h2">4단계 검증을 거친 전담 강사</h2></div>
+<p style="text-align:center;max-width:720px;margin:0 auto 24px;color:var(--s600)">자격증(TESOL 등)과 티칭 경력을 갖춘 지원자만, 하루 100건 넘는 이력서 중에서 4단계를 통과한 강사만 배정됩니다. 통과 강사 평균 평점 9.9/10, 100명 이상의 전문 강사와 1,200건 이상의 수강 후기가 있습니다.</p>
+<div class="grid"><article class="card"><span class="ptag">STEP 1·2</span><h3 style="margin-top:12px">면접 (발음·전달력)</h3><p>헤드매니저 온라인 면접과 한국인 면접으로 한국인의 귀에 편안한 발음·억양·전달력을 확인합니다.</p></article>
+<article class="card"><span class="ptag">STEP 3</span><h3 style="margin-top:12px">필기시험</h3><p>문법·어휘·티칭 이론 필기시험을 통과해야 합니다.</p></article>
+<article class="card"><span class="ptag">STEP 4</span><h3 style="margin-top:12px">3주 실전 트레이닝</h3><p>3주간 실전 수업 트레이닝까지 마친 강사만 정식 배정됩니다.</p></article></div></div></section>`;
+
+const SECTION_HOW = `<section class="soft"><div class="wrap"><div class="sec-head"><span class="eyebrow">How it works</span><h2 class="sec-h2">이렇게 수업합니다</h2></div>
+<div class="grid"><article class="card"><span class="ptag">1</span><h3 style="margin-top:12px">예습</h3><p>온라인 교재로 오늘 배울 내용을 미리 살펴봅니다.</p></article>
+<article class="card"><span class="ptag">2</span><h3 style="margin-top:12px">1:1 스피킹</h3><p>고정 전담 강사와 25분간 실제로 말하며 연습합니다.</p></article>
+<article class="card"><span class="ptag">3</span><h3 style="margin-top:12px">피드백 확인</h3><p>수업 녹음 파일과 발음·문법 교정을 확인합니다.</p></article>
+<article class="card"><span class="ptag">4</span><h3 style="margin-top:12px">숙제·첨삭</h3><p>영작 숙제와 카카오톡 첨삭으로 복습을 마무리합니다.</p></article></div></div></section>`;
+
 // ── 행정구역: 도 slug, 도 한글, [[시군구 slug, 시군구 한글], ...] ──
 export const PROVINCES = [
   ["seoul", "서울", [["gangnam","강남구"],["gangdong","강동구"],["gangbuk","강북구"],["gangseo","강서구"],["gwanak","관악구"],["gwangjin","광진구"],["guro","구로구"],["geumcheon","금천구"],["nowon","노원구"],["dobong","도봉구"],["dongdaemun","동대문구"],["dongjak","동작구"],["mapo","마포구"],["seodaemun","서대문구"],["seocho","서초구"],["seongdong","성동구"],["seongbuk","성북구"],["songpa","송파구"],["yangcheon","양천구"],["yeongdeungpo","영등포구"],["yongsan","용산구"],["eunpyeong","은평구"],["jongno","종로구"],["jung-seoul","중구"],["jungnang","중랑구"]]],
-  ["busan", "부산", [["haeundae","해운대구"],["busanjin","부산진구"],["dongnae","동래구"],["nam-busan","남구"],["buk-busan","북구"],["sasang","사상구"],["saha","사하구"],["geumjeong","금정구"],["yeonje","연제구"],["suyeong","수영구"],["gijang","기장군"],["gangseo-busan","강서구"]]],
-  ["daegu", "대구", [["suseong","수성구"],["dalseo","달서구"],["dalseong","달성군"],["buk-daegu","북구"],["dong-daegu","동구"],["seo-daegu","서구"],["nam-daegu","남구"]]],
-  ["incheon", "인천", [["namdong","남동구"],["bupyeong","부평구"],["yeonsu","연수구"],["seo-incheon","서구"],["gyeyang","계양구"],["michuhol","미추홀구"],["ganghwa","강화군"]]],
+  ["busan", "부산", [["haeundae","해운대구"],["busanjin","부산진구"],["dongnae","동래구"],["nam-busan","남구"],["buk-busan","북구"],["sasang","사상구"],["saha","사하구"],["geumjeong","금정구"],["yeonje","연제구"],["suyeong","수영구"],["gijang","기장군"],["gangseo-busan","강서구"],["dong-busan","동구"],["seo-busan","서구"],["yeongdo","영도구"],["jung-busan","중구"]]],
+  ["daegu", "대구", [["suseong","수성구"],["dalseo","달서구"],["dalseong","달성군"],["buk-daegu","북구"],["dong-daegu","동구"],["seo-daegu","서구"],["nam-daegu","남구"],["jung-daegu","중구"]]],
+  ["incheon", "인천", [["namdong","남동구"],["bupyeong","부평구"],["yeonsu","연수구"],["seo-incheon","서구"],["gyeyang","계양구"],["michuhol","미추홀구"],["ganghwa","강화군"],["dong-incheon","동구"],["jung-incheon","중구"],["ongjin","옹진군"]]],
   ["gwangju", "광주", [["gwangsan","광산구"],["buk-gwangju","북구"],["seo-gwangju","서구"],["nam-gwangju","남구"],["dong-gwangju","동구"]]],
   ["daejeon", "대전", [["seo-daejeon","서구"],["yuseong","유성구"],["jung-daejeon","중구"],["dong-daejeon","동구"],["daedeok","대덕구"]]],
   ["ulsan", "울산", [["nam-ulsan","남구"],["buk-ulsan","북구"],["dong-ulsan","동구"],["jung-ulsan","중구"],["ulju","울주군"]]],
   ["sejong", "세종", [["sejong-city","세종시"]]],
-  ["gyeonggi", "경기", [["suwon","수원시"],["seongnam","성남시"],["yongin","용인시"],["goyang","고양시"],["bucheon","부천시"],["ansan","안산시"],["anyang","안양시"],["namyangju","남양주시"],["hwaseong","화성시"],["pyeongtaek","평택시"],["uijeongbu","의정부시"],["siheung","시흥시"],["gimpo","김포시"],["gwangju-gyeonggi","광주시"],["gwangmyeong","광명시"],["gunpo","군포시"],["hanam","하남시"],["osan","오산시"],["icheon","이천시"],["yangju","양주시"],["guri","구리시"],["anseong","안성시"],["pocheon","포천시"],["uiwang","의왕시"],["yeoju","여주시"],["dongducheon","동두천시"],["gwacheon","과천시"]]],
-  ["gangwon", "강원", [["chuncheon","춘천시"],["wonju","원주시"],["gangneung","강릉시"],["donghae","동해시"],["sokcho","속초시"],["samcheok","삼척시"],["taebaek","태백시"],["hongcheon","홍천군"],["cheorwon","철원군"],["hoengseong","횡성군"],["yeongwol","영월군"],["pyeongchang","평창군"],["jeongseon","정선군"],["inje","인제군"],["goseong-gangwon","고성군"],["yanggu","양구군"]]],
+  ["gyeonggi", "경기", [["suwon","수원시"],["seongnam","성남시"],["yongin","용인시"],["goyang","고양시"],["bucheon","부천시"],["ansan","안산시"],["anyang","안양시"],["namyangju","남양주시"],["hwaseong","화성시"],["pyeongtaek","평택시"],["uijeongbu","의정부시"],["siheung","시흥시"],["gimpo","김포시"],["gwangju-gyeonggi","광주시"],["gwangmyeong","광명시"],["gunpo","군포시"],["hanam","하남시"],["osan","오산시"],["icheon","이천시"],["yangju","양주시"],["guri","구리시"],["anseong","안성시"],["pocheon","포천시"],["uiwang","의왕시"],["yeoju","여주시"],["dongducheon","동두천시"],["gwacheon","과천시"],["paju","파주시"],["gapyeong","가평군"],["yangpyeong","양평군"],["yeoncheon","연천군"]]],
+  ["gangwon", "강원", [["chuncheon","춘천시"],["wonju","원주시"],["gangneung","강릉시"],["donghae","동해시"],["sokcho","속초시"],["samcheok","삼척시"],["taebaek","태백시"],["hongcheon","홍천군"],["cheorwon","철원군"],["hoengseong","횡성군"],["yeongwol","영월군"],["pyeongchang","평창군"],["jeongseon","정선군"],["inje","인제군"],["goseong-gangwon","고성군"],["yanggu","양구군"],["yangyang","양양군"],["hwacheon","화천군"]]],
   ["chungbuk", "충북", [["cheongju","청주시"],["chungju","충주시"],["jecheon","제천시"],["eumseong","음성군"],["jincheon","진천군"],["okcheon","옥천군"],["yeongdong","영동군"],["goesan","괴산군"],["boeun","보은군"],["danyang","단양군"],["jeungpyeong","증평군"]]],
   ["chungnam", "충남", [["cheonan","천안시"],["asan","아산시"],["seosan","서산시"],["dangjin","당진시"],["nonsan","논산시"],["gongju","공주시"],["boryeong","보령시"],["gyeryong","계룡시"],["geumsan","금산군"],["buyeo","부여군"],["hongseong","홍성군"],["yesan","예산군"],["seocheon","서천군"],["cheongyang","청양군"],["taean","태안군"]]],
   ["jeonbuk", "전북", [["jeonju","전주시"],["iksan","익산시"],["gunsan","군산시"],["jeongeup","정읍시"],["namwon","남원시"],["gimje","김제시"],["wanju","완주군"],["gochang","고창군"],["buan","부안군"],["imsil","임실군"],["sunchang","순창군"],["jinan","진안군"],["muju","무주군"],["jangsu","장수군"]]],
   ["jeonnam", "전남", [["mokpo","목포시"],["yeosu","여수시"],["suncheon","순천시"],["naju","나주시"],["gwangyang","광양시"],["damyang","담양군"],["gokseong","곡성군"],["gurye","구례군"],["goheung","고흥군"],["boseong","보성군"],["hwasun","화순군"],["jangheung","장흥군"],["gangjin","강진군"],["haenam","해남군"],["yeongam","영암군"],["muan","무안군"],["hampyeong","함평군"],["yeonggwang","영광군"],["jangseong","장성군"],["wando","완도군"],["jindo","진도군"],["shinan","신안군"]]],
-  ["gyeongbuk", "경북", [["pohang","포항시"],["gumi","구미시"],["gyeongsan","경산시"],["gyeongju","경주시"],["andong","안동시"],["gimcheon","김천시"],["yeongju","영주시"],["sangju","상주시"],["mungyeong","문경시"],["yeongcheon","영천시"],["chilgok","칠곡군"],["seongju","성주군"],["uiseong","의성군"],["cheongdo","청도군"],["goryeong","고령군"],["yecheon","예천군"],["bonghwa","봉화군"],["uljin","울진군"],["yeongyang","영양군"],["yeongdeok","영덕군"],["cheongsong","청송군"],["gunwi","군위군"]]],
+  ["gyeongbuk", "경북", [["pohang","포항시"],["gumi","구미시"],["gyeongsan","경산시"],["gyeongju","경주시"],["andong","안동시"],["gimcheon","김천시"],["yeongju","영주시"],["sangju","상주시"],["mungyeong","문경시"],["yeongcheon","영천시"],["chilgok","칠곡군"],["seongju","성주군"],["uiseong","의성군"],["cheongdo","청도군"],["goryeong","고령군"],["yecheon","예천군"],["bonghwa","봉화군"],["uljin","울진군"],["yeongyang","영양군"],["yeongdeok","영덕군"],["cheongsong","청송군"],["gunwi","군위군"],["ulleung","울릉군"]]],
   ["gyeongnam", "경남", [["changwon","창원시"],["gimhae","김해시"],["jinju","진주시"],["yangsan","양산시"],["geoje","거제시"],["tongyeong","통영시"],["sacheon","사천시"],["miryang","밀양시"],["haman","함안군"],["geochang","거창군"],["changnyeong","창녕군"],["goseong-gyeongnam","고성군"],["hadong","하동군"],["hapcheon","합천군"],["namhae","남해군"],["hamyang","함양군"],["sancheong","산청군"],["uiryeong","의령군"]]],
   ["jeju", "제주", [["jeju-city","제주시"],["seogwipo","서귀포시"]]],
 ];
@@ -64,6 +114,16 @@ export function getCity(prov, cslug) {
   return c ? { slug: c[0], ko: c[1] } : null;
 }
 export function getKeyword(kslug) { return kwBySlug.get(kslug) || null; }
+
+// 읍면동(Phase 2) — sitemap엔 12개 키워드만 노출, 렌더는 24개 모두 허용
+export const DONG_KEYWORDS = KEYWORDS.slice(0, 12);
+const dongIndex = new Map();
+for (const [key, arr] of Object.entries(DONGS)) dongIndex.set(key, new Map(arr));
+export function dongsOf(pslug, cslug) { return DONGS[`${pslug}/${cslug}`] || []; }
+export function getDong(pslug, cslug, dslug) {
+  const m = dongIndex.get(`${pslug}/${cslug}`); const ko = m && m.get(dslug);
+  return ko ? { slug: dslug, ko } : null;
+}
 
 const esc = (s) => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
@@ -92,6 +152,7 @@ export function renderCity(prov, city, keyword) {
   const faq1a = `학원까지 오가는 시간이 부담이라면 지역 제약이 없는 전화·화상영어가 대안입니다. ${city.ko} 어디서든 집·회사에서 100% 고정 전담 강사와 매일 같은 시간에 1:1 수업을 이어갈 수 있고, 주5회 기준 회당 약 6,270원으로 부담 없이 반복할 수 있습니다.`;
 
   return page({ title, desc, ogTitle, ogDesc: `${city.ko} 어디서든 이동 0분으로 매일 이어가는 1:1 전화·화상영어.`, url,
+    angle: angleFor(keyword && keyword.slug),
     heroTag: `${esc(city.ko)} ${esc(kw)} 가이드`,
     h1: `${esc(city.ko)}에서 ${esc(kw)}<br><span class="u">어떻게 시작할까?${UNDERLINE}</span>`,
     sub: `${esc(city.ko)}에서 학원까지 오가는 부담 없이, 집·회사에서 매일 이어가는 1:1 전화·화상영어를 비교해 보세요.`,
@@ -101,6 +162,37 @@ export function renderCity(prov, city, keyword) {
     provKo: esc(prov.ko),
     nbTitle: keyword ? `${esc(prov.ko)} 다른 지역 ${esc(kw)}` : `${esc(prov.ko)} 다른 지역 영어회화`,
     nb, kwLinks, faq1q, faq1a });
+}
+
+// ── 렌더: 읍면동 (동×키워드, keyword 없으면 동 허브) ──
+export function renderDong(prov, city, dong, keyword) {
+  const kw = keyword ? keyword.ko : "영어회화";
+  const region = `${city.ko} ${dong.ko}`;
+  const kseg = keyword ? keyword.slug : "english-conversation";
+  const path = keyword
+    ? `/local/${prov.slug}/${city.slug}/${dong.slug}/${keyword.slug}/`
+    : `/local/${prov.slug}/${city.slug}/${dong.slug}/`;
+  const url = SITE + path;
+  const title = keyword
+    ? `${region} ${kw} — 학원 대신 전화·화상영어로 시작하는 법`
+    : `${region} 영어회화 — 전화·화상영어로 학원 없이 시작하기`;
+  const desc = `${prov.ko} ${region}에서 ${kw}를 찾고 있다면, 학원까지 오가는 이동·시간 부담 없이 집·회사에서 100% 고정 전담 강사와 1:1 전화·화상영어로 매일 이어갈 수 있습니다. 파워잉글리쉬는 회당 약 6,270원(주5회 기준)입니다.`;
+  // 인접 동(같은 시군구) — 같은 키워드
+  const sibs = dongsOf(prov.slug, city.slug).filter(([ds]) => ds !== dong.slug).slice(0, 12);
+  const nb = sibs.map(([ds, dk]) => `<a class="nb" href="/local/${prov.slug}/${city.slug}/${ds}/${kseg}/">${esc(dk)} ${esc(kw)}</a>`).join("");
+  const others = DONG_KEYWORDS.filter((k) => !keyword || k.slug !== keyword.slug).slice(0, 10);
+  const kwLinks = others.map((k) => `<a class="nb" href="/local/${prov.slug}/${city.slug}/${dong.slug}/${k.slug}/">${esc(dong.ko)} ${esc(k.ko)}</a>`).join("");
+  const oneLine = `${esc(region)}에서 ${esc(kw)}를 찾고 있다면, 거점까지 오가는 부담 없이 <span class="hl">집·회사에서 매일 같은 시간</span>에 이어가는 방법을 고려해 보세요. 지역 제약이 없는 전화·화상영어라면 <span class="hl">100% 고정 전담 강사</span>와 1:1로, 주5회 기준 <span class="hl">회당 약 6,270원</span>에 ${esc(dong.ko)} 어디서든 시작할 수 있습니다.`;
+  const faq1q = `${region}에 사는데 영어회화 학원이 멀어요. 어떻게 하죠?`;
+  const faq1a = `학원까지 오가는 시간이 부담이라면 지역 제약이 없는 전화·화상영어가 대안입니다. ${region} 어디서든 집·회사에서 100% 고정 전담 강사와 매일 같은 시간에 1:1 수업을 이어갈 수 있고, 주5회 기준 회당 약 6,270원으로 부담 없이 반복할 수 있습니다.`;
+  return page({ title, desc, ogTitle: `${region} ${kw}, 학원 말고 방법 없을까?`, ogDesc: `${region} 어디서든 이동 0분으로 매일 이어가는 1:1 전화·화상영어.`, url,
+    angle: angleFor(keyword && keyword.slug),
+    heroTag: `${esc(region)} 영어회화 가이드`,
+    h1: `${esc(dong.ko)}에서 ${esc(kw)}<br><span class="u">어떻게 시작할까?${UNDERLINE}</span>`,
+    sub: `${esc(region)}에서 학원까지 오가는 부담 없이, 집·회사에서 매일 이어가는 1:1 전화·화상영어를 비교해 보세요.`,
+    oneLine, compareH2: `${esc(region)}에서 ${esc(kw)}, 어떤 방식이 맞을까?`,
+    cityKo: esc(region), provKo: esc(city.ko),
+    nbTitle: `${esc(city.ko)} 다른 동네 ${keyword ? esc(kw) : "영어회화"}`, nb, kwLinks, faq1q, faq1a });
 }
 
 // ── 렌더: 도 허브 (시군구 목록) ──
@@ -176,6 +268,7 @@ section{padding:56px 0}.soft{background:var(--s50)}
 .card{background:#fff;border:1px solid var(--s200);border-radius:1rem;padding:24px;box-shadow:0 1px 3px rgba(0,0,0,.05)}.card.pe{background:#f7f5ff;border-color:rgba(109,74,255,.35)}
 .card h3{font-size:17px;font-weight:800}.card p{margin-top:10px;font-size:14.5px;color:var(--s600);line-height:1.7}
 .ptag{display:inline-block;background:#efe9ff;color:var(--brand);font-weight:800;font-size:12px;border-radius:999px;padding:5px 12px}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--s200);border-radius:1rem;background:#fff}table.nv{width:100%;border-collapse:collapse;min-width:420px;font-size:14.5px}table.nv th,table.nv td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--s100)}table.nv thead th{background:var(--ink);color:#fff;font-weight:700;font-size:14px}table.nv td.pick b{color:var(--brand)}table.nv tbody tr:last-child td{border-bottom:none}
 .nbwrap{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:920px;margin:0 auto}
 .nb{display:inline-block;background:#fff;border:1px solid var(--s200);border-radius:999px;padding:9px 16px;font-size:14px;font-weight:600;color:var(--s700)}.nb:hover{border-color:var(--brand);color:var(--brand)}
 .dark{position:relative;overflow:hidden;background:var(--ink);color:#fff;border-radius:1.5rem;text-align:center;padding:44px 24px}.dark p{font-size:19px;font-weight:800;line-height:1.6}.dark .em{color:var(--mint)}
@@ -200,6 +293,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.5);font-size:13px;padding:4
 <section style="padding-top:24px"><div class="narrow"><div class="pblock"><div class="circle"></div>
 <span class="pchip">한 줄 결론</span>
 <div class="answer-card"><p>${d.oneLine}</p></div></div></div></section>
+${d.angle ? `<section style="padding:28px 0 0"><div class="narrow"><div class="card"><span class="ptag">이런 분께</span><p style="margin-top:12px;font-size:15.5px;line-height:1.9;color:var(--s700)">${d.angle}</p></div></div></section>` : ""}
 <section class="soft"><div class="wrap"><div class="sec-head"><span class="eyebrow">Comparison</span><h2 class="sec-h2">${d.compareH2}</h2></div>
 <div class="grid">
 <article class="card"><span class="ptag">오프라인 학원</span><h3 style="margin-top:12px">지역 학원·스터디</h3><p>대면 수업의 장점이 있지만 ${d.cityKo} 내 거점까지 오가는 이동·시간, 고정된 수업 시간표를 맞춰야 합니다.</p></article>
@@ -208,6 +302,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.5);font-size:13px;padding:4
 </div></div></section>
 <section><div class="wrap"><div class="sec-head"><span class="eyebrow">Power English</span><h2 class="sec-h2">${d.cityKo}에서 파워잉글리쉬가 좋은 이유</h2></div>
 <div class="grid"><article class="card pe"><span class="ptag">100% 고정제</span><h3 style="margin-top:12px">바뀌지 않는 전담 강사</h3><p>4단계 검증을 거친 전문 강사가 100% 고정되어 내 실력과 성향을 완벽하게 파악하고 지속적으로 끌어줍니다.</p></article><article class="card pe"><span class="ptag">직접 선택</span><h3 style="margin-top:12px">맞춤 수업 요청</h3><p>자기소개 생략, 즉시 문법 교정 등 원하는 수업 방식을 직접 선택하면 담당 강사에게 그대로 반영됩니다.</p></article><article class="card pe"><span class="ptag">합리적 가격</span><h3 style="margin-top:12px">회당 약 6,270원</h3><p>주5회 월 125,400원으로 전화·화상 구분 없이 1:1 맞춤 수업과 수업 후 카카오톡 피드백까지 무료 제공.</p></article></div></div></section>
+${SECTION_HOW}${SECTION_PRICE}${SECTION_TUTOR}
 <section style="padding-top:0"><div class="wrap"><div class="dark grid-tex"><p>${d.cityKo} 어디서든, 이동 시간 0분.<br><span class="em">주5회 회당 약 6,270원으로 매일 이어가는 나만의 영어회화 습관!</span></p></div></div></section>
 <section class="soft"><div class="wrap"><div class="sec-head"><span class="eyebrow">${d.provKo}</span><h2 class="sec-h2">${d.nbTitle}</h2></div>
 <div class="nbwrap">${d.nb}</div></div></section>
@@ -228,32 +323,43 @@ ${kwSection}
 </body></html>`;
 }
 
-// ── 전체 URL 목록 (sitemap용) ──
-export function allLocalUrls() {
-  const urls = [];
-  for (const [ps, , cities] of PROVINCES) {
-    urls.push(`${SITE}/local/${ps}/`);
-    for (const [cs] of cities) {
-      urls.push(`${SITE}/local/${ps}/${cs}/`);
-      for (const k of KEYWORDS) urls.push(`${SITE}/local/${ps}/${cs}/${k.slug}/`);
+// ── sitemap용 URL (도별로 분할 — 전체 5만+ 이라 사이트맵 인덱스 사용) ──
+export const PROVINCE_SLUGS = PROVINCES.map((p) => p[0]);
+export function provinceUrls(pslug) {
+  const prov = getProvince(pslug);
+  if (!prov) return [];
+  const urls = [`${SITE}/local/${pslug}/`];
+  for (const [cs] of prov.cities) {
+    urls.push(`${SITE}/local/${pslug}/${cs}/`);
+    for (const k of KEYWORDS) urls.push(`${SITE}/local/${pslug}/${cs}/${k.slug}/`);
+    for (const [ds] of dongsOf(pslug, cs)) {
+      urls.push(`${SITE}/local/${pslug}/${cs}/${ds}/`);
+      for (const k of DONG_KEYWORDS) urls.push(`${SITE}/local/${pslug}/${cs}/${ds}/${k.slug}/`);
     }
   }
   return urls;
 }
+export function allLocalUrls() { return PROVINCE_SLUGS.flatMap(provinceUrls); }
 
 // ── 경로 파싱 → 렌더 (없으면 null) ──
 export function renderPath(parts) {
   // parts: ['local','seoul'] | [...,'gangnam'] | [...,'gangnam','phone-english']
   if (parts[0] !== "local") return null;
-  const [, pslug, cslug, kslug] = parts;
+  const [, pslug, cslug, x, y] = parts;
   if (!pslug) return renderNationalHub();
   const prov = getProvince(pslug);
   if (!prov) return null;
   if (!cslug) return renderProvinceHub(prov);
   const city = getCity(prov, cslug);
   if (!city) return null;
-  if (!kslug) return renderCity(prov, city, null);
-  const kw = getKeyword(kslug);
-  if (!kw) return null;
-  return renderCity(prov, city, kw);
+  if (!x) return renderCity(prov, city, null);
+  // x = 키워드(시군구×키워드) 또는 동(읍면동)
+  const kw = getKeyword(x);
+  if (kw) return renderCity(prov, city, kw);
+  const dong = getDong(pslug, cslug, x);
+  if (!dong) return null;
+  if (!y) return renderDong(prov, city, dong, null);
+  const dkw = getKeyword(y);
+  if (!dkw) return null;
+  return renderDong(prov, city, dong, dkw);
 }

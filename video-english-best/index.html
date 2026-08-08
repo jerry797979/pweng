@@ -113,6 +113,14 @@ section{padding:56px 0}
 
 .grid{display:grid;gap:16px}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}
 @media(max-width:820px){.g2,.g3{grid-template-columns:1fr}}
+.tw{overflow-x:auto;border:1px solid var(--s200);border-radius:1rem;background:#fff}
+.cmp{width:100%;border-collapse:collapse;min-width:720px}
+.cmp th{background:var(--ink);color:#fff;font-size:13px;font-weight:700;padding:13px 14px;text-align:left;white-space:nowrap}
+.cmp td{padding:13px 14px;border-top:1px solid var(--s200);font-size:13.5px;color:var(--s700);vertical-align:top;line-height:1.65}
+.cmp td:first-child{font-weight:700;color:var(--ink);white-space:nowrap}
+.cmp tr.us td{background:#f7f5ff}
+.cmp tr.us td:first-child{color:var(--brand)}
+.tnote{margin-top:10px;font-size:12.5px;color:var(--s500);line-height:1.7}
 .card{background:#fff;border:1px solid var(--s200);border-radius:1rem;padding:24px;box-shadow:0 1px 3px rgba(0,0,0,.05);transition:transform .16s,box-shadow .16s,border-color .16s}
 .card:hover{transform:translateY(-4px);border-color:rgba(109,74,255,.4);box-shadow:0 12px 26px rgba(0,0,0,.08)}
 .card.pe{background:#f7f5ff;border-color:rgba(109,74,255,.35)}
@@ -217,6 +225,71 @@ footer .info{font-size:12.5px;color:rgba(255,255,255,.42)}
         <p>업체가 고른 문구가 아니라 <strong>실제로 배운 사람이 남긴 글</strong>인지. <strong>작성일과 사용한 교재명</strong>이 함께 붙어 있으면 어떤 수업에서 나온 평가인지 드러납니다.</p>
       </article>
     </div>
+  </div>
+</section>
+
+<!-- ═══ 4가지로 정리한 비교표 ═══ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Compare</span>
+      <h2 class="sec-h2">주요 화상영어를 이 4가지로 정리하면</h2>
+      <p>각 사가 공개한 정보를 같은 기준으로 놓고 본 것입니다. 순위를 매기지 않았습니다.
+        무엇을 파는 곳인지가 다르기 때문입니다.</p>
+    </div>
+    <div class="tw">
+      <table class="cmp">
+        <thead>
+          <tr>
+            <th>업체</th>
+            <th>강사 확인</th>
+            <th>수업 형태</th>
+            <th>수업 뒤 교정</th>
+            <th>후기</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>링글</td>
+            <td>튜터 프로필 제공</td>
+            <td>1:1 (20분·40분)</td>
+            <td>수업 후 피드백·수업 녹음 제공</td>
+            <td>플랫폼 안에서 확인</td>
+          </tr>
+          <tr>
+            <td>캠블리</td>
+            <td>튜터 프로필·소개 영상</td>
+            <td>1:1, 예약 없이 즉시 연결</td>
+            <td>수업 녹화 제공</td>
+            <td>플랫폼 안에서 확인</td>
+          </tr>
+          <tr>
+            <td>엔구</td>
+            <td>튜터 프로필 제공</td>
+            <td>1:1 25분</td>
+            <td>튜터에 따라 다름</td>
+            <td>플랫폼 안에서 확인</td>
+          </tr>
+          <tr>
+            <td>어메이징토커</td>
+            <td>프로필·후기·시범 수업</td>
+            <td>1:1, 튜터별 회당 결제</td>
+            <td>튜터에 따라 다름</td>
+            <td>튜터별로 확인</td>
+          </tr>
+          <tr class="us">
+            <td>파워잉글리쉬</td>
+            <td><a class="inlink" href="https://www.pweng.net/teacher.php" rel="noopener">프로필·소개 영상</a>을 로그인 없이 공개</td>
+            <td>1:1 25분, 전화·화상을 추가 비용 없이 통합</td>
+            <td>수업 후 카카오톡 피드백 + 영작 첨삭</td>
+            <td>작성일·사용 교재명이 붙은 수강 후기 공개</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tnote">각 사가 공개한 정보를 2026년 8월 기준으로 정리했습니다.
+      요금과 수업 조건은 바뀔 수 있으니 등록 전 각 사에서 직접 확인하십시오.
+      이 페이지는 파워잉글리쉬를 운영하는 와이즈에듀케이션아이(주)가 만들었습니다.</p>
   </div>
 </section>
 

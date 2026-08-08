@@ -1,7 +1,15 @@
 {
   "name": "pweng",
   "compatibility_date": "2026-07-08",
-  "assets": {
-    "directory": "."
-  }
+  // Pages 프로젝트라 출력 폴더를 이 키로 알려줘야 바인딩(D1)이 함께 적용된다.
+  // "assets" 형식은 Workers 전용이라 Pages 빌드에서 무시됐다.
+  "pages_build_output_dir": ".",
+  // 영작 첨삭 아카이브(69,079건). /corrections/* 를 그릴 때 읽는다.
+  "d1_databases": [
+    {
+      "binding": "CORRECTIONS",
+      "database_name": "pweng-corrections",
+      "database_id": "d3c3ec13-299e-4ad1-8573-f851610a2934"
+    }
+  ]
 }

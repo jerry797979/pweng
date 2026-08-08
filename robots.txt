@@ -23,6 +23,11 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
+# 사용자가 질문했을 때 퍼플렉시티가 즉석에서 읽어가는 요원.
+# PerplexityBot(색인용)과 별개라 따로 열어야 실시간 답변에 인용된다.
+User-agent: Perplexity-User
+Allow: /
+
 User-agent: Google-Extended
 Allow: /
 
@@ -34,3 +39,4 @@ Allow: /
 
 Sitemap: https://guide.pweng.net/sitemap.xml
 Sitemap: https://guide.pweng.net/sitemap-local.xml
+Sitemap: https://guide.pweng.net/sitemap-corrections.xml

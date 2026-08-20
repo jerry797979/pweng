@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://guide.pweng.net/</loc>
-    <lastmod>2026-08-19</lastmod>
+    <lastmod>2026-08-20</lastmod>
   </url>
   <url>
     <loc>https://guide.pweng.net/10min-english/</loc>
@@ -90,7 +90,7 @@
   </url>
   <url>
     <loc>https://guide.pweng.net/blog/</loc>
-    <lastmod>2026-08-19</lastmod>
+    <lastmod>2026-08-20</lastmod>
   </url>
   <url>
     <loc>https://guide.pweng.net/boeun-english/</loc>
@@ -1007,6 +1007,10 @@
   <url>
     <loc>https://guide.pweng.net/nurse-english/</loc>
     <lastmod>2026-08-02</lastmod>
+  </url>
+  <url>
+    <loc>https://guide.pweng.net/oe-english-comparison/</loc>
+    <lastmod>2026-08-20</lastmod>
   </url>
   <url>
     <loc>https://guide.pweng.net/office-english-comparison/</loc>
